@@ -5,13 +5,14 @@ from settings.settings import Settings
 PROFILES_PATH = 'settings/profiles.ini'
 DEFAULT_NAME = 'default_mqtt_user'
 
+
 @dataclass
 class Profile:
     _name: str
     _host: str | None = None
     _port: str | None = None
     settings: Settings = Settings(PROFILES_PATH)
-    is_created : bool = False
+    is_created: bool = False
 
     def set_field(self, key, value):
         """Setting field in instance and in profiles.ini"""
@@ -39,10 +40,11 @@ class Profile:
         for attr_name in dir(self):
             attr = getattr(type(self), attr_name, None)
             if isinstance(attr, property):
-                self.settings.set_with_save(self._name, attr_name, str(getattr(self, attr_name)))
+                self.settings.set_with_save(
+                    self._name, attr_name, str(getattr(self, attr_name))
+                )
 
-    def delete(self):
-        ...
+    def delete(self): ...
 
     @property
     def name(self):
@@ -73,6 +75,7 @@ class Profile:
 @dataclass
 class CurrentProfileHandler:
     """Class only to handle current profile"""
+
     settings: Settings = Settings(PROFILES_PATH)
     current_profile_name = settings.get('current_profile', 'current')
 
@@ -83,7 +86,7 @@ class CurrentProfileHandler:
 class ProfileManager:
     def __init__(self):
         super().__init__()
-        self._profiles = [] # TODO: make instances from profiles.ini
+        self._profiles = []  # TODO: make instances from profiles.ini
         self.current_handler = CurrentProfileHandler()
 
     def create_profile(self, profile_name, **kwargs):
@@ -93,8 +96,7 @@ class ProfileManager:
         self.switch_profile(profile.name)
         self._profiles.append(profile)
 
-    def get_profile_by_name(self, profile_name) -> Profile:
-        ...
+    def get_profile_by_name(self, profile_name) -> Profile: ...
 
     def set_profile_settings(self, profile_name, **kwargs):
         profile = self.get_profile_by_name(profile_name)
