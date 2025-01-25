@@ -23,8 +23,8 @@ class Settings:
         return self.config.items(section)
 
     def save_settings(self):
-        with open(self.settings_path, "w", encoding="utf-8") as file:
-            self.config.write(file)
+        with open(self.settings_path, "w") as f:
+            self.config.write(f)
 
     def get_section(self, section):
         if self.config.has_section(section):
@@ -43,6 +43,7 @@ class Settings:
         return default
 
     def set_with_save(self, section, key, value):
+        self.load_settings()
         if not self.config.has_section(section):
             raise ValueError(f'Section "{section}" does not exist')
         self.config.set(section, key, str(value))
