@@ -1,8 +1,10 @@
 import configparser
 import os
 
+
 class Settings:
     """Universal class to parse .ini files."""
+
     def __init__(self, settings_path):
         self.settings_path = settings_path
         self.config = configparser.ConfigParser()
