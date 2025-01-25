@@ -85,9 +85,16 @@ class CurrentProfileHandler:
 
 class ProfileManager:
     def __init__(self):
-        super().__init__()
-        self._profiles = []  # TODO: make instances from profiles.ini
+        self._profiles_ini: Settings = Settings(PROFILES_PATH)
+        self._profiles = []
+        self.__profiles_from_ini()
         self.current_handler = CurrentProfileHandler()
+
+
+    def __profiles_from_ini(self):
+        for profile_name in self._profiles_ini.sections():
+            if profile_name != 'current_profile':
+                self._profiles.append(Profile(profile_name, **self._profiles_ini.items(profile_name)))
 
     def create_profile(self, profile_name, **kwargs):
         profile = Profile(profile_name)

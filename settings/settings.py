@@ -14,6 +14,12 @@ class Settings:
         else:
             raise ValueError("Settings file not found")
 
+    def sections(self):
+        return self.config.sections()
+
+    def items(self, section):
+        return self.config.items(section)
+
     def save_settings(self):
         with open(self.settings_path, "w", encoding="utf-8") as file:
             self.config.write(file)
