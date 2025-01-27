@@ -1,5 +1,11 @@
-from settings.profile import ProfileManager
+from mqtt.connector import MQTTConnector
 
 if __name__ == '__main__':
-    profile_manager = ProfileManager()
-    profile_manager.create_profile('nigga7')
+    mqtt = MQTTConnector(
+        [
+            'dt/smartis/ajax/hub/00186A94',
+            'cmd/smartis/ajax/hub/00186A94/res',
+            'cmd/smartis/ajax/hub/',
+        ]
+    )
+    mqtt.start()
