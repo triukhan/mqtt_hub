@@ -1,2 +1,4 @@
 paho-mqtt~=1.6.1
 pre-commit
+
+PyQt5~=5.15.11
