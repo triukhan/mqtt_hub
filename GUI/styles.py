@@ -2,7 +2,7 @@ MAIN_BUTTON = (
     "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; "
     "padding-left: 5; padding-right: 5;} QPushButton:hover {background-color: rgb(45, 45, 45);}"
 )
-FILTER_BUTTON = (
+FILTER_BUTTON_1 = (
     "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);"
     "border: 1px solid rgb(35, 35, 35); padding-left: 5px;}"
 )
@@ -33,3 +33,12 @@ FOLDER_FIELD_RIGHT = (
 RADIO = 'QRadioButton {color: rgb(186, 189, 182);background-color: rgb(35, 35, 35);}'
 FRAME_PART = 'QFrame {background-color: rgb(35, 35, 35); border-radius: 5; border: 1px solid rgb(50, 50, 50);}'
 CHECK_BOX = 'QCheckBox {color: rgb(186, 189, 182);background-color: rgb(35, 35, 35);}'
+LIST = (
+    'QListView {background-color: rgb(35, 35, 35)} QListView::item {color: rgb(186, 189, 182); '
+    'background-color: rgb(45, 45, 45)} QListView::item:selected {background-color: rgb(40, 40, 40); color: #FFF;'
+    'border-color: rgb(114, 159, 207)}'
+)
+FILTER_BUTTON_2 = (
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); '
+    'border: 1px solid rgb(35, 35, 35); padding: 5px}'
+)

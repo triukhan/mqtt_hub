@@ -1,5 +1,13 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QCheckBox, QFrame, QLabel, QLineEdit, QRadioButton
+from PyQt5.QtWidgets import (
+    QCheckBox,
+    QFrame,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QPushButton,
+    QRadioButton,
+)
 
 from GUI import styles
 
@@ -72,3 +80,48 @@ def create_frame(main_layout, style: str = styles.FRAME_PART, add_layout=None):
         add_layout.addWidget(frame)
 
     return frame
+
+
+def create_layout(layout_type, margins: list, spacing: int, out_layout=None):
+    if out_layout is not None:
+        layout = layout_type(out_layout)
+    else:
+        layout = layout_type()
+
+    layout.setContentsMargins(*margins)
+    layout.setSpacing(spacing)
+    return layout
+
+
+def create_button(
+    text,
+    layout,
+    style=styles.APP_BUTTON,
+    font=None,
+    min_size=None,
+    max_size=None,
+    add_layout=None,
+):  # TODO: font
+    button = QPushButton(layout)
+    button.setText(text)
+    button.setStyleSheet(style)
+    if min_size:
+        button.setMinimumSize(QtCore.QSize(*min_size))
+    if max_size:
+        button.setMaximumSize(QtCore.QSize(*max_size))
+
+    if add_layout is not None:
+        add_layout.addWidget(button)
+
+    return button
+
+
+def create_list(layout, style=styles.LIST, add_layout=None):
+    qlist = QListWidget(layout)
+    qlist.setStyleSheet(style)
+    qlist.setFrameShape(QFrame.NoFrame)
+
+    if add_layout is not None:
+        add_layout.addWidget(qlist)
+
+    return qlist

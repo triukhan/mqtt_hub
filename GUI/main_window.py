@@ -1,8 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from GUI import styles
-from GUI.info_tab import InfoTab
-from GUI.plus_tab import PlusTab
+from GUI.tabs.info_tab import InfoTab
+from GUI.tabs.main_tab import MainTab
+from GUI.tabs.plus_tab import PlusTab
 
 
 class MqttHubUi(object):
@@ -37,354 +38,24 @@ class MqttHubUi(object):
         self.all_tabs.setTabsClosable(False)
         self.all_tabs.setMovable(False)
         self.all_tabs.setTabBarAutoHide(False)
-        self.all_tabs.setObjectName("all_tabs")
-        self.main_tab = QtWidgets.QWidget()
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.main_tab)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_2.setSpacing(0)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.main_right_layout = QtWidgets.QVBoxLayout()
-        self.main_right_layout.setContentsMargins(0, -1, 0, 0)
-        self.main_right_layout.setSpacing(0)
-        self.main_right_layout.setObjectName("main_right_layout")
-        self.clear_frame = QtWidgets.QFrame(self.main_tab)
-        self.clear_frame.setStyleSheet("QFrame{background-color: rgb(35, 35, 35);}")
-        self.clear_frame.setObjectName("clear_frame")
-        self.clear_layout = QtWidgets.QHBoxLayout(self.clear_frame)
-        self.clear_layout.setContentsMargins(-1, 15, 10, 19)
-        self.clear_layout.setSpacing(0)
-        self.clear_layout.setObjectName("clear_layout")
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.clear_layout.addItem(spacerItem)
-        self.clear_button = QtWidgets.QPushButton(self.clear_frame)
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(9)
-        self.clear_button.setFont(font)
-        self.clear_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-radius: 5;\n"
-            "   padding: 5px;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "}"
-        )
-        self.clear_button.setObjectName("clear_button")
-        self.clear_layout.addWidget(self.clear_button)
-        self.main_right_layout.addWidget(self.clear_frame)
-        self.receiver_list = QtWidgets.QListWidget(self.main_tab)
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(12)
-        self.receiver_list.setFont(font)
-        self.receiver_list.setStyleSheet(
-            "QListView {\n"
-            "    background-color: rgb(35, 35, 35);\n"
-            "}\n"
-            "QListView::item {\n"
-            "    color: rgb(186, 189, 182);\n"
-            "    background-color: rgb(45, 45, 45)\n"
-            "}\n"
-            "\n"
-            "QListView::item:selected {\n"
-            "    background-color: rgb(40, 40, 40);\n"
-            "    color: #FFF; \n"
-            "    border-color: rgb(114, 159, 207);\n"
-            "}"
-        )
-        self.receiver_list.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.receiver_list.setObjectName("receiver_list")
-        item = QtWidgets.QListWidgetItem()
-        self.receiver_list.addItem(item)
-        item = QtWidgets.QListWidgetItem()
-        self.receiver_list.addItem(item)
-        self.main_right_layout.addWidget(self.receiver_list)
-        self.filter_frame = QtWidgets.QFrame(self.main_tab)
-        self.filter_frame.setStyleSheet(
-            "QFrame {\n"
-            "    border-top: 1px solid rgb(50, 50, 50); \n"
-            "    border-bottom: 1px solid rgb(50, 50, 50); \n"
-            "    background-color: rgb(35, 35, 35);\n"
-            "}\n"
-            ""
-        )
-        self.filter_frame.setObjectName("filter_frame")
-        self.message_formating = QtWidgets.QHBoxLayout(self.filter_frame)
-        self.message_formating.setContentsMargins(12, 5, 0, 5)
-        self.message_formating.setSpacing(0)
-        self.message_formating.setObjectName("message_formating")
-        self.convertor_button = QtWidgets.QPushButton(self.filter_frame)
-        self.convertor_button.setMinimumSize(QtCore.QSize(70, 25))
-        self.convertor_button.setMaximumSize(QtCore.QSize(70, 25))
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(12)
-        self.convertor_button.setFont(font)
-        self.convertor_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-right: 0px; \n"
-            "   border-top-left-radius: 5;\n"
-            "   border-bottom-left-radius: 5;\n"
-            "   padding: 5px;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "   border-right: 0px; \n"
-            "}"
-        )
-        self.convertor_button.setObjectName("convertor_button")
-        self.message_formating.addWidget(self.convertor_button)
-        self.convertor_picker_button = QtWidgets.QPushButton(self.filter_frame)
-        self.convertor_picker_button.setMinimumSize(QtCore.QSize(25, 25))
-        self.convertor_picker_button.setMaximumSize(QtCore.QSize(25, 25))
-        self.convertor_picker_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-left: 0px; \n"
-            "   border-top-right-radius: 5;\n"
-            "   border-bottom-right-radius: 5;\n"
-            "   padding: 5px;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70);\n"
-            "   border-left: 0px;  \n"
-            "}"
-        )
-        self.convertor_picker_button.setObjectName("convertor_picker_button")
-        self.message_formating.addWidget(self.convertor_picker_button)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.message_formating.addItem(spacerItem1)
-        self.all_button = QtWidgets.QPushButton(self.filter_frame)
-        self.all_button.setMinimumSize(QtCore.QSize(40, 23))
-        self.all_button.setMaximumSize(QtCore.QSize(80, 24))
-        self.all_button.setFont(font)
-        self.all_button.setStyleSheet(styles.FILTER_BUTTON)
-        self.message_formating.addWidget(self.all_button)
-        self.divider_1 = QtWidgets.QPushButton(self.filter_frame)
-        self.divider_1.setMinimumSize(QtCore.QSize(1, 17))
-        self.divider_1.setMaximumSize(QtCore.QSize(1, 17))
-        self.divider_1.setStyleSheet(styles.DIVIDER)
-        self.divider_1.setText("")
-        self.message_formating.addWidget(self.divider_1)
-        self.received_button = QtWidgets.QPushButton(self.filter_frame)
-        self.received_button.setMinimumSize(QtCore.QSize(80, 23))
-        self.received_button.setMaximumSize(QtCore.QSize(80, 24))
-        self.received_button.setFont(font)
-        self.received_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(35, 35, 35); \n"
-            "   padding: 5px;\n"
-            "}"
-        )
-        self.message_formating.addWidget(self.received_button)
-        self.divider_2 = QtWidgets.QPushButton(self.filter_frame)
-        self.divider_2.setMinimumSize(QtCore.QSize(1, 17))
-        self.divider_2.setMaximumSize(QtCore.QSize(1, 17))
-        self.divider_2.setStyleSheet(styles.DIVIDER)
-        self.divider_2.setText("")
-        self.divider_2.setObjectName("divider_2")
-        self.message_formating.addWidget(self.divider_2)
-        self.published_button = QtWidgets.QPushButton(self.filter_frame)
-        self.published_button.setMinimumSize(QtCore.QSize(80, 23))
-        self.published_button.setMaximumSize(QtCore.QSize(85, 23))
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(12)
-        self.published_button.setFont(font)
-        self.published_button.setStyleSheet(styles.FILTER_BUTTON)
-        self.message_formating.addWidget(self.published_button)
-        self.main_right_layout.addWidget(self.filter_frame)
-        self.receiver_text_edit = QtWidgets.QTextEdit(self.main_tab)
-        self.receiver_text_edit.setStyleSheet(styles.FILTER_BUTTON)
-        self.receiver_text_edit.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.main_right_layout.addWidget(self.receiver_text_edit)
-        self.gridLayout_2.addLayout(self.main_right_layout, 0, 1, 1, 1)
-        self.main_left_layout = QtWidgets.QFrame(self.main_tab)
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.main_left_layout)
-        self.verticalLayout_3.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3.setSpacing(0)
-        self.publisher_head_frame = QtWidgets.QFrame(self.main_left_layout)
-        self.publisher_head_frame.setStyleSheet(
-            "QFrame {background-color: rgb(35, 35, 35)}"
-        )
-        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.publisher_head_frame)
-        self.horizontalLayout_5.setContentsMargins(15, 15, 15, 15)
-        self.horizontalLayout_5.setSpacing(20)
-        self.delete_button = QtWidgets.QPushButton(self.publisher_head_frame)
-        self.delete_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.delete_button.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.delete_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(140, 50, 0);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-radius: 5;\n"
-            "   padding: 5px;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "}"
-        )
-        self.delete_button.setObjectName("delete_button")
-        self.horizontalLayout_5.addWidget(self.delete_button)
-        self.add_clipboard_button = QtWidgets.QPushButton(self.publisher_head_frame)
-        self.add_clipboard_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.add_clipboard_button.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.add_clipboard_button.setStyleSheet(styles.APP_BUTTON)
-        self.add_clipboard_button.setObjectName("add_clipboard_button")
-        self.horizontalLayout_5.addWidget(self.add_clipboard_button)
-        self.qos_layout = QtWidgets.QHBoxLayout()
-        self.qos_layout.setSpacing(0)
-        self.qos_layout.setObjectName("qos_layout")
-        self.qos_button = QtWidgets.QPushButton(self.publisher_head_frame)
-        self.qos_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.qos_button.setMaximumSize(QtCore.QSize(50, 25))
-        self.qos_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-right: 0px; \n"
-            "   border-top-left-radius: 5;\n"
-            "   border-bottom-left-radius: 5;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "   border-right: 0px; \n"
-            "}"
-        )
-        self.qos_button.setObjectName("qos_button")
-        self.qos_layout.addWidget(self.qos_button)
-        self.qos_picker_button = QtWidgets.QPushButton(self.publisher_head_frame)
-        self.qos_picker_button.setMinimumSize(QtCore.QSize(25, 25))
-        self.qos_picker_button.setMaximumSize(QtCore.QSize(25, 25))
-        self.qos_picker_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-left: 0px; \n"
-            "   border-top-right-radius: 5;\n"
-            "   border-bottom-right-radius: 5;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70);\n"
-            "   border-left: 0px;  \n"
-            "}"
-        )
-        self.qos_picker_button.setObjectName("qos_picker_button")
-        self.qos_layout.addWidget(self.qos_picker_button)
-        self.horizontalLayout_5.addLayout(self.qos_layout)
-        self.publish_button = QtWidgets.QPushButton(self.publisher_head_frame)
-        self.publish_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.publish_button.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.publish_button.setStyleSheet(styles.APP_BUTTON)
-        self.horizontalLayout_5.addWidget(self.publish_button)
-        self.verticalLayout_3.addWidget(self.publisher_head_frame)
-        self.clipboard_layout = QtWidgets.QHBoxLayout()
-        self.clipboard_layout.setContentsMargins(-1, -1, 1, -1)
-        self.clipboard_layout.setSpacing(0)
-        self.command_list = QtWidgets.QListWidget(self.main_left_layout)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Expanding
-        )
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.command_list.sizePolicy().hasHeightForWidth())
-        self.command_list.setSizePolicy(sizePolicy)
-        self.command_list.setMinimumSize(QtCore.QSize(220, 0))
-        self.command_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(12)
-        self.command_list.setFont(font)
-        self.command_list.setStyleSheet(
-            "QListView {\n"
-            "    border-top: 1px solid rgb(50, 50, 50); \n"
-            "    border-bottom: 1px solid rgb(50, 50, 50); \n"
-            "    background-color: rgb(35, 35, 35);\n"
-            "}\n"
-            "\n"
-            "QListView::item {\n"
-            "    color: rgb(186, 189, 182);\n"
-            "    background-color: rgb(45, 45, 45);\n"
-            "}\n"
-            "\n"
-            "QListView::item:selected {\n"
-            "    background-color: rgb(40, 40, 40);\n"
-            "    color: #FFF; \n"
-            "    border-color: rgb(114, 159, 207);\n"
-            "}"
-        )
-        self.command_list.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.command_list.setObjectName("command_list")
-        item = QtWidgets.QListWidgetItem()
-        self.command_list.addItem(item)
-        self.clipboard_layout.addWidget(self.command_list)
-        self.comand_field = QtWidgets.QTextEdit(self.main_left_layout)
-        self.comand_field.setStyleSheet(
-            "QTextEdit {\n"
-            " background-color: rgb(26, 26, 27);\n"
-            " color: rgb(186, 189, 182);\n"
-            "    border: 1px solid rgb(50, 50, 50); \n"
-            "}\n"
-            ""
-        )
-        self.comand_field.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.comand_field.setObjectName("comand_field")
-        self.clipboard_layout.addWidget(self.comand_field)
-        self.clipboard_layout.setStretch(0, 1)
-        self.clipboard_layout.setStretch(1, 2)
-        self.verticalLayout_3.addLayout(self.clipboard_layout)
-        self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
-
-        self.all_tabs.addTab(self.main_tab, '')
+        self.all_tabs.addTab(MainTab(), '')
         self.all_tabs.addTab(PlusTab(), '')
 
         self.settigs_tab = QtWidgets.QWidget()
-        self.settigs_tab.setObjectName("settigs_tab")
         self.gridLayout_10 = QtWidgets.QGridLayout(self.settigs_tab)
-        self.gridLayout_10.setObjectName("gridLayout_10")
         self.settings_layout = QtWidgets.QVBoxLayout()
-        self.settings_layout.setObjectName("settings_layout")
         self.logger_label = QtWidgets.QLabel(self.settigs_tab)
         self.logger_label.setMinimumSize(QtCore.QSize(100, 20))
         self.logger_label.setMaximumSize(QtCore.QSize(100, 20))
         self.logger_label.setStyleSheet("QLabel {color: rgb(186, 189, 182);}")
-        self.logger_label.setObjectName("logger_label")
         self.settings_layout.addWidget(self.logger_label)
         self.logger_frame = QtWidgets.QFrame(self.settigs_tab)
         self.logger_frame.setStyleSheet(
             "QFrame{background-color: rgb(35, 35, 35);   border-radius: 5;   border: 1px solid rgb(50, 50, 50); }\n"
-            ""
         )
-        self.logger_frame.setObjectName("logger_frame")
         self.gridLayout_11 = QtWidgets.QGridLayout(self.logger_frame)
         self.gridLayout_11.setContentsMargins(30, 20, 100, 20)
         self.gridLayout_11.setSpacing(15)
-        self.gridLayout_11.setObjectName("gridLayout_11")
         self.logger_cb_label = QtWidgets.QLabel(self.logger_frame)
         self.logger_cb_label.setStyleSheet(
             "QLabel {color: rgb(186, 189, 182);border: 0px;}"
@@ -800,32 +471,31 @@ class MqttHubUi(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.clear_button.setText(_translate("MainWindow", "clear"))
-        __sortingEnabled = self.receiver_list.isSortingEnabled()
-        self.receiver_list.setSortingEnabled(False)
-        item = self.receiver_list.item(0)
-        item.setText(_translate("MainWindow", "New Message"))
-        item = self.receiver_list.item(1)
-        item.setText(_translate("MainWindow", "New Message"))
-        self.receiver_list.setSortingEnabled(__sortingEnabled)
-        self.convertor_button.setText(_translate("MainWindow", "MsgPack"))
-        self.convertor_picker_button.setText(_translate("MainWindow", "∇"))
-        self.all_button.setText(_translate("MainWindow", "All"))
-        self.received_button.setText(_translate("MainWindow", "Received"))
-        self.published_button.setText(_translate("MainWindow", "Published"))
-        self.delete_button.setText(_translate("MainWindow", "Delete"))
-        self.add_clipboard_button.setText(_translate("MainWindow", "Add to Clipboard"))
-        self.qos_button.setText(_translate("MainWindow", "QoS 0"))
-        self.qos_picker_button.setText(_translate("MainWindow", "∇"))
-        self.publish_button.setText(_translate("MainWindow", "Publish"))
-        __sortingEnabled = self.command_list.isSortingEnabled()
-        self.command_list.setSortingEnabled(False)
-        item = self.command_list.item(0)
-        item.setText(_translate("MainWindow", "New Item"))
-        self.command_list.setSortingEnabled(__sortingEnabled)
-        self.all_tabs.setTabText(
-            self.all_tabs.indexOf(self.main_tab), _translate("MainWindow", "Page")
-        )
+        # self.clear_button.setText(_translate("MainWindow", "clear"))
+        # __sortingEnabled = self.receiver_list.isSortingEnabled()
+        # self.receiver_list.setSortingEnabled(False)
+        # item = self.receiver_list.item(0)
+        # item.setText(_translate("MainWindow", "New Message"))
+        # item = self.receiver_list.item(1)
+        # item.setText(_translate("MainWindow", "New Message"))
+        # self.receiver_list.setSortingEnabled(__sortingEnabled)
+        # self.convertor_picker_button.setText(_translate("MainWindow", "∇"))
+        # self.all_button.setText(_translate("MainWindow", "All"))
+        # self.received_button.setText(_translate("MainWindow", "Received"))
+        # self.published_button.setText(_translate("MainWindow", "Published"))
+        # self.delete_button.setText(_translate("MainWindow", "Delete"))
+        # self.add_clipboard_button.setText(_translate("MainWindow", "Add to Clipboard"))
+        # self.qos_button.setText(_translate("MainWindow", "QoS 0"))
+        # self.qos_picker_button.setText(_translate("MainWindow", "∇"))
+        # self.publish_button.setText(_translate("MainWindow", "Publish"))
+        # __sortingEnabled = self.command_list.isSortingEnabled()
+        # self.command_list.setSortingEnabled(False)
+        # item = self.command_list.item(0)
+        # item.setText(_translate("MainWindow", "New Item"))
+        # self.command_list.setSortingEnabled(__sortingEnabled)
+        # self.all_tabs.setTabText(
+        #     self.all_tabs.indexOf(self.main_tab), _translate("MainWindow", "Page")
+        # )
         self.logger_label.setText(_translate("MainWindow", "Logger"))
         self.logger_cb_label.setText(_translate("MainWindow", "Logger"))
         self.logger_path_label.setText(_translate("MainWindow", "Logger Path"))
