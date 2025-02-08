@@ -2,7 +2,7 @@ import sys
 
 from PyQt5 import QtWidgets
 
-from GUI.main_window import MqttHubUi
+from connections.main_window import MainWindow
 from mqtt.connector import MQTTConnector
 
 topics = [
@@ -12,12 +12,10 @@ topics = [
 ]
 
 
-class MqttHub(QtWidgets.QMainWindow, MqttHubUi):
+class MqttHub(QtWidgets.QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
         self.connector = MQTTConnector()
-        self.setup_ui()
-        self.save_button.clicked.connect(self.edit_tab.save_settings)
         self.connect_button.clicked.connect(self.connector.start)
 
 

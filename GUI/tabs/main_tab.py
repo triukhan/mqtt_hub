@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QRect, QSize
 from PyQt5.QtWidgets import (
     QFrame,
@@ -9,17 +9,19 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
     QPushButton,
     QSizePolicy,
-    QSpacerItem,
     QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 from GUI import styles
-from GUI.interface_utils import create_button, create_frame, create_layout, create_list
-
-vertical_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-horizontal_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+from GUI.interface_utils import (
+    create_button,
+    create_frame,
+    create_layout,
+    create_list,
+    horizontal_spacer,
+)
 
 
 class MainTabUI(QWidget):
@@ -37,7 +39,7 @@ class MainTabUI(QWidget):
         self.clear_layout = create_layout(
             QHBoxLayout, [-1, 15, 10, 19], 0, out_layout=self.clear_frame
         )
-        self.clear_layout.addItem(vertical_spacer)
+        self.clear_layout.addItem(horizontal_spacer)
         self.clear_button = create_button(
             'clear', self.clear_frame, add_layout=self.clear_layout
         )
@@ -85,7 +87,7 @@ class MainTabUI(QWidget):
             add_layout=self.message_formating,
         )
 
-        self.message_formating.addItem(vertical_spacer)
+        self.message_formating.addItem(horizontal_spacer)
 
         self.all_button = create_button(
             'All',
@@ -228,7 +230,6 @@ class MainTabUI(QWidget):
         )
 
         self.verticalLayout_3.addWidget(self.publisher_head_frame)
-
         self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
 
         self.command_list = QListWidget(self.main_left_layout)
@@ -239,41 +240,19 @@ class MainTabUI(QWidget):
         self.command_list.setSizePolicy(sizePolicy)
         self.command_list.setMinimumSize(QtCore.QSize(220, 0))
         self.command_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("Helvetica")
-        font.setPointSize(12)
-        self.command_list.setFont(font)
         self.command_list.setStyleSheet(
-            "QListView {\n"
-            "    border-top: 1px solid rgb(50, 50, 50); \n"
-            "    border-bottom: 1px solid rgb(50, 50, 50); \n"
-            "    background-color: rgb(35, 35, 35);\n"
-            "}\n"
-            "\n"
-            "QListView::item {\n"
-            "    color: rgb(186, 189, 182);\n"
-            "    background-color: rgb(45, 45, 45);\n"
-            "}\n"
-            "\n"
-            "QListView::item:selected {\n"
-            "    background-color: rgb(40, 40, 40);\n"
-            "    color: #FFF; \n"
-            "    border-color: rgb(114, 159, 207);\n"
-            "}"
+            'QListView {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50);'
+            'background-color: rgb(35, 35, 35);} QListView::item {color: rgb(186, 189, 182); background-color: '
+            'rgb(45, 45, 45);} QListView::item:selected {background-color: rgb(40, 40, 40); color: #FFF;'
+            'border-color: rgb(114, 159, 207);}'
         )
         self.command_list.setFrameShape(QFrame.NoFrame)
-        self.command_list.setObjectName("command_list")
         item = QListWidgetItem()
         self.command_list.addItem(item)
         self.clipboard_layout.addWidget(self.command_list)
         self.comand_field = QTextEdit(self.main_left_layout)
         self.comand_field.setStyleSheet(
-            "QTextEdit {\n"
-            " background-color: rgb(26, 26, 27);\n"
-            " color: rgb(186, 189, 182);\n"
-            "    border: 1px solid rgb(50, 50, 50); \n"
-            "}\n"
-            ""
+            'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
         )
         self.comand_field.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.addWidget(self.comand_field)
@@ -304,9 +283,7 @@ class FlowLayout(QLayout):
 
     def insertWidget(self, index, widget):
         self.addWidget(widget)
-        self.item_list.insert(
-            index, self.item_list.pop(-1)
-        )  # Перемещаем в нужное место
+        self.item_list.insert(index, self.item_list.pop(-1))
         self.invalidate()
 
     def removeWidget(self, widget):

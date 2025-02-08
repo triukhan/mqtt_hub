@@ -5,16 +5,12 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QSizePolicy,
-    QSpacerItem,
     QVBoxLayout,
     QWidget,
 )
 
 from GUI import styles
-
-vertical_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-horizontal_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+from GUI.interface_utils import horizontal_spacer, vertical_spacer
 
 
 class InfoTab(QWidget):
@@ -66,7 +62,7 @@ class InfoTab(QWidget):
         self.git_mqtt_layout = QHBoxLayout()
         self.git_mqtt_layout.addWidget(self.github_button)
         self.git_mqtt_layout.addWidget(self.mqtt_button)
-        self.git_mqtt_layout.addItem(vertical_spacer)
+        self.git_mqtt_layout.addItem(horizontal_spacer)
 
         self.info_part_main = QGridLayout(self.info_frame)
         self.info_part_main.setContentsMargins(30, 20, 100, 20)
@@ -78,5 +74,5 @@ class InfoTab(QWidget):
         self.info_part_main.addLayout(self.git_mqtt_layout, 5, 0, 1, 1)
 
         self.info_layout.addWidget(self.info_frame)
-        self.info_layout.addItem(horizontal_spacer)
+        self.info_layout.addItem(vertical_spacer)
         self.info_layout_grid.addLayout(self.info_layout, 0, 0, 1, 1)

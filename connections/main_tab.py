@@ -7,5 +7,3 @@ class PlusTab(MainTabUI):
         super().__init__()
         self.profile_manager = ProfileManager()
         self.current_profile = self.profile_manager.current_profile
-
-    # def connect

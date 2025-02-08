@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import (
     QListWidget,
     QPushButton,
     QRadioButton,
+    QSizePolicy,
+    QSpacerItem,
 )
 
 from GUI import styles
@@ -14,6 +16,8 @@ from GUI import styles
 LABEL_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
 )
+vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+horizontal_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
 
 def create_label(  # TODO: typing
@@ -50,7 +54,10 @@ def create_field(main_layout, add_layout=None, add_params: list | None = None):
     field.setStyleSheet(styles.FIELD)
 
     if add_layout is not None:
-        add_layout.addWidget(field, *add_params)
+        if add_params is not None:
+            add_layout.addWidget(field, *add_params)
+        else:
+            add_layout.addWidget(field)
 
     return field
 
