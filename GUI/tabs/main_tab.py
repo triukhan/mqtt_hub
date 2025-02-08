@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import QPoint, QRect, QSize
 from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -21,7 +22,7 @@ vertical_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum
 horizontal_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
 
-class MainTab(QWidget):
+class MainTabUI(QWidget):
     def __init__(self):
         super().__init__()
         self.gridLayout_2 = create_layout(QGridLayout, [0, 0, 0, 0], 0, out_layout=self)
@@ -138,47 +139,49 @@ class MainTab(QWidget):
         self.gridLayout_2.addLayout(self.main_right_layout, 0, 1, 1, 1)
 
         self.main_left_layout = QFrame(self)
-        self.verticalLayout_3 = QVBoxLayout(self.main_left_layout)
-        self.verticalLayout_3.setSizeConstraint(QLayout.SetMaximumSize)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3.setSpacing(0)
-        self.publisher_head_frame = QFrame(self.main_left_layout)
-        self.publisher_head_frame.setStyleSheet(
-            "QFrame {background-color: rgb(35, 35, 35)}"
+
+        self.verticalLayout_3 = create_layout(
+            QVBoxLayout, margins=0, out_layout=self.main_left_layout
         )
-        self.horizontalLayout_5 = QHBoxLayout(self.publisher_head_frame)
-        self.horizontalLayout_5.setContentsMargins(15, 15, 15, 15)
-        self.horizontalLayout_5.setSpacing(20)
-        self.delete_button = QPushButton(self.publisher_head_frame)
-        self.delete_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.delete_button.setMaximumSize(QtCore.QSize(16777215, 25))
+
+        self.publisher_head_frame = create_frame(
+            self.main_left_layout, style='QFrame {background-color: rgb(35, 35, 35)}'
+        )
+
+        self.horizontalLayout_5 = create_layout(
+            QHBoxLayout, 15, 20, out_layout=self.publisher_head_frame
+        )
+
+        self.delete_button = create_button(
+            'Delete',
+            self.publisher_head_frame,
+            min_size=(0, 25),
+            max_size=(100, 25),
+            add_layout=self.horizontalLayout_5,
+        )
         self.delete_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(140, 50, 0);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-radius: 5;\n"
-            "   padding: 5px;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "}"
+            "QPushButton {color: rgb(140, 50, 0); background-color: rgb(35, 35, 35); border: 1px solid "
+            "rgb(50, 50, 50); border-radius: 5; padding: 5px; } QPushButton:hover {border: 1px solid rgb(70, 70, 70)}"
         )
-        self.delete_button.setObjectName("delete_button")
-        self.horizontalLayout_5.addWidget(self.delete_button)
-        self.add_clipboard_button = QPushButton(self.publisher_head_frame)
-        self.add_clipboard_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.add_clipboard_button.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.add_clipboard_button.setStyleSheet(styles.APP_BUTTON)
-        self.add_clipboard_button.setObjectName("add_clipboard_button")
-        self.horizontalLayout_5.addWidget(self.add_clipboard_button)
-        self.qos_layout = QHBoxLayout()
-        self.qos_layout.setSpacing(0)
-        self.qos_layout.setObjectName("qos_layout")
-        self.qos_button = QPushButton(self.publisher_head_frame)
-        self.qos_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.qos_button.setMaximumSize(QtCore.QSize(50, 25))
+
+        self.add_clipboard_button = create_button(
+            'Add to Clipboard',
+            self.publisher_head_frame,
+            min_size=(0, 25),
+            max_size=(150, 25),
+            style=styles.APP_BUTTON,
+            add_layout=self.horizontalLayout_5,
+        )
+
+        self.qos_layout = create_layout(QHBoxLayout)
+
+        self.qos_button = create_button(
+            'Qos',
+            self.publisher_head_frame,
+            min_size=(0, 25),
+            max_size=(50, 25),
+            add_layout=self.qos_layout,
+        )
         self.qos_button.setStyleSheet(
             "QPushButton {\n"
             "   color: rgb(186, 189, 182);\n"
@@ -194,8 +197,6 @@ class MainTab(QWidget):
             "   border-right: 0px; \n"
             "}"
         )
-        self.qos_button.setObjectName("qos_button")
-        self.qos_layout.addWidget(self.qos_button)
         self.qos_picker_button = QPushButton(self.publisher_head_frame)
         self.qos_picker_button.setMinimumSize(QtCore.QSize(25, 25))
         self.qos_picker_button.setMaximumSize(QtCore.QSize(25, 25))
@@ -217,15 +218,19 @@ class MainTab(QWidget):
         self.qos_picker_button.setObjectName("qos_picker_button")
         self.qos_layout.addWidget(self.qos_picker_button)
         self.horizontalLayout_5.addLayout(self.qos_layout)
-        self.publish_button = QPushButton(self.publisher_head_frame)
-        self.publish_button.setMinimumSize(QtCore.QSize(0, 25))
-        self.publish_button.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.publish_button.setStyleSheet(styles.APP_BUTTON)
-        self.horizontalLayout_5.addWidget(self.publish_button)
+
+        self.publish_button = create_button(
+            'Publish',
+            self.publisher_head_frame,
+            min_size=(0, 25),
+            max_size=(150, 25),
+            add_layout=self.horizontalLayout_5,
+        )
+
         self.verticalLayout_3.addWidget(self.publisher_head_frame)
-        self.clipboard_layout = QHBoxLayout()
-        self.clipboard_layout.setContentsMargins(-1, -1, 1, -1)
-        self.clipboard_layout.setSpacing(0)
+
+        self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
+
         self.command_list = QListWidget(self.main_left_layout)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -271,9 +276,95 @@ class MainTab(QWidget):
             ""
         )
         self.comand_field.setFrameShape(QFrame.NoFrame)
-        self.comand_field.setObjectName("comand_field")
         self.clipboard_layout.addWidget(self.comand_field)
         self.clipboard_layout.setStretch(0, 1)
         self.clipboard_layout.setStretch(1, 2)
         self.verticalLayout_3.addLayout(self.clipboard_layout)
+        self.bottom_frame = QWidget(self.main_left_layout)
+        self.bottom_frame.setFixedHeight(0)
+        self.tags_widget = TagsWidget(self.bottom_frame)
+        self.verticalLayout_3.addWidget(self.tags_widget)
         self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
+
+
+class FlowLayout(QLayout):
+    def __init__(self, parent=None, spacing=5):
+        super().__init__(parent)
+        self.item_list = []
+        self._spacing = spacing
+
+    def addItem(self, item):
+        self.item_list.append(item)
+        self.invalidate()
+
+    def itemAt(self, index):
+        if index < 0 or index >= len(self.item_list):
+            return None
+        return self.item_list[index]
+
+    def insertWidget(self, index, widget):
+        self.addWidget(widget)
+        self.item_list.insert(
+            index, self.item_list.pop(-1)
+        )  # Перемещаем в нужное место
+        self.invalidate()
+
+    def removeWidget(self, widget):
+        if widget in [item.widget() for item in self.item_list]:
+            widget.deleteLater()
+            self.item_list = [
+                item for item in self.item_list if item.widget() != widget
+            ]
+            self.invalidate()
+
+    def count(self):
+        return len(self.item_list)
+
+    def sizeHint(self):
+        return self.minimumSize()
+
+    def minimumSize(self):
+        size = QSize(0, 0)
+        for item in self.item_list:
+            size = size.expandedTo(item.sizeHint())
+        return size + QSize(2 * self._spacing, 2 * self._spacing)
+
+    def setGeometry(self, rect):
+        super().setGeometry(rect)
+        x, y, rowHeight = rect.x(), rect.y(), 0
+        for item in self.item_list:
+            next_x = x + item.sizeHint().width() + self._spacing
+            if next_x > rect.right() and rowHeight > 0:
+                x = rect.x()
+                y += rowHeight + self._spacing
+                next_x = x + item.sizeHint().width() + self._spacing
+                rowHeight = 0
+            item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))
+            x = next_x
+            rowHeight = max(rowHeight, item.sizeHint().height())
+
+
+class TagsWidget(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFixedHeight(100)
+        self.setStyleSheet("QFrame {background: rgb(35, 35, 35); border: none;}")
+
+        self.tags_layout = FlowLayout(self, spacing=20)
+        self.setLayout(self.tags_layout)
+
+        self.add_button = create_button("+", self)
+        self.add_button.clicked.connect(self.add_tag)
+
+        self.tags_layout.addWidget(self.add_button)
+
+    def add_tag(self):
+        tag_button = create_button(f"Tag {len(self.tags_layout.item_list)}", self)
+        tag_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        tag_button.setFixedSize(120, 30)
+        tag_button.clicked.connect(lambda: self.remove_tag(tag_button))
+
+        self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_button)
+
+    def remove_tag(self, button):
+        self.tags_layout.removeWidget(button)

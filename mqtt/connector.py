@@ -4,14 +4,14 @@ from settings.profile_manager import ProfileManager
 
 
 class MQTTConnector:
-    def __init__(self, topics):
+    def __init__(self):
         self.profile_manager = ProfileManager()
         self.profile = self.profile_manager.current_profile
         if not self.profile.client_id:
             # TODO: make unnecessary
             raise ValueError('Client ID is not set')
         self.client = Client(self.profile.client_id)
-        self.topics = topics
+        self.topics = []
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -19,7 +19,7 @@ class MQTTConnector:
 
     def setup_mqtt_settings(self):
         # TODO: rename
-        if self.profile.tls_enabled == 'True':
+        if self.profile.ssl_tls == 'True':
             self.client.tls_set(
                 ca_certs=self.profile.ca_file,
                 certfile=self.profile.crt_file,

@@ -8,11 +8,15 @@ PROFILES_PATH = 'settings/profiles.ini'
 
 @dataclass
 class Profile:
-    _name: str
+    _profile_id: str
+    _name: str | None = None
     _host: str | None = None
     _port: str | None = None
     _client_id: str | None = None
-    _tls_enabled: str | None = None
+    _username: str | None = None
+    _password: str | None = None
+    _ssl_tls: bool | None = None
+    _ssl: str | None = None
     _ca_file: str | None = None
     _crt_file: str | None = None
     _key_file: str | None = None
@@ -27,7 +31,7 @@ class Profile:
             raise AttributeError(f"Attribute '{key}' does not exist in the instance.")
 
         if self.is_created:
-            self.settings.set_with_save(self.name, str(key), str(value))
+            self.settings.set_with_save(self.profile_id, str(key), str(value))
 
     def set_settings(self, settings: dict) -> None:
         for key, value in settings.items():
@@ -50,6 +54,10 @@ class Profile:
                 )
 
     def delete(self): ...
+
+    @property
+    def profile_id(self):
+        return self._profile_id
 
     @property
     def name(self):
@@ -85,12 +93,36 @@ class Profile:
         self._set_field('client_id', client_id)
 
     @property
-    def tls_enabled(self):
-        return self._tls_enabled
+    def username(self):
+        return self._username
 
-    @tls_enabled.setter
-    def tls_enabled(self, tls_enabled: bool):
-        self._set_field('tls_enabled', tls_enabled)
+    @username.setter
+    def username(self, username: str):
+        self._set_field('username', username)
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, password: str):
+        self._set_field('password', password)
+
+    @property
+    def ssl(self):
+        return self._ssl
+
+    @ssl.setter
+    def ssl(self, ssl: bool):
+        self._set_field('ssl', ssl)
+
+    @property
+    def ssl_tls(self):
+        return self._ssl
+
+    @ssl_tls.setter
+    def ssl_tls(self, ssl_tls: bool):
+        self._set_field('ssl_tls', ssl_tls)
 
     @property
     def ca_file(self):

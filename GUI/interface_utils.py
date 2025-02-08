@@ -82,13 +82,19 @@ def create_frame(main_layout, style: str = styles.FRAME_PART, add_layout=None):
     return frame
 
 
-def create_layout(layout_type, margins: list, spacing: int, out_layout=None):
+def create_layout(
+    layout_type, margins: list | int | None = None, spacing: int = 0, out_layout=None
+):
     if out_layout is not None:
         layout = layout_type(out_layout)
     else:
         layout = layout_type()
 
-    layout.setContentsMargins(*margins)
+    if isinstance(margins, int):
+        margins = [margins for _ in range(4)]
+
+    if margins is not None:
+        layout.setContentsMargins(*margins)
     layout.setSpacing(spacing)
     return layout
 
@@ -97,21 +103,31 @@ def create_button(
     text,
     layout,
     style=styles.APP_BUTTON,
-    font=None,
     min_size=None,
     max_size=None,
     add_layout=None,
+    add_params=None,
+    font=None,
 ):  # TODO: font
     button = QPushButton(layout)
     button.setText(text)
     button.setStyleSheet(style)
     if min_size:
-        button.setMinimumSize(QtCore.QSize(*min_size))
+        if isinstance(min_size, int):
+            button.setMinimumSize(QtCore.QSize(min_size, min_size))
+        else:
+            button.setMinimumSize(QtCore.QSize(*min_size))
     if max_size:
-        button.setMaximumSize(QtCore.QSize(*max_size))
+        if isinstance(max_size, int):
+            button.setMaximumSize(QtCore.QSize(max_size, max_size))
+        else:
+            button.setMaximumSize(QtCore.QSize(*max_size))
 
     if add_layout is not None:
-        add_layout.addWidget(button)
+        if add_params is not None:
+            add_layout.addWidget(button, *add_params)
+        else:
+            add_layout.addWidget(button)
 
     return button
 

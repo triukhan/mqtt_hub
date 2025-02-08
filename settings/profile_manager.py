@@ -10,16 +10,29 @@ class ProfileManager:
         self.current_profile: Profile = self.get_current_profile()
 
     def __profiles_from_ini(self):
-        for profile_name in self._profiles_ini.sections():
-            if profile_name != 'current_profile':
+        for profile_id in self._profiles_ini.sections():
+            if profile_id != 'current_profile':
                 attributes_dict = {
                     '_' + key: value
-                    for key, value in self._profiles_ini.items(profile_name)
+                    for key, value in self._profiles_ini.items(profile_id)
                 }
-                self._profiles[profile_name] = Profile(**attributes_dict)
+                self._profiles[profile_id] = Profile(
+                    profile_id, **attributes_dict, is_created=True
+                )
+
+    def _generate_profile_id(self):
+        existing_numbers = [
+            int(name.split("_")[1])
+            for name in self._profiles.keys()
+            if name.startswith("profile_") and name.split("_")[1].isdigit()
+        ]
+        next_number = max(existing_numbers, default=0) + 1
+        return f"profile_{next_number:02d}"
 
     def create_profile(self, profile_name, **kwargs):
-        profile = Profile(profile_name)
+        profile_id = self._generate_profile_id()
+        profile = Profile(profile_id)
+        profile.name = profile_name
         profile.create()
         profile.set_settings(kwargs)
         self.switch_profile(profile.name)

@@ -27,7 +27,7 @@ LABEL_ALIGNMENT = (
 )
 
 
-class PlusTab(QWidget):
+class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
         self.plus_layout = QGridLayout(self)

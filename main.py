@@ -3,21 +3,22 @@ import sys
 from PyQt5 import QtWidgets
 
 from GUI.main_window import MqttHubUi
+from mqtt.connector import MQTTConnector
+
+topics = [
+    'cmd/smartis/ajax/hub/00186A94',
+    'cmd/smartis/ajax/hub/00186A94/res',
+    'dt/smartis/ajax/hub/00186A94',
+]
 
 
-class MqttHub(QtWidgets.QMainWindow):
+class MqttHub(QtWidgets.QMainWindow, MqttHubUi):
     def __init__(self):
         super().__init__()
-        self.ui = MqttHubUi()
-        self.ui.setup_ui(self)
-        self.ui.settings_button.clicked.connect(
-            lambda: self.ui.all_tabs.setCurrentIndex(2)
-        )
-        self.ui.info_button.clicked.connect(lambda: self.ui.all_tabs.setCurrentIndex(1))
-        self.ui.main_button.clicked.connect(lambda: self.ui.all_tabs.setCurrentIndex(0))
-        self.ui.plus_button.clicked.connect(lambda: self.ui.all_tabs.setCurrentIndex(3))
-        self.ui.all_tabs.tabBar().hide()
-        self.ui.all_tabs.setStyleSheet("QTabWidget::pane { border: 0; }")
+        self.connector = MQTTConnector()
+        self.setup_ui()
+        self.save_button.clicked.connect(self.edit_tab.save_settings)
+        self.connect_button.clicked.connect(self.connector.start)
 
 
 if __name__ == "__main__":
