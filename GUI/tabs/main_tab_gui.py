@@ -250,18 +250,19 @@ class MainTabUI(QWidget):
         item = QListWidgetItem()
         self.command_list.addItem(item)
         self.clipboard_layout.addWidget(self.command_list)
-        self.comand_field = QTextEdit(self.main_left_layout)
-        self.comand_field.setStyleSheet(
+        self.command_field = QTextEdit(self.main_left_layout)
+        self.command_field.setStyleSheet(
             'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
         )
-        self.comand_field.setFrameShape(QFrame.NoFrame)
-        self.clipboard_layout.addWidget(self.comand_field)
+        self.command_field.setFrameShape(QFrame.NoFrame)
+        self.clipboard_layout.addWidget(self.command_field)
         self.clipboard_layout.setStretch(0, 1)
         self.clipboard_layout.setStretch(1, 2)
         self.verticalLayout_3.addLayout(self.clipboard_layout)
         self.bottom_frame = QWidget(self.main_left_layout)
         self.bottom_frame.setFixedHeight(0)
         self.tags_widget = TagsWidget(self.bottom_frame)
+        self.add_button = self.tags_widget.add_button
         self.verticalLayout_3.addWidget(self.tags_widget)
         self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
 
@@ -320,25 +321,37 @@ class FlowLayout(QLayout):
             x = next_x
             rowHeight = max(rowHeight, item.sizeHint().height())
 
+        if self.item_list:
+            last_item = self.item_list[-1]
+            if (
+                isinstance(last_item.widget(), QPushButton)
+                and last_item.widget().text() == '+'
+            ):
+                last_item.setGeometry(
+                    QRect(QPoint(x - 55, y - 5), last_item.sizeHint())
+                )
+
 
 class TagsWidget(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFixedHeight(100)
         self.setStyleSheet("QFrame {background: rgb(35, 35, 35); border: none;}")
+        self.setContentsMargins(15, 15, 15, 15)
 
         self.tags_layout = FlowLayout(self, spacing=20)
         self.setLayout(self.tags_layout)
 
-        self.add_button = create_button("+", self)
-        self.add_button.clicked.connect(self.add_tag)
-
+        self.add_button = create_button('+', self, min_size=30, max_size=30)
         self.tags_layout.addWidget(self.add_button)
 
-    def add_tag(self):
-        tag_button = create_button(f"Tag {len(self.tags_layout.item_list)}", self)
+    def add_tag(self, tag_text: str = ''):
+        tag_button = create_button(
+            tag_text or f"Tag {len(self.tags_layout.item_list)}",
+            self,
+            max_size=(112, 30),
+        )
         tag_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        tag_button.setFixedSize(120, 30)
         tag_button.clicked.connect(lambda: self.remove_tag(tag_button))
 
         self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_button)

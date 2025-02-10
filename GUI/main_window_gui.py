@@ -3,6 +3,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QWidget
 
+from connections.main_tab_connections import MainTab
 from connections.plus_tab import EditTab, PlusTab
 from GUI import styles
 from GUI.interface_utils import (
@@ -13,9 +14,8 @@ from GUI.interface_utils import (
     horizontal_spacer,
     vertical_spacer,
 )
-from GUI.tabs.info_tab import InfoTab
-from GUI.tabs.main_tab import MainTabUI
-from GUI.tabs.settings_tab import SettingsTabUi
+from GUI.tabs.info_tab_gui import InfoTab
+from GUI.tabs.settings_tab_gui import SettingsTabUi
 
 
 class MqttHubUi(QWidget):
@@ -24,6 +24,7 @@ class MqttHubUi(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setGeometry(100, 50, 1066, 904)
         self.drag_pos = None
+        self.main_tab = MainTab()
 
         self.sidebar_layout = QtWidgets.QVBoxLayout()
 
@@ -62,7 +63,7 @@ class MqttHubUi(QWidget):
         self.all_tabs.setTabsClosable(False)
         self.all_tabs.setMovable(False)
         self.all_tabs.setTabBarAutoHide(False)
-        self.all_tabs.addTab(MainTabUI(), '')
+        self.all_tabs.addTab(self.main_tab, '')
         self.all_tabs.addTab(PlusTab(), '')
         self.edit_tab = EditTab()
         self.all_tabs.addTab(self.edit_tab, '')

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 
-from GUI.tabs.plus_tab import PlusTabUI
+from GUI.tabs.plus_tab_gui import PlusTabUI
 from settings.profile_manager import ProfileManager
 
 

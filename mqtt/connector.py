@@ -44,7 +44,8 @@ class MQTTConnector:
     def on_message(_, __, msg):
         print(f"Received message: {msg.payload.decode()} from topic: {msg.topic}")
 
-    def start(self):
+    def start(self, topics: list | None = None):
+        self.topics = topics
         self.setup_mqtt_settings()
         self.client.connect(self.profile.host, int(self.profile.port), keepalive=60)
         self.client.loop_start()

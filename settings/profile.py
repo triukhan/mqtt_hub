@@ -22,16 +22,20 @@ class Profile:
     _key_file: str | None = None
     settings: Settings = Settings(PROFILES_PATH)
     is_created: bool = False
+    _topics: str | None = ''
 
-    def _set_field(self, key, value):
+    def _set_field(self, key: str, value, only_ini: bool = False):
         """Setting field in instance and in profiles.ini"""
-        if hasattr(self, '_' + key):
-            setattr(self, '_' + key, value)
-        else:
-            raise AttributeError(f"Attribute '{key}' does not exist in the instance.")
+        if not only_ini:
+            if hasattr(self, '_' + key):
+                setattr(self, '_' + key, value)
+            else:
+                raise AttributeError(
+                    f"Attribute '{key}' does not exist in the instance."
+                )
 
         if self.is_created:
-            self.settings.set_with_save(self.profile_id, str(key), str(value))
+            self.settings.set_with_save(self.profile_id, key, value)
 
     def set_settings(self, settings: dict) -> None:
         for key, value in settings.items():
@@ -147,3 +151,11 @@ class Profile:
     @key_file.setter
     def key_file(self, path: str):
         self._set_field('key_file', path)
+
+    @property
+    def topics(self):
+        return self._topics.split(', ')
+
+    def add_topic(self, topic: str):
+        self._topics += topic + ', '
+        self._set_field('topics', self._topics, only_ini=True)
