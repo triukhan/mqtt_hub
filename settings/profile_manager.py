@@ -63,3 +63,6 @@ class ProfileManager:
     @property
     def profiles(self):
         return self._profiles
+
+
+profile_manager = ProfileManager()

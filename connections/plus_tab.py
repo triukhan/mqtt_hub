@@ -1,22 +1,20 @@
 from PyQt5.QtWidgets import QMessageBox
 
 from GUI.tabs.plus_tab_gui import PlusTabUI
-from settings.profile_manager import ProfileManager
+from settings.profile_manager import profile_manager
 
 
 class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
-        self.profile_manager = ProfileManager()
-        self.current_profile = self.profile_manager.current_profile
+        self.current_profile = profile_manager.current_profile
 
 
 class EditTab(PlusTabUI):
     def __init__(self):
         super().__init__()
         self.setup_connections()
-        self.profile_manager = ProfileManager()
-        self.current_profile = self.profile_manager.current_profile
+        self.current_profile = profile_manager.current_profile
         self.load_current_profile_settings()
 
     def setup_connections(self):

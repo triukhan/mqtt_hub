@@ -48,6 +48,24 @@ EXIT_BUTTON = (
     'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;}'
     'QPushButton:hover {border-image: url(GUI/icons/info-icon.png) 0 0 0 0 stretch stretch;}'
 )
+SCROLLBAR = """
+    QScrollBar:vertical {background-color: rgb(34, 34, 34); border-right: 1px solid rgb(50, 50, 50);
+    border-bottom: 1px solid rgb(50, 50, 50); width: 10px;  margin: 0}
+
+    QScrollBar::handle:vertical {background-color: rgb(40, 40, 40); border: 1px solid rgb(58, 58, 58);
+    min-height: 5px; border-radius: 4px}
+
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none; border: none}
+    """
+
+RECEIVER_LIST = """
+    QListView {background-color: rgb(35, 35, 35); border-top: 1px solid rgb(50, 50, 50)}
+
+    QListView::item {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); selection-color:rgb(255, 255, 255);
+    min-height: 30px}
+
+    QListView::item:selected {background-color: rgb(40, 40, 40); border-color: rgb(114, 159, 207)}
+    """
 
 
 def sidebar_button(icon_path):

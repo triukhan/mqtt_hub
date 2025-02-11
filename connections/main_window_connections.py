@@ -1,17 +1,17 @@
 from GUI.main_window_gui import MqttHubUi
-from settings.profile_manager import ProfileManager
+from settings.profile_manager import profile_manager
 
 
 class MainWindow(MqttHubUi):
     def __init__(self):
         super().__init__()
+        self.setup_ui()
 
-        self.profile_manager = ProfileManager()
-        self.current_profile = self.profile_manager.current_profile
+        self.current_profile = profile_manager.current_profile
+        self.profile_button.setText(self.current_profile.name)
 
         self.main_tab.add_button.clicked.connect(self.create_topic)
 
-        self.setup_ui()
         self.connect_sidebar()
         self.setup_topics()
 

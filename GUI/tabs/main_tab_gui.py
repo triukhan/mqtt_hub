@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
+    QScrollBar,
     QSizePolicy,
     QTextEdit,
     QVBoxLayout,
@@ -41,14 +42,15 @@ class MainTabUI(QWidget):
         )
         self.clear_layout.addItem(horizontal_spacer)
         self.clear_button = create_button(
-            'clear', self.clear_frame, add_layout=self.clear_layout
+            'clear', self.clear_frame, max_size=(50, 21), add_layout=self.clear_layout
         )
 
-        self.receiver_list = create_list(self, add_layout=self.main_right_layout)
-        item = QListWidgetItem()
-        self.receiver_list.addItem(item)
-        item = QListWidgetItem()
-        self.receiver_list.addItem(item)
+        self.receiver_list = create_list(
+            self, styles.RECEIVER_LIST, self.main_right_layout
+        )
+        scroll_bar = QScrollBar(self)
+        scroll_bar.setStyleSheet(styles.SCROLLBAR)
+        self.receiver_list.setVerticalScrollBar(scroll_bar)
 
         self.filter_frame = create_frame(
             self,
@@ -134,7 +136,7 @@ class MainTabUI(QWidget):
         )
 
         self.receiver_text_edit = QTextEdit(self)
-        self.receiver_text_edit.setStyleSheet(styles.FILTER_BUTTON_1)
+        self.receiver_text_edit.setStyleSheet('QTextEdit {color: rgb(186, 189, 182);}')
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         self.main_right_layout.addWidget(self.receiver_text_edit)
 
@@ -342,13 +344,22 @@ class TagsWidget(QFrame):
         self.tags_layout = FlowLayout(self, spacing=20)
         self.setLayout(self.tags_layout)
 
-        self.add_button = create_button('+', self, min_size=30, max_size=30)
+        add_button = (
+            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; padding: 5px}'
+            'QPushButton:hover {background-color: rgb(45, 45, 45)}'
+        )
+        self.add_button = create_button('+', self, add_button, min_size=30, max_size=30)
         self.tags_layout.addWidget(self.add_button)
 
     def add_tag(self, tag_text: str = ''):
+        tag_button_style = (
+            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px}'
+            'QPushButton:hover {border: 2px solid rgb(70, 70, 70);}'
+        )
         tag_button = create_button(
             tag_text or f"Tag {len(self.tags_layout.item_list)}",
             self,
+            tag_button_style,
             max_size=(112, 30),
         )
         tag_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)

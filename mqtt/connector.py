@@ -1,12 +1,14 @@
-from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, ssl
+from datetime import datetime
 
-from settings.profile_manager import ProfileManager
+from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, ssl
+from PyQt5.QtCore import QObject, pyqtSignal
+
+from settings.profile_manager import profile_manager
 
 
 class MQTTConnector:
     def __init__(self):
-        self.profile_manager = ProfileManager()
-        self.profile = self.profile_manager.current_profile
+        self.profile = profile_manager.current_profile
         if not self.profile.client_id:
             # TODO: make unnecessary
             raise ValueError('Client ID is not set')
@@ -40,10 +42,6 @@ class MQTTConnector:
     def on_disconnect(_, __, rc):
         print(f"Client disconnected. Return code: {rc}")
 
-    @staticmethod
-    def on_message(_, __, msg):
-        print(f"Received message: {msg.payload.decode()} from topic: {msg.topic}")
-
     def start(self, topics: list | None = None):
         self.topics = topics
         self.setup_mqtt_settings()
@@ -62,3 +60,17 @@ class MQTTConnector:
             print(f"Message sent to {topic}: {message}")
         else:
             print("Failed to send message.")
+
+
+class MQTTMixin(QObject, MQTTConnector):
+    message_received = pyqtSignal(str, str)
+
+    def __init__(self):
+        super().__init__()
+
+    def on_message(self, client, userdata, msg):
+        received_payload = msg.payload.decode()
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        formatted_message = f"{timestamp}\n\n{received_payload}"
+        self.message_received.emit(msg.topic, formatted_message)
+        print(formatted_message)
