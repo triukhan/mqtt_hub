@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QRect, QSize
+from PyQt5.QtCore import QPoint, QRect, QSize, Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
@@ -62,32 +63,18 @@ class MainTabUI(QWidget):
             QHBoxLayout, [12, 5, 0, 5], 0, out_layout=self.filter_frame
         )
 
-        style = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border:'
-            '1px solid rgb(50, 50, 50); border-right: 0px; border-top-left-radius: 5; border-bottom-left-radius: 5;'
-            'padding: 5px} QPushButton:hover {border: 1px solid rgb(70, 70, 70); border-right: 0px}'
-        )
         self.convertor_button = create_button(
-            'MsgPack',
+            'JSON',
             self.filter_frame,
-            min_size=(70, 25),
-            max_size=(70, 25),
-            style=style,
+            min_size=(100, 25),
+            max_size=(100, 25),
+            style=styles.PICKER_BUTTON,
             add_layout=self.message_formating,
         )
-        style = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid '
-            'rgb(50, 50, 50); border-left: 0px; border-top-right-radius: 5; border-bottom-right-radius: 5;'
-            'padding: 5px} QPushButton:hover {border: 1px solid rgb(70, 70, 70); border-left: 0px}'
-        )
-        self.convertor_picker_button = create_button(
-            '',
-            self.filter_frame,
-            min_size=(25, 25),
-            max_size=(25, 25),
-            style=style,
-            add_layout=self.message_formating,
-        )
+
+        self.convertor_button.setIcon(QIcon('GUI/icons/expand-profile-icon.png'))
+        self.convertor_button.setIconSize(QSize(24, 24))
+        self.convertor_button.setLayoutDirection(Qt.RightToLeft)
 
         self.message_formating.addItem(horizontal_spacer)
 
@@ -177,51 +164,19 @@ class MainTabUI(QWidget):
             add_layout=self.horizontalLayout_5,
         )
 
-        self.qos_layout = create_layout(QHBoxLayout)
-
         self.qos_button = create_button(
-            'Qos',
+            'Qos 0',
             self.publisher_head_frame,
+            styles.PICKER_BUTTON,
             min_size=(0, 25),
-            max_size=(50, 25),
-            add_layout=self.qos_layout,
+            max_size=(80, 25),
+            add_layout=self.horizontalLayout_5,
         )
-        self.qos_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-right: 0px; \n"
-            "   border-top-left-radius: 5;\n"
-            "   border-bottom-left-radius: 5;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70); \n"
-            "   border-right: 0px; \n"
-            "}"
-        )
-        self.qos_picker_button = QPushButton(self.publisher_head_frame)
-        self.qos_picker_button.setMinimumSize(QtCore.QSize(25, 25))
-        self.qos_picker_button.setMaximumSize(QtCore.QSize(25, 25))
-        self.qos_picker_button.setStyleSheet(
-            "QPushButton {\n"
-            "   color: rgb(186, 189, 182);\n"
-            "   background-color: rgb(35, 35, 35);\n"
-            "   border: 1px solid rgb(50, 50, 50); \n"
-            "   border-left: 0px; \n"
-            "   border-top-right-radius: 5;\n"
-            "   border-bottom-right-radius: 5;\n"
-            "}\n"
-            "\n"
-            "QPushButton:hover {\n"
-            "   border: 1px solid rgb(70, 70, 70);\n"
-            "   border-left: 0px;  \n"
-            "}"
-        )
-        self.qos_picker_button.setObjectName("qos_picker_button")
-        self.qos_layout.addWidget(self.qos_picker_button)
-        self.horizontalLayout_5.addLayout(self.qos_layout)
+        self.qos_button.setIcon(QIcon('GUI/icons/expand-profile-icon.png'))
+        self.qos_button.setIconSize(QSize(24, 24))
+        self.qos_button.setLayoutDirection(Qt.RightToLeft)
+
+        self.horizontalLayout_5.addWidget(self.qos_button)
 
         self.publish_button = create_button(
             'Publish',
@@ -327,7 +282,7 @@ class FlowLayout(QLayout):
             last_item = self.item_list[-1]
             if (
                 isinstance(last_item.widget(), QPushButton)
-                and last_item.widget().text() == '+'
+                and last_item.widget().text() == ''
             ):
                 last_item.setGeometry(
                     QRect(QPoint(x - 55, y - 5), last_item.sizeHint())
@@ -345,16 +300,17 @@ class TagsWidget(QFrame):
         self.setLayout(self.tags_layout)
 
         add_button = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; padding: 5px}'
+            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
+            'padding: 5px; border-image: url(GUI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
             'QPushButton:hover {background-color: rgb(45, 45, 45)}'
         )
-        self.add_button = create_button('+', self, add_button, min_size=30, max_size=30)
+        self.add_button = create_button('', self, add_button, min_size=30, max_size=30)
         self.tags_layout.addWidget(self.add_button)
 
     def add_tag(self, tag_text: str = ''):
         tag_button_style = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px}'
-            'QPushButton:hover {border: 2px solid rgb(70, 70, 70);}'
+            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px}'
+            'QPushButton:hover {border: 1px solid rgb(70, 70, 70);}'
         )
         tag_button = create_button(
             tag_text or f"Tag {len(self.tags_layout.item_list)}",
