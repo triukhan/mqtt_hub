@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLayout,
     QListWidget,
-    QListWidgetItem,
     QPushButton,
     QScrollBar,
     QSizePolicy,
@@ -189,24 +188,24 @@ class MainTabUI(QWidget):
         self.verticalLayout_3.addWidget(self.publisher_head_frame)
         self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
 
-        self.command_list = QListWidget(self.main_left_layout)
+        self.clipboard_list = QListWidget(self.main_left_layout)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.command_list.sizePolicy().hasHeightForWidth())
-        self.command_list.setSizePolicy(sizePolicy)
-        self.command_list.setMinimumSize(QtCore.QSize(220, 0))
-        self.command_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.command_list.setStyleSheet(
+        sizePolicy.setHeightForWidth(
+            self.clipboard_list.sizePolicy().hasHeightForWidth()
+        )
+        self.clipboard_list.setSizePolicy(sizePolicy)
+        self.clipboard_list.setMinimumSize(QtCore.QSize(220, 0))
+        self.clipboard_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.clipboard_list.setStyleSheet(
             'QListView {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50);'
             'background-color: rgb(35, 35, 35);} QListView::item {color: rgb(186, 189, 182); background-color: '
             'rgb(45, 45, 45);} QListView::item:selected {background-color: rgb(40, 40, 40); color: #FFF;'
             'border-color: rgb(114, 159, 207);}'
         )
-        self.command_list.setFrameShape(QFrame.NoFrame)
-        item = QListWidgetItem()
-        self.command_list.addItem(item)
-        self.clipboard_layout.addWidget(self.command_list)
+        self.clipboard_list.setFrameShape(QFrame.NoFrame)
+        self.clipboard_layout.addWidget(self.clipboard_list)
         self.command_field = QTextEdit(self.main_left_layout)
         self.command_field.setStyleSheet(
             'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'

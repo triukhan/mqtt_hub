@@ -71,6 +71,15 @@ RECEIVER_LIST = """
     QListView::item:selected {background-color: rgb(40, 40, 40); border-color: rgb(114, 159, 207)}
     """
 
+CLIPBOARD_LIST = """
+    QListView {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50);
+    background-color: rgb(35, 35, 35);}
+
+    QListView::item {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); min-height: 30px}
+
+    QListView::item:selected {background-color: rgb(40, 40, 40); border-color: rgb(114, 159, 207);}
+    """
+
 
 def sidebar_button(icon_path):
     return (
