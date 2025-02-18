@@ -7,7 +7,15 @@ from settings.profile_manager import profile_manager
 class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
-        self.current_profile = profile_manager.current_profile
+
+    def save_settings(self, profile):
+        profile.name = self.name_field.text()
+        profile.host = self.host_field.text()
+        profile.port = self.port_field.text()
+        profile.client_id = self.client_id_field.text()
+        profile.username = self.username_field.text()
+        profile.password = self.password_field.text()
+        profile.ssl = str(self.ssl_checkbox.isChecked())
 
 
 class EditTab(PlusTabUI):

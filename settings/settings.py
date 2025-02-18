@@ -48,14 +48,3 @@ class Settings:
             raise ValueError(f'Section "{section}" does not exist')
         self.config.set(section, key, str(value))
         self.save_settings()
-
-    def create_ini(self, name, path, params: dict | None = None):
-        if params:
-            for section in params:
-                self.config[section] = params[section]
-
-        with open(f'{path}/{name}.ini', 'w') as configfile:
-            self.config.write(configfile)
-        self.save_settings()
-
-        return name

@@ -20,5 +20,6 @@ class ClipboardDialog(QDialog, ClipboardDialogUI):
 
     def add_clipboard(self):
         name = self.name_field.text()
-        self.save_method(name)
+        text = self.text_field.toPlainText()
+        self.save_method(name, text)
         self.close()

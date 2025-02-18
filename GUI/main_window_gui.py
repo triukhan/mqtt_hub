@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QHBoxLayout, QWidget
 
 from connections.main_tab_connections import MainTab
-from connections.plus_tab import EditTab, PlusTab
+from connections.plus_tab_connections import EditTab, PlusTab
 from GUI import styles
 from GUI.interface_utils import (
     create_button,
@@ -16,6 +16,7 @@ from GUI.interface_utils import (
 )
 from GUI.tabs.info_tab_gui import InfoTab
 from GUI.tabs.settings_tab_gui import SettingsTabUi
+from settings.profile_manager import profile_manager
 
 
 class MqttHubUi(QWidget):
@@ -64,7 +65,8 @@ class MqttHubUi(QWidget):
         self.all_tabs.setMovable(False)
         self.all_tabs.setTabBarAutoHide(False)
         self.all_tabs.addTab(self.main_tab, '')
-        self.all_tabs.addTab(PlusTab(), '')
+        self.plus_tab = PlusTab()
+        self.all_tabs.addTab(self.plus_tab, '')
         self.edit_tab = EditTab()
         self.all_tabs.addTab(self.edit_tab, '')
 
@@ -226,10 +228,11 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
-        self.save_button.clicked.connect(self.edit_tab.save_settings)
         self.edit_button.clicked.connect(self.open_edit_tab)
 
     def setup_plus_header(self):
+        self.header_layout = QtWidgets.QGridLayout()
+
         self.header_layout.addItem(horizontal_spacer, 0, 0, 1, 1)
         self.header_frame = create_frame(
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
@@ -268,6 +271,12 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
+
+        self.save_button.clicked.connect(self.create_new_profile)
+
+    def create_new_profile(self):
+        profile = profile_manager.create_new_profile()
+        self.plus_tab.save_settings(profile)
 
     def setup_edit_header(self):
         self.header_layout.addItem(horizontal_spacer, 0, 0, 1, 1)
@@ -310,3 +319,5 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
+
+        self.save_button.clicked.connect(self.edit_tab.save_settings)

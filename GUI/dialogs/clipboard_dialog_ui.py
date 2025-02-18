@@ -101,6 +101,7 @@ class ClipboardDialogUI(object):
         self.text_layout.addWidget(self.text_label)
 
         self.text_field = QTextEdit(self.edit_subscr_frame)
+        self.text_field.setMinimumHeight(250)
         self.text_layout.addWidget(self.text_field)
 
         self.body_edit_subscr_layout.addLayout(self.text_layout)

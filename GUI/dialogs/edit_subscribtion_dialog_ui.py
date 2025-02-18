@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 
 
 class EditSubscribeDialogUI(object):
-    def setupUi(self, edit_subscr_dialog):
+    def setup_ui(self, edit_subscr_dialog):
         edit_subscr_dialog.resize(522, 530)
         edit_subscr_dialog.setStyleSheet(
             "QWidget {\n"

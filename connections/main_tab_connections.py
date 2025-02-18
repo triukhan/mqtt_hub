@@ -2,13 +2,21 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidgetItem
 
 from connections.clipboard_dialog_connections import ClipboardDialog
-from GUI.tabs.main_tab_gui import MainTabUI
+from connections.edit_subscription_dialog_connections import EditSubscribeDialog
+from GUI.tabs.main_tab_gui import MainTabUI, TagsWidget
 from settings.profile_manager import profile_manager
 
 
 class MainTab(MainTabUI):
     def __init__(self):
         super().__init__()
+
+        self.tags_widget = TagsWidget(
+            self.bottom_frame, self.show_edit_subscription_dialog
+        )
+        self.add_button = self.tags_widget.add_button
+        self.verticalLayout_3.addWidget(self.tags_widget)
+
         self.receiver_list.itemClicked.connect(self.display_message_from_receiver_list)
         self.add_clipboard_button.clicked.connect(self.show_clipboard_dialog)
         self.set_clipboard_messages()
@@ -36,8 +44,7 @@ class MainTab(MainTabUI):
         command = item.data(Qt.UserRole)
         self.command_field.setPlainText(command)
 
-    def save_message_to_clipboard(self, message_name: str):
-        message_text = self.command_field.toPlainText()
+    def save_message_to_clipboard(self, message_name: str, message_text: str):
         profile_manager.add_clipboard_message(message_name, message_text)
         item = QListWidgetItem()
         item.setText(message_name)
@@ -46,3 +53,8 @@ class MainTab(MainTabUI):
 
     def show_clipboard_dialog(self):
         ClipboardDialog(self.save_message_to_clipboard, self).exec_()
+
+    # def load_subscription_settings_by_name(self):
+
+    def show_edit_subscription_dialog(self, tag):
+        EditSubscribeDialog('', self).exec_()

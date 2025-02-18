@@ -2,6 +2,7 @@ from settings.profile import PROFILES_PATH, Profile
 from settings.settings import Settings
 
 CLIPBOARD_PATH = 'settings/clipboard.ini'
+PROFILESS_PATH = 'settings/profiles/'
 
 
 class ProfileManager:
@@ -33,6 +34,7 @@ class ProfileManager:
         return f"profile_{next_number:02d}"
 
     def create_profile(self, profile_name, **kwargs):
+        self.create_ini(profile_name, PROFILESS_PATH)
         profile_id = self._generate_profile_id()
         self._clipboard_ini.add_section_with_save(profile_id)
         profile = Profile(profile_id)
@@ -75,6 +77,16 @@ class ProfileManager:
 
     def get_clipboard_messages(self):
         return self._clipboard_ini.get_section(self.current_profile.name)
+
+    def create_ini(self, name, path, params: dict | None = None):
+        if params:
+            for section in params:
+                self.config[section] = params[section]
+
+        with open(f'{path}/{name}.ini', 'w') as configfile:
+            self.config.write(configfile)
+
+        return name
 
 
 profile_manager = ProfileManager()

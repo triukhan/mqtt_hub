@@ -5,12 +5,14 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QHBoxLayout,
+    QLabel,
     QLayout,
     QListWidget,
     QPushButton,
     QScrollBar,
     QSizePolicy,
     QTextEdit,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -217,9 +219,6 @@ class MainTabUI(QWidget):
         self.verticalLayout_3.addLayout(self.clipboard_layout)
         self.bottom_frame = QWidget(self.main_left_layout)
         self.bottom_frame.setFixedHeight(0)
-        self.tags_widget = TagsWidget(self.bottom_frame)
-        self.add_button = self.tags_widget.add_button
-        self.verticalLayout_3.addWidget(self.tags_widget)
         self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
 
 
@@ -283,44 +282,58 @@ class FlowLayout(QLayout):
                 isinstance(last_item.widget(), QPushButton)
                 and last_item.widget().text() == ''
             ):
-                last_item.setGeometry(
-                    QRect(QPoint(x - 55, y - 5), last_item.sizeHint())
-                )
+                last_item.setGeometry(QRect(QPoint(x - 40, y), last_item.sizeHint()))
 
 
 class TagsWidget(QFrame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, edit_method=None):
         super().__init__(parent)
+        self.edit_method = edit_method
         self.setFixedHeight(100)
         self.setStyleSheet("QFrame {background: rgb(35, 35, 35); border: none;}")
-        self.setContentsMargins(15, 15, 15, 15)
+        self.setContentsMargins(10, 10, 0, 0)
 
-        self.tags_layout = FlowLayout(self, spacing=20)
+        self.tags_layout = FlowLayout(self, spacing=10)
         self.setLayout(self.tags_layout)
 
-        add_button = (
+        add_button_style = (
             'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
-            'padding: 5px; border-image: url(GUI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
+            'border-image: url(GUI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
             'QPushButton:hover {background-color: rgb(45, 45, 45)}'
         )
-        self.add_button = create_button('', self, add_button, min_size=30, max_size=30)
+        self.add_button = create_button(
+            '', self, add_button_style, min_size=30, max_size=30
+        )
         self.tags_layout.addWidget(self.add_button)
 
     def add_tag(self, tag_text: str = ''):
-        tag_button_style = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px}'
-            'QPushButton:hover {border: 1px solid rgb(70, 70, 70);}'
+        tag_frame = QFrame(self)
+        tag_frame.setStyleSheet(
+            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px;} QFrame:hover {border: 1px solid rgb(70, 70, 70);}"
         )
-        tag_button = create_button(
-            tag_text or f"Tag {len(self.tags_layout.item_list)}",
-            self,
-            tag_button_style,
-            max_size=(112, 30),
+        tag_frame.setFixedSize(115, 30)
+        tag_layout = QHBoxLayout(tag_frame)
+        tag_layout.setContentsMargins(0, 0, 0, 0)
+        tag_layout.setSpacing(0)
+
+        tag_label = QLabel(tag_text or f"Tag {self.tags_layout.count() - 1}", tag_frame)
+        tag_label.setFixedWidth(90)
+        tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none;}")
+        tag_label.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )
-        tag_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        tag_button.clicked.connect(lambda: self.remove_tag(tag_button))
 
-        self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_button)
+        icon_button = QToolButton(tag_frame)
+        icon_button.setIcon(QIcon("GUI/icons/edit-icon.png"))
+        icon_button.setIconSize(QSize(32, 32))
+        icon_button.setFixedSize(18, 18)
+        icon_button.setStyleSheet(
+            "QToolButton {background-color: rgb(45, 45, 45); border: none; border-radius: 5} QToolButton:hover {background-color: rgb(60, 60, 60);}"
+        )
+        icon_button.clicked.connect(lambda: self.edit_method(tag_text))
 
-    def remove_tag(self, button):
-        self.tags_layout.removeWidget(button)
+        tag_layout.addWidget(tag_label)
+        tag_layout.addWidget(icon_button)
+        tag_frame.setLayout(tag_layout)
+
+        self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_frame)
