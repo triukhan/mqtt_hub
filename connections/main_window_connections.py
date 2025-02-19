@@ -10,10 +10,16 @@ class MainWindow(MqttHubUi):
         self.current_profile = profile_manager.current_profile
         self.profile_button.setText(self.current_profile.name)
 
+        self.save_plus_button.clicked.connect(self.create_new_profile)
+
         self.main_tab.add_button.clicked.connect(self.create_topic)
 
         self.connect_sidebar()
         self.setup_topics()
+
+    def create_new_profile(self):
+        settings = self.plus_tab.save_settings()
+        profile_manager.create_profile(**settings)
 
     def open_main_tab(self):
         self.all_tabs.setCurrentIndex(0)

@@ -1,9 +1,10 @@
+from collections import defaultdict
 from dataclasses import dataclass
 
 from settings.settings import Settings
 
 DEFAULT_NAME = 'default_mqtt_user'
-PROFILES_PATH = 'settings/profiles.ini'
+PROFILES_PATH = 'settings/profiles/'
 
 
 @dataclass
@@ -20,12 +21,17 @@ class Profile:
     _ca_file: str | None = None
     _crt_file: str | None = None
     _key_file: str | None = None
-    settings: Settings = Settings(PROFILES_PATH)
-    is_created: bool = False
     _topics: str | None = ''
+    clipboard: dict = defaultdict
+    is_created: bool = False
 
-    def _set_field(self, key: str, value, only_ini: bool = False):
-        """Setting field in instance and in profiles.ini"""
+    def __post_init__(self):
+        self.settings = Settings(f'{PROFILES_PATH}/{self._profile_id}.ini')
+
+    def _set_field(
+        self, key: str, value, only_ini: bool = False, section: str = 'mqtt_settings'
+    ):
+        """Setting field in instance and in profile.ini"""
         if not only_ini:
             if hasattr(self, '_' + key):
                 setattr(self, '_' + key, value)
@@ -35,26 +41,24 @@ class Profile:
                 )
 
         if self.is_created:
-            self.settings.set_with_save(self.profile_id, key, value)
+            self.settings.set_with_save(section, key, value)
 
     def set_settings(self, settings: dict) -> None:
         for key, value in settings.items():
             self._set_field(key, value)
 
     def create(self) -> None:
-        """Creating profile in profiles.ini."""
-        if self.settings.has_section(self.name):
-            raise ValueError(f'Profile with name "{self.name}" already exists')
-
-        self.settings.add_section_with_save(self.name)
+        """Creating profile."""
         self.is_created = True
 
         # TODO: add exception if error -> remove added fields
         for attr_name in dir(self):
+            if attr_name == 'profile_id':
+                continue
             attr = getattr(type(self), attr_name, None)
             if isinstance(attr, property):
                 self.settings.set_with_save(
-                    self._name, attr_name, str(getattr(self, attr_name))
+                    'mqtt_settings', attr_name, str(getattr(self, attr_name))
                 )
 
     def delete(self): ...
@@ -159,3 +163,7 @@ class Profile:
     def add_topic(self, topic: str):
         self._topics += topic + ', '
         self._set_field('topics', self._topics, only_ini=True)
+
+    def add_clipboard(self, message_name: str, message_text: str):
+        self.clipboard[message_name] = message_text
+        self.settings.set_with_save('clipboard', message_name, message_text)

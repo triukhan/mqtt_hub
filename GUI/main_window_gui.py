@@ -16,7 +16,6 @@ from GUI.interface_utils import (
 )
 from GUI.tabs.info_tab_gui import InfoTab
 from GUI.tabs.settings_tab_gui import SettingsTabUi
-from settings.profile_manager import profile_manager
 
 
 class MqttHubUi(QWidget):
@@ -253,7 +252,7 @@ class MqttHubUi(QWidget):
 
         self.header_layout.addItem(horizontal_spacer, 0, 2, 1, 1)
 
-        self.save_button = create_button(
+        self.save_plus_button = create_button(
             'Save',
             self.header_frame,
             styles.MAIN_BUTTON,
@@ -272,11 +271,7 @@ class MqttHubUi(QWidget):
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 
-        self.save_button.clicked.connect(self.create_new_profile)
-
-    def create_new_profile(self):
-        profile = profile_manager.create_new_profile()
-        self.plus_tab.save_settings(profile)
+        self.save_plus_button.clicked.connect(self.create_new_profile)
 
     def setup_edit_header(self):
         self.header_layout.addItem(horizontal_spacer, 0, 0, 1, 1)
@@ -301,7 +296,7 @@ class MqttHubUi(QWidget):
 
         self.header_layout.addItem(horizontal_spacer, 0, 2, 1, 1)
 
-        self.save_button = create_button(
+        self.save_edit_button = create_button(
             'Save',
             self.header_frame,
             styles.MAIN_BUTTON,
@@ -320,4 +315,4 @@ class MqttHubUi(QWidget):
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 
-        self.save_button.clicked.connect(self.edit_tab.save_settings)
+        self.save_edit_button.clicked.connect(self.edit_tab.save_settings)

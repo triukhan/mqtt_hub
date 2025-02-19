@@ -8,14 +8,20 @@ class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
 
-    def save_settings(self, profile):
-        profile.name = self.name_field.text()
-        profile.host = self.host_field.text()
-        profile.port = self.port_field.text()
-        profile.client_id = self.client_id_field.text()
-        profile.username = self.username_field.text()
-        profile.password = self.password_field.text()
-        profile.ssl = str(self.ssl_checkbox.isChecked())
+    def save_settings(self):
+        return {
+            'name': self.name_field.text(),
+            'host': self.host_field.text(),
+            'port': self.port_field.text(),
+            'client_id': self.client_id_field.text(),
+            'username': self.username_field.text(),
+            'password': self.password_field.text(),
+            'ssl_tls': self.ssl_tls_checkbox.isChecked(),
+            'ssl': self.ssl_checkbox.isChecked(),
+            'ca_file': self.ca_field.text(),
+            'crt_file': self.client_cert_field.text(),
+            'key_file': self.client_key_field.text(),
+        }
 
 
 class EditTab(PlusTabUI):

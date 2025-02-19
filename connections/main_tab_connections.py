@@ -32,7 +32,7 @@ class MainTab(MainTabUI):
         self.receiver_text_edit.setPlainText(payload)
 
     def set_clipboard_messages(self):
-        clipboard_messages = profile_manager.get_clipboard_messages()
+        clipboard_messages = profile_manager.current_profile.clipboard
 
         for message_name, message_text in clipboard_messages.items():
             item = QListWidgetItem()
@@ -45,7 +45,7 @@ class MainTab(MainTabUI):
         self.command_field.setPlainText(command)
 
     def save_message_to_clipboard(self, message_name: str, message_text: str):
-        profile_manager.add_clipboard_message(message_name, message_text)
+        profile_manager.current_profile.add_clipboard(message_name, message_text)
         item = QListWidgetItem()
         item.setText(message_name)
         item.setData(Qt.UserRole, message_text)
@@ -53,8 +53,6 @@ class MainTab(MainTabUI):
 
     def show_clipboard_dialog(self):
         ClipboardDialog(self.save_message_to_clipboard, self).exec_()
-
-    # def load_subscription_settings_by_name(self):
 
     def show_edit_subscription_dialog(self, tag):
         EditSubscribeDialog('', self).exec_()

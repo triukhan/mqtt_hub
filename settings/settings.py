@@ -5,7 +5,7 @@ import os
 class Settings:
     """Universal class to parse .ini files."""
 
-    def __init__(self, settings_path):
+    def __init__(self, settings_path: str | None = None):
         self.settings_path = settings_path
         self.config = configparser.ConfigParser()
         self.load_settings()
@@ -48,3 +48,19 @@ class Settings:
             raise ValueError(f'Section "{section}" does not exist')
         self.config.set(section, key, str(value))
         self.save_settings()
+
+
+def create_ini_file(filename: str, path: str, data: dict | None = None):
+    config = configparser.ConfigParser()
+
+    if data:
+        for section, values in data.items():
+            config[section] = {}
+            for key, value in values.items():
+                config[section][key] = str(value)
+
+    full_path = os.path.join(path, filename + '.ini')
+    with open(full_path, 'w', encoding='utf-8') as configfile:
+        config.write(configfile)
+
+    return full_path
