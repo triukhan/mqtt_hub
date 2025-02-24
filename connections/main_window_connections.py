@@ -6,20 +6,17 @@ class MainWindow(MqttHubUi):
     def __init__(self):
         super().__init__()
         self.setup_ui()
-
         self.current_profile = profile_manager.current_profile
-        self.profile_button.setText(self.current_profile.name)
-
-        self.save_plus_button.clicked.connect(self.create_new_profile)
-
-        self.main_tab.add_button.clicked.connect(self.create_topic)
 
         self.connect_sidebar()
         self.setup_topics()
+        self.update_profile_button()
 
-    def create_new_profile(self):
+    def save_new_profile(self):
         settings = self.plus_tab.save_settings()
         profile_manager.create_profile(**settings)
+        self.open_main_tab()
+        self.update_profile_button()
 
     def open_main_tab(self):
         self.all_tabs.setCurrentIndex(0)
@@ -48,10 +45,7 @@ class MainWindow(MqttHubUi):
 
     def setup_topics(self):
         for topic in self.current_profile.topics:
-            if topic != '':
-                self.main_tab.tags_widget.add_tag(topic)
+            self.main_tab.tags_widget.add_tag(topic)
 
-    def create_topic(self):
-        topic_text = self.main_tab.get_command_text()
-        self.current_profile.add_topic(topic_text)
-        self.main_tab.tags_widget.add_tag(topic_text)
+    def update_profile_button(self):
+        self.profile_button.setText(self.current_profile.name)

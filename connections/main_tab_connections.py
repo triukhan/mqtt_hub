@@ -23,6 +23,10 @@ class MainTab(MainTabUI):
         self.clipboard_list.currentItemChanged.connect(
             self.display_message_in_command_field
         )
+        self.add_button.clicked.connect(self.create_topic)
+
+    def create_topic(self):
+        self.show_edit_subscription_dialog()
 
     def get_command_text(self):
         return self.command_field.toPlainText()
@@ -54,5 +58,9 @@ class MainTab(MainTabUI):
     def show_clipboard_dialog(self):
         ClipboardDialog(self.save_message_to_clipboard, self).exec_()
 
-    def show_edit_subscription_dialog(self, tag):
-        EditSubscribeDialog('', self).exec_()
+    def save_and_subscribe_topic(self, topic_settings: dict):
+        topic = profile_manager.current_profile.add_topic(topic_settings)
+        self.tags_widget.add_tag(topic)
+
+    def show_edit_subscription_dialog(self):
+        EditSubscribeDialog(self.save_and_subscribe_topic, self).exec_()

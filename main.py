@@ -30,6 +30,10 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         item.setSelected(True)
         self.main_tab.receiver_text_edit.setPlainText(payload)
 
+    def save_profile_and_connect(self):
+        self.save_new_profile()
+        self.connector.start()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

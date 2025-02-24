@@ -3,6 +3,7 @@ import os
 
 from settings.profile import PROFILES_PATH, Profile
 from settings.settings import Settings, create_ini_file
+from settings.topic import Topic
 
 
 class ProfileManager:
@@ -19,7 +20,7 @@ class ProfileManager:
                 profile_file = configparser.ConfigParser()
                 profile_file.read(filepath, encoding='utf-8')
                 profile_id = os.path.splitext(filename)[0]
-                mqtt_settings, clipboard = {}, {}
+                mqtt_settings, clipboard, topics = {}, {}, []
 
                 for section in profile_file.sections():
                     if section == 'mqtt_settings':
@@ -30,8 +31,20 @@ class ProfileManager:
                         for key, value in profile_file[section].items():
                             clipboard[key] = value
 
+                    if section == 'topics':
+                        for _, topic_address in profile_file[section].items():
+                            topic_settings = {}
+                            for key, value in profile_file[topic_address].items():
+                                topic_settings['_' + key] = value
+                            topic = Topic(filepath, **topic_settings)
+                            topics.append(topic)
+
                 self._profiles[profile_id] = Profile(
-                    profile_id, **mqtt_settings, clipboard=clipboard, is_created=True
+                    profile_id,
+                    **mqtt_settings,
+                    clipboard=clipboard,
+                    _topics=topics,
+                    is_created=True,
                 )
 
     def _generate_profile_id(self):
@@ -49,6 +62,7 @@ class ProfileManager:
             create_ini_file(profile_id, PROFILES_PATH, {'mqtt_settings': kwargs})
         )
         profile_ini.add_section_with_save('clipboard')
+        profile_ini.add_section_with_save('topics')
 
         profile = Profile(profile_id)
         profile.name = kwargs.get('name')

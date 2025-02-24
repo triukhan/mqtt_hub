@@ -34,7 +34,7 @@ class MQTTConnector:
             print(f'Successfully connected to {self.profile.host}:{self.profile.port}')
             for topic in self.topics:
                 print(f'Topic: {topic}')
-                self.client.subscribe(topic)
+                self.client.subscribe(topic.address)
         else:
             print(f'Connection failed with code {rc}')
 

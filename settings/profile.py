@@ -1,7 +1,8 @@
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from settings.settings import Settings
+from settings.topic import Topic
 
 DEFAULT_NAME = 'default_mqtt_user'
 PROFILES_PATH = 'settings/profiles/'
@@ -21,12 +22,16 @@ class Profile:
     _ca_file: str | None = None
     _crt_file: str | None = None
     _key_file: str | None = None
-    _topics: str | None = ''
+    _topics: list | None = field(default_factory=list)
     clipboard: dict = defaultdict
     is_created: bool = False
 
     def __post_init__(self):
-        self.settings = Settings(f'{PROFILES_PATH}/{self._profile_id}.ini')
+        self.profile_ini = f'{PROFILES_PATH}/{self._profile_id}.ini'
+        self.settings = Settings(self.profile_ini)
+
+        if not isinstance(self._topics, list):
+            raise TypeError("_topics must be a list")
 
     def _set_field(
         self, key: str, value, only_ini: bool = False, section: str = 'mqtt_settings'
@@ -158,12 +163,16 @@ class Profile:
 
     @property
     def topics(self):
-        return self._topics.split(', ')
-
-    def add_topic(self, topic: str):
-        self._topics += topic + ', '
-        self._set_field('topics', self._topics, only_ini=True)
+        return self._topics
 
     def add_clipboard(self, message_name: str, message_text: str):
         self.clipboard[message_name] = message_text
         self.settings.set_with_save('clipboard', message_name, message_text)
+
+    def add_topic(self, topic_settings: dict):
+        if topic_address := topic_settings.get('_address') in self._topics:
+            raise AttributeError(f'{topic_address} already exists')
+        topic = Topic(self.profile_ini, **topic_settings)
+        topic.create()
+        self._topics.append(topic)
+        return topic

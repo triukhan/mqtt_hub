@@ -25,6 +25,7 @@ from GUI.interface_utils import (
     create_list,
     horizontal_spacer,
 )
+from settings.topic import Topic
 
 
 class MainTabUI(QWidget):
@@ -306,7 +307,7 @@ class TagsWidget(QFrame):
         )
         self.tags_layout.addWidget(self.add_button)
 
-    def add_tag(self, tag_text: str = ''):
+    def add_tag(self, topic: Topic):
         tag_frame = QFrame(self)
         tag_frame.setStyleSheet(
             "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px;} QFrame:hover {border: 1px solid rgb(70, 70, 70);}"
@@ -316,7 +317,7 @@ class TagsWidget(QFrame):
         tag_layout.setContentsMargins(0, 0, 0, 0)
         tag_layout.setSpacing(0)
 
-        tag_label = QLabel(tag_text or f"Tag {self.tags_layout.count() - 1}", tag_frame)
+        tag_label = QLabel(topic.get_name(), tag_frame)
         tag_label.setFixedWidth(90)
         tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none;}")
         tag_label.setSizePolicy(
@@ -330,7 +331,7 @@ class TagsWidget(QFrame):
         icon_button.setStyleSheet(
             "QToolButton {background-color: rgb(45, 45, 45); border: none; border-radius: 5} QToolButton:hover {background-color: rgb(60, 60, 60);}"
         )
-        icon_button.clicked.connect(lambda: self.edit_method(tag_text))
+        icon_button.clicked.connect(lambda: self.edit_method(topic))
 
         tag_layout.addWidget(tag_label)
         tag_layout.addWidget(icon_button)

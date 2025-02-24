@@ -102,8 +102,8 @@ class EditSubscribeDialogUI(object):
         self.alias_label.setMaximumSize(QtCore.QSize(16777215, 30))
         self.alias_label.setObjectName("alias_label")
         self.alias_layout.addWidget(self.alias_label)
-        self.aias_field = QtWidgets.QLineEdit(self.edit_subscr_frame)
-        self.aias_field.setStyleSheet(
+        self.alias_field = QtWidgets.QLineEdit(self.edit_subscr_frame)
+        self.alias_field.setStyleSheet(
             "QLineEdit {\n"
             "   color: rgb(186, 189, 182);\n"
             "   border: 1px solid rgb(50, 50, 50); \n"
@@ -112,8 +112,7 @@ class EditSubscribeDialogUI(object):
             "background-color: rgb(35, 35, 35);\n"
             "}"
         )
-        self.aias_field.setObjectName("aias_field")
-        self.alias_layout.addWidget(self.aias_field)
+        self.alias_layout.addWidget(self.alias_field)
         self.body_edit_subscr_layout.addLayout(self.alias_layout)
         self.qos_color_layout = QtWidgets.QGridLayout()
         self.qos_color_layout.setContentsMargins(20, 15, 20, 15)
@@ -204,8 +203,8 @@ class EditSubscribeDialogUI(object):
         self.retain_handling_label = QtWidgets.QLabel(self.edit_subscr_frame)
         self.retain_handling_label.setObjectName("retain_handling_label")
         self.retain_handlin_layout.addWidget(self.retain_handling_label)
-        self.retai_handling_field = QtWidgets.QLineEdit(self.edit_subscr_frame)
-        self.retai_handling_field.setStyleSheet(
+        self.retain_handling_field = QtWidgets.QLineEdit(self.edit_subscr_frame)
+        self.retain_handling_field.setStyleSheet(
             "QLineEdit {\n"
             "   color: rgb(186, 189, 182);\n"
             "   border: 1px solid rgb(50, 50, 50); \n"
@@ -214,8 +213,7 @@ class EditSubscribeDialogUI(object):
             "background-color: rgb(35, 35, 35);\n"
             "}"
         )
-        self.retai_handling_field.setObjectName("retai_handling_field")
-        self.retain_handlin_layout.addWidget(self.retai_handling_field)
+        self.retain_handlin_layout.addWidget(self.retain_handling_field)
         self.body_edit_subscr_layout.addLayout(self.retain_handlin_layout)
         self.save_layout = QtWidgets.QHBoxLayout()
         self.save_layout.setContentsMargins(-1, 15, 20, 15)
@@ -241,8 +239,8 @@ class EditSubscribeDialogUI(object):
         )
         self.pushButton_2.setObjectName("pushButton_2")
         self.save_layout.addWidget(self.pushButton_2)
-        self.pushButton = QtWidgets.QPushButton(self.edit_subscr_frame)
-        self.pushButton.setStyleSheet(
+        self.save_topic_button = QtWidgets.QPushButton(self.edit_subscr_frame)
+        self.save_topic_button.setStyleSheet(
             "QPushButton {\n"
             "   color: rgb(186, 189, 182);\n"
             "   background-color: rgb(35, 35, 35);\n"
@@ -255,8 +253,7 @@ class EditSubscribeDialogUI(object):
             "   border: 1px solid rgb(70, 70, 70); \n"
             "}"
         )
-        self.pushButton.setObjectName("pushButton")
-        self.save_layout.addWidget(self.pushButton)
+        self.save_layout.addWidget(self.save_topic_button)
         self.body_edit_subscr_layout.addLayout(self.save_layout)
         self.verticalLayout.addLayout(self.body_edit_subscr_layout)
         self.gridLayout.addWidget(self.edit_subscr_frame, 0, 0, 1, 1)
@@ -284,4 +281,4 @@ class EditSubscribeDialogUI(object):
             _translate("edit_subscr_dialog", "Retain Handling")
         )
         self.pushButton_2.setText(_translate("edit_subscr_dialog", "Cancel"))
-        self.pushButton.setText(_translate("edit_subscr_dialog", "Save"))
+        self.save_topic_button.setText(_translate("edit_subscr_dialog", "Save"))

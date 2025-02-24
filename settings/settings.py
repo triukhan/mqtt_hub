@@ -44,8 +44,8 @@ class Settings:
 
     def set_with_save(self, section, key, value):
         self.load_settings()
-        if not self.config.has_section(section):
-            raise ValueError(f'Section "{section}" does not exist')
+        if not self.has_section(section):
+            self.config.add_section(section)
         self.config.set(section, key, str(value))
         self.save_settings()
 
