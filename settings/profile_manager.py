@@ -11,7 +11,10 @@ class ProfileManager:
         self._profiles_ini: Settings = Settings('settings/profiles/profiles.ini')
         self._profiles = {}
         self.__profiles_from_ini()
-        self.current_profile: Profile = self.get_current_profile()
+
+    @property
+    def current_profile(self) -> Profile:
+        return self.get_current_profile()
 
     def __profiles_from_ini(self):
         for filename in os.listdir(PROFILES_PATH):
@@ -68,8 +71,8 @@ class ProfileManager:
         profile.name = kwargs.get('name')
         profile.create()
         profile.set_settings(kwargs)
-        self.switch_profile(profile.profile_id)
-        self._profiles[profile.name] = profile
+        self._profiles[profile.id] = profile
+        self.switch_profile(profile.id)
 
         return profile
 
@@ -86,7 +89,6 @@ class ProfileManager:
 
     def switch_profile(self, profile_id):
         self._profiles_ini.set_with_save('current_profile', 'current', profile_id)
-        self.current_profile = profile_id
 
     def delete_profile(self, profile_name):
         # TODO: dont forget delete from current and set some another

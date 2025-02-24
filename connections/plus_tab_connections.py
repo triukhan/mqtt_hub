@@ -8,8 +8,8 @@ class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
 
-    def save_settings(self):
-        return {
+    def get_settings(self):
+        settings = {
             'name': self.name_field.text(),
             'host': self.host_field.text(),
             'port': self.port_field.text(),
@@ -22,6 +22,22 @@ class PlusTab(PlusTabUI):
             'crt_file': self.client_cert_field.text(),
             'key_file': self.client_key_field.text(),
         }
+        self.clear_settings()
+        return settings
+
+    def clear_settings(self):
+        self.name_field.clear()
+        self.host_field.clear()
+        self.port_field.clear()
+        self.client_id_field.clear()
+        self.username_field.clear()
+        self.password_field.clear()
+        self.ssl_tls_checkbox.setChecked(False)
+        self.ssl_checkbox.setChecked(False)
+        self.ca_field.clear()
+        self.client_cert_field.clear()
+        self.client_key_field.clear()
+        self.setFocus()
 
 
 class EditTab(PlusTabUI):

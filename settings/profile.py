@@ -10,7 +10,7 @@ PROFILES_PATH = 'settings/profiles/'
 
 @dataclass
 class Profile:
-    _profile_id: str
+    _id: str
     _name: str | None = None
     _host: str | None = None
     _port: str | None = None
@@ -27,7 +27,7 @@ class Profile:
     is_created: bool = False
 
     def __post_init__(self):
-        self.profile_ini = f'{PROFILES_PATH}/{self._profile_id}.ini'
+        self.profile_ini = f'{PROFILES_PATH}/{self._id}.ini'
         self.settings = Settings(self.profile_ini)
 
         if not isinstance(self._topics, list):
@@ -58,7 +58,7 @@ class Profile:
 
         # TODO: add exception if error -> remove added fields
         for attr_name in dir(self):
-            if attr_name == 'profile_id':
+            if attr_name in ('id', 'topics'):
                 continue
             attr = getattr(type(self), attr_name, None)
             if isinstance(attr, property):
@@ -69,8 +69,8 @@ class Profile:
     def delete(self): ...
 
     @property
-    def profile_id(self):
-        return self._profile_id
+    def id(self):
+        return self._id
 
     @property
     def name(self):
