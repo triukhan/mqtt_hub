@@ -1,2 +1,3 @@
 settings/profiles/*
 !settings/profiles/profiles.ini
+!settings/profiles/profile_00.ini

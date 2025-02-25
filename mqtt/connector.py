@@ -33,7 +33,7 @@ class MQTTConnector:
         if rc == 0:
             print(f'Successfully connected to {self.profile.host}:{self.profile.port}')
             for topic in self.topics:
-                print(f'Topic: {topic}')
+                print(f'Topic: {topic.address}')
                 self.client.subscribe(topic.address)
         else:
             print(f'Connection failed with code {rc}')
@@ -55,7 +55,11 @@ class MQTTConnector:
         print("Client stopped.")
 
     def publish(self, topic, message):
-        result = self.client.publish(topic, message)
+        if not profile_manager.topic_to_publish:
+            print('No topic to publish')
+            return None
+
+        result = self.client.publish(profile_manager.topic_to_publish.address, message)
         if result.rc == MQTT_ERR_SUCCESS:
             print(f"Message sent to {topic}: {message}")
         else:

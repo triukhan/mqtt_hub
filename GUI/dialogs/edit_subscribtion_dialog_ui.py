@@ -4,7 +4,9 @@ from PyQt5 import QtCore, QtWidgets
 class EditTopicDialogUI(object):
     def setup_ui(self, edit_topic_dialog):
         edit_topic_dialog.resize(522, 530)
-        edit_topic_dialog.setStyleSheet('QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}')
+        edit_topic_dialog.setStyleSheet(
+            'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}'
+        )
         self.gridLayout = QtWidgets.QGridLayout(edit_topic_dialog)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
@@ -143,14 +145,13 @@ class EditTopicDialogUI(object):
             "    color: rgb(186, 189, 182);\n"
             "    background-color: rgb(35, 35, 35);\n"
             "    padding: 10px;    border: 1px solid rgb(50, 50, 50); \n"
-            "    \n"
+            "    border-radius: 5;\n"
             "}\n"
-            "\n"
             "QPushButton:hover {\n"
-            "    color: rgb(210, 210, 210);\n"
+            "    border: 1px solid rgb(70, 70, 70);\n"
             "}"
         )
-        self.color_button.setObjectName("color_button")
+
         self.color_layout.addWidget(self.color_button)
         self.qos_color_layout.addLayout(self.color_layout, 0, 3, 1, 1)
         self.color_field = QtWidgets.QLineEdit(self.edit_subscr_frame)
@@ -266,7 +267,7 @@ class EditTopicDialogUI(object):
         self.alias_label.setText(_translate("edit_subscr_dialog", " Alias"))
         self.qos_label.setText(_translate("edit_subscr_dialog", "Qos"))
         self.color_label.setText(_translate("edit_subscr_dialog", "Color"))
-        self.color_button.setText(_translate("edit_subscr_dialog", "color"))
+        self.color_button.setText(_translate("edit_subscr_dialog", "■"))
         self.no_local_label.setText(_translate("edit_subscr_dialog", "No Local Flag"))
         self.retain_published_label.setText(
             _translate("edit_subscr_dialog", "Retain as Published Flag")

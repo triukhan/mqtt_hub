@@ -5,15 +5,14 @@ from connections.clipboard_dialog_connections import ClipboardDialog
 from connections.edit_subscription_dialog_connections import EditSubscribeDialog
 from GUI.tabs.main_tab_gui import MainTabUI, TagsWidget
 from settings.profile_manager import profile_manager
+from settings.topic import Topic
 
 
 class MainTab(MainTabUI):
     def __init__(self):
         super().__init__()
 
-        self.tags_widget = TagsWidget(
-            self.bottom_frame, self.show_edit_subscription_dialog
-        )
+        self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
         self.add_button = self.tags_widget.add_button
         self.verticalLayout_3.addWidget(self.tags_widget)
 
@@ -58,9 +57,25 @@ class MainTab(MainTabUI):
     def show_clipboard_dialog(self):
         ClipboardDialog(self.save_message_to_clipboard, self).exec_()
 
-    def save_and_subscribe_topic(self, topic_settings: dict):
+    def save_and_subscribe_topic(self, _, topic_settings: dict, __):
         topic = profile_manager.current_profile.add_topic(topic_settings)
         self.tags_widget.add_tag(topic)
 
+    def setup_topics(self):
+        for topic in profile_manager.current_profile.topics:
+            self.tags_widget.add_tag(topic)
+
+    def save_topic(self, topic: Topic, new_settings: dict, tag_dict: dict):
+        topic.set_fields_from_dict(new_settings)
+        tag_dict['label'].setText(topic.get_name())
+        if color := topic.color:
+            tag_dict['frame'].setStyleSheet(
+                tag_dict['frame'].styleSheet()
+                + f'QFrame {{border-left: 2px solid {color};}} QFrame:hover {{border-left: 2px solid {color};}}'
+            )
+
     def show_edit_subscription_dialog(self):
         EditSubscribeDialog(self.save_and_subscribe_topic, self).exec_()
+
+    def show_edit_topic_dialog(self, topic, tag_dict):
+        EditSubscribeDialog(self.save_topic, self, topic=topic, tag=tag_dict).exec_()

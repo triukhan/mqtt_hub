@@ -16,6 +16,7 @@ from GUI.interface_utils import (
 )
 from GUI.tabs.info_tab_gui import InfoTab
 from GUI.tabs.settings_tab_gui import SettingsTabUi
+from settings.profile_manager import profile_manager
 
 
 class MqttHubUi(QWidget):
@@ -193,6 +194,8 @@ class MqttHubUi(QWidget):
             add_layout=self.header_horizontal_layout,
         )
         self.edit_button.setStyleSheet(styles.header_button('GUI/icons/edit-icon.png'))
+        if profile_manager.current_profile.id == 'profile_00':
+            self.edit_button.hide()
 
         self.header_horizontal_layout.addItem(horizontal_spacer)
         self.header_layout = QtWidgets.QGridLayout()

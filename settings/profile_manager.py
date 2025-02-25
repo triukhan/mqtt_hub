@@ -11,6 +11,7 @@ class ProfileManager:
         self._profiles_ini: Settings = Settings('settings/profiles/profiles.ini')
         self._profiles = {}
         self.__profiles_from_ini()
+        self.topic_to_publish = None
 
     @property
     def current_profile(self) -> Profile:

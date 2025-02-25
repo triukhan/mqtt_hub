@@ -25,6 +25,7 @@ from GUI.interface_utils import (
     create_list,
     horizontal_spacer,
 )
+from settings.profile_manager import profile_manager
 from settings.topic import Topic
 
 
@@ -290,6 +291,8 @@ class TagsWidget(QFrame):
     def __init__(self, parent=None, edit_method=None):
         super().__init__(parent)
         self.edit_method = edit_method
+        self.selected_tag = None
+
         self.setFixedHeight(100)
         self.setStyleSheet("QFrame {background: rgb(35, 35, 35); border: none;}")
         self.setContentsMargins(10, 10, 0, 0)
@@ -310,8 +313,16 @@ class TagsWidget(QFrame):
     def add_tag(self, topic: Topic):
         tag_frame = QFrame(self)
         tag_frame.setStyleSheet(
-            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px;} QFrame:hover {border: 1px solid rgb(70, 70, 70);}"
+            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 2px;} "
+            "QFrame:hover {border: 1px solid rgb(70, 70, 70);}"
         )
+        if topic.color:
+            if color := topic.color:
+                tag_frame.setStyleSheet(
+                    tag_frame.styleSheet()
+                    + f'QFrame {{border-left: 2px solid {color};}} QFrame:hover {{border-left: 2px solid {color};}}'
+                )
+
         tag_frame.setFixedSize(115, 30)
         tag_layout = QHBoxLayout(tag_frame)
         tag_layout.setContentsMargins(0, 0, 0, 0)
@@ -319,7 +330,7 @@ class TagsWidget(QFrame):
 
         tag_label = QLabel(topic.get_name(), tag_frame)
         tag_label.setFixedWidth(90)
-        tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none;}")
+        tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none}")
         tag_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )
@@ -331,10 +342,28 @@ class TagsWidget(QFrame):
         icon_button.setStyleSheet(
             "QToolButton {background-color: rgb(45, 45, 45); border: none; border-radius: 5} QToolButton:hover {background-color: rgb(60, 60, 60);}"
         )
-        icon_button.clicked.connect(lambda: self.edit_method(topic))
+        icon_button.clicked.connect(
+            lambda: self.edit_method(topic, {'frame': tag_frame, 'label': tag_label})
+        )
 
         tag_layout.addWidget(tag_label)
         tag_layout.addWidget(icon_button)
         tag_frame.setLayout(tag_layout)
 
+        tag_frame.mousePressEvent = lambda event: self.select_tag(tag_frame, topic)
+
         self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_frame)
+
+    def select_tag(self, tag_frame, topic):
+        if self.selected_tag:
+            self.selected_tag.setStyleSheet(
+                "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px;}"
+            )
+
+        self.selected_tag = tag_frame
+        self.selected_tag.setStyleSheet(
+            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding-left: 2px; "
+            "border: 2px solid rgb(70, 70, 70);}"
+        )
+
+        profile_manager.topic_to_publish = topic

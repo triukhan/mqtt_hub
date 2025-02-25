@@ -8,7 +8,7 @@ class MainWindow(MqttHubUi):
         self.setup_ui()
 
         self.connect_sidebar()
-        self.setup_topics()
+        self.main_tab.setup_topics()
         self.update_profile_button()
 
     @property
@@ -45,10 +45,6 @@ class MainWindow(MqttHubUi):
         self.settings_button.clicked.connect(self.open_settings_tab)
         self.info_button.clicked.connect(self.open_info_tab)
         self.exit_button.clicked.connect(self.close)
-
-    def setup_topics(self):
-        for topic in self.current_profile.topics:
-            self.main_tab.tags_widget.add_tag(topic)
 
     def update_profile_button(self):
         self.profile_button.setText(self.current_profile.name)

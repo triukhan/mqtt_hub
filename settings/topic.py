@@ -38,6 +38,7 @@ class Topic:
     @address.setter
     def address(self, value: str) -> None:
         self._address = value
+        self._settings.set_with_save(self._address, 'address', value)
 
     @property
     def alias(self) -> str:
@@ -46,6 +47,7 @@ class Topic:
     @alias.setter
     def alias(self, value: str) -> None:
         self._alias = value
+        self._settings.set_with_save(self._address, 'alias', value)
 
     @property
     def qos(self) -> int:
@@ -54,6 +56,7 @@ class Topic:
     @qos.setter
     def qos(self, value: int) -> None:
         self._qos = value
+        self._settings.set_with_save(self._address, 'qos', value)
 
     @property
     def color(self) -> str:
@@ -62,6 +65,7 @@ class Topic:
     @color.setter
     def color(self, value: str) -> None:
         self._color = value
+        self._settings.set_with_save(self._address, 'color', value)
 
     @property
     def no_local(self) -> bool:
@@ -70,6 +74,7 @@ class Topic:
     @no_local.setter
     def no_local(self, value: bool) -> None:
         self._no_local = value
+        self._settings.set_with_save(self._address, 'no_local', value)
 
     @property
     def retain_as_published(self) -> bool:
@@ -78,6 +83,7 @@ class Topic:
     @retain_as_published.setter
     def retain_as_published(self, value: bool) -> None:
         self._retain_as_published = value
+        self._settings.set_with_save(self._address, 'retain_as_published', value)
 
     @property
     def retain_handling(self) -> str:
@@ -86,3 +92,10 @@ class Topic:
     @retain_handling.setter
     def retain_handling(self, value: str) -> None:
         self._retain_handling = value
+        self._settings.set_with_save(self._address, 'retain_handling', value)
+
+    def set_fields_from_dict(self, data: dict) -> None:
+        for key, value in data.items():
+            key = key.removeprefix('_')
+            if hasattr(self, key):
+                setattr(self, key, value)
