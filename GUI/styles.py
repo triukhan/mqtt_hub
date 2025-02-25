@@ -79,6 +79,10 @@ CLIPBOARD_LIST = """
 
     QListView::item:selected {background-color: rgb(40, 40, 40); border-color: rgb(114, 159, 207);}
     """
+X_BUTTON = """
+    QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding: 10px; border: none;}
+    QPushButton:hover {color: rgb(210, 210, 210);}
+    """
 
 
 def sidebar_button(icon_path):

@@ -27,8 +27,8 @@ def create_label(  # TODO: typing
     add_params: list | None = None,
     style: str = styles.LABEL,
     *,
-    max_size: tuple | None = None,
     min_size: tuple | None = None,
+    max_size: tuple | None = None,
 ):
     label = QLabel(main_layout)
     label.setText(text)
@@ -41,10 +41,10 @@ def create_label(  # TODO: typing
         else:
             add_layout.addWidget(label)
 
-    if max_size is not None:
-        label.setMinimumSize(QtCore.QSize(*max_size))
     if min_size is not None:
-        label.setMaximumSize(QtCore.QSize(*min_size))
+        label.setMinimumSize(QtCore.QSize(*min_size))
+    if max_size is not None:
+        label.setMaximumSize(QtCore.QSize(*max_size))
 
     return label
 

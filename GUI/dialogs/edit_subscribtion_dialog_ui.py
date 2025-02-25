@@ -1,23 +1,17 @@
 from PyQt5 import QtCore, QtWidgets
 
 
-class EditSubscribeDialogUI(object):
-    def setup_ui(self, edit_subscr_dialog):
-        edit_subscr_dialog.resize(522, 530)
-        edit_subscr_dialog.setStyleSheet(
-            "QWidget {\n"
-            "    background-color: rgb(35, 35, 35);\n"
-            "    color: rgb(186, 189, 182)\n"
-            "}"
-        )
-        self.gridLayout = QtWidgets.QGridLayout(edit_subscr_dialog)
+class EditTopicDialogUI(object):
+    def setup_ui(self, edit_topic_dialog):
+        edit_topic_dialog.resize(522, 530)
+        edit_topic_dialog.setStyleSheet('QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}')
+        self.gridLayout = QtWidgets.QGridLayout(edit_topic_dialog)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
-        self.edit_subscr_frame = QtWidgets.QFrame(edit_subscr_dialog)
+        self.edit_subscr_frame = QtWidgets.QFrame(edit_topic_dialog)
         self.verticalLayout = QtWidgets.QVBoxLayout(self.edit_subscr_frame)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName("verticalLayout")
         self.heade_edit_subscr_frame = QtWidgets.QFrame(self.edit_subscr_frame)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed
@@ -258,8 +252,8 @@ class EditSubscribeDialogUI(object):
         self.verticalLayout.addLayout(self.body_edit_subscr_layout)
         self.gridLayout.addWidget(self.edit_subscr_frame, 0, 0, 1, 1)
 
-        self.retranslateUi(edit_subscr_dialog)
-        QtCore.QMetaObject.connectSlotsByName(edit_subscr_dialog)
+        self.retranslateUi(edit_topic_dialog)
+        QtCore.QMetaObject.connectSlotsByName(edit_topic_dialog)
 
     def retranslateUi(self, edit_subscr_dialog):
         _translate = QtCore.QCoreApplication.translate

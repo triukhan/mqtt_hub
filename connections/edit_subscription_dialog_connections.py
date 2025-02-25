@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QDialog
 
-from GUI.dialogs.edit_subscribtion_dialog_ui import EditSubscribeDialogUI
+from GUI.dialogs.edit_subscribtion_dialog_ui import EditTopicDialogUI
 
 
-class EditSubscribeDialog(QDialog, EditSubscribeDialogUI):
+class EditSubscribeDialog(QDialog, EditTopicDialogUI):
     def __init__(self, save_method, parent=None):
         super().__init__(parent)
         self.save_method = save_method
