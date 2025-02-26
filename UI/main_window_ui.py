@@ -1,5 +1,3 @@
-from email.header import SPACE
-
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
@@ -7,17 +5,18 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
+from settings.profile_manager import profile_manager
 from UI import styles
 from UI.interface_utils import (
+    Spacer,
     create_button,
     create_frame,
     create_label,
     create_layout,
- Spacer, create_spacer,
+    create_spacer,
 )
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
-from settings.profile_manager import profile_manager
 
 
 class MqttHubUi(QWidget):
@@ -199,6 +198,20 @@ class MqttHubUi(QWidget):
             self.edit_button.hide()
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+
+        self.notification = create_button(
+            '',
+            self.header_frame,
+            min_size=[400, 30],
+            max_size=30,
+            add_layout=self.header_horizontal_layout,
+        )
+        self.notification.setStyleSheet(
+            "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
+            "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
+        )
+
+        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.header_layout = QtWidgets.QGridLayout()
 
         self.profile_button = create_button(
@@ -246,6 +259,19 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.setSpacing(20)
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+
+        # self.notification = create_button(
+        #     'You are wrong nigga!',
+        #     self.header_frame,
+        #     min_size=[400, 30],
+        #     max_size=30,
+        #     add_layout=self.header_horizontal_layout,
+        #     add_params=[0, 1, 1, 1],
+        # )
+        # self.notification.setStyleSheet(
+        #     "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
+        #     "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
+        # )
 
         self.profile_name = create_label(
             'New Profile',
