@@ -14,14 +14,20 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
         self.connector.message_received.connect(self.update_list_widget)
 
-        self.connect_button.clicked.connect(
-            lambda: self.connector.start(self.current_profile.topics)
-        )
         self.main_tab.publish_button.clicked.connect(
-            lambda: self.connector.publish(
-                self.current_profile.topics[0], self.main_tab.get_command_text()
-            )
+            lambda: self.connector.publish(self.main_tab.get_command_text())
         )
+
+    def setup_main_header(self):
+        super().setup_main_header()
+        self.connect_button.clicked.connect(self.start_connection)
+
+    def start_connection(self):
+        try:
+            self.connector.start(self.current_profile.topics)
+            self.show_positive_notification('Connected!')
+        except Exception as e:
+            self.show_fail_notification(f'Error: {e}')
 
     def update_list_widget(self, topic, payload):
         item = QtWidgets.QListWidgetItem(topic)

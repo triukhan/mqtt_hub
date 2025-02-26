@@ -58,15 +58,18 @@ class MainWindow(MqttHubUi):
             "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
             "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
         )
-        self.notification.setText('Fail')
+        self.notification.setText(text or 'Fail')
         self._start_notification_animation()
 
-    def show_positive_notification(self, text=None):
+    def show_positive_notification(self, text='Success'):
         self.notification.setStyleSheet(
             "QPushButton {color: rgb(255, 250, 250); background-color: rgb(103, 159, 95); border: 1px solid "
             "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
         )
-        self.notification.setText('Success')
+        if isinstance(text, str):
+            self.notification.setText(text)
+        else:
+            self.notification.setText('Success')
         self._start_notification_animation()
 
     def _setup_notifications(self):
@@ -81,6 +84,10 @@ class MainWindow(MqttHubUi):
         self.main_tab.qos_button.clicked.connect(
             self.show_positive_notification
         )  # TODO
+
+    def setup_main_header(self):
+        super().setup_main_header()
+        self._setup_notifications()
 
     def fade_notification(self):
         self.opacity_fade = QPropertyAnimation(self.notification_opacity, b"opacity")

@@ -54,14 +54,16 @@ class MQTTConnector:
         self.client.disconnect()
         print("Client stopped.")
 
-    def publish(self, topic, message):
+    def publish(self, message):
         if not profile_manager.topic_to_publish:
             print('No topic to publish')
             return None
 
         result = self.client.publish(profile_manager.topic_to_publish.address, message)
         if result.rc == MQTT_ERR_SUCCESS:
-            print(f"Message sent to {topic}: {message}")
+            print(
+                f"Message sent to {profile_manager.topic_to_publish.address}: {message}"
+            )
         else:
             print("Failed to send message.")
 

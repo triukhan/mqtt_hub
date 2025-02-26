@@ -260,19 +260,6 @@ class MqttHubUi(QWidget):
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        # self.notification = create_button(
-        #     'You are wrong nigga!',
-        #     self.header_frame,
-        #     min_size=[400, 30],
-        #     max_size=30,
-        #     add_layout=self.header_horizontal_layout,
-        #     add_params=[0, 1, 1, 1],
-        # )
-        # self.notification.setStyleSheet(
-        #     "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
-        #     "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
-        # )
-
         self.profile_name = create_label(
             'New Profile',
             self.header_frame,
