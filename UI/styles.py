@@ -50,7 +50,7 @@ FILTER_BUTTON_2 = (
 EXIT_BUTTON = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
     'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;}'
-    'QPushButton:hover {border-image: url(GUI/icons/info-icon.png) 0 0 0 0 stretch stretch;}'
+    'QPushButton:hover {border-image: url(UI/icons/info-icon.png) 0 0 0 0 stretch stretch;}'
 )
 SCROLLBAR = """
     QScrollBar:vertical {background-color: rgb(34, 34, 34); border-right: 1px solid rgb(50, 50, 50);
@@ -83,7 +83,8 @@ X_BUTTON = """
     QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding: 10px; border: none;}
     QPushButton:hover {color: rgb(210, 210, 210);}
     """
-
+WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}'
+HEADER_FRAME = 'QFrame {border-bottom: 1px solid rgb(50, 50, 50)}'
 
 def sidebar_button(icon_path):
     return (

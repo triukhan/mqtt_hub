@@ -11,13 +11,13 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from GUI import styles
-from GUI.interface_utils import (
+from UI import styles
+from UI.interface_utils import (
     create_checkbox,
     create_field,
     create_frame,
     create_label,
-    create_radio,
+    create_radio, create_spacer, Spacer,
 )
 
 vertical_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -123,7 +123,7 @@ class PlusTabUI(QWidget):
         self.self_signed_radio = create_radio(
             'CA or Self signed certificate', self.general_frame, self.certificate_layout
         )
-        self.certificate_layout.addItem(vertical_spacer)
+        self.certificate_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.general_layout.addLayout(self.certificate_layout, 9, 2, 1, 1)
 
         # certificates
@@ -131,8 +131,8 @@ class PlusTabUI(QWidget):
             'Certificates',
             self.plus_scroll_layout,
             self.plus_scroll_box,
-            min_size=(100, 30),
-            max_size=(100, 30),
+            min_size=[100, 30],
+            max_size=[100, 30],
         )
         self.certificates_frame = create_frame(self.plus_scroll_layout)
 

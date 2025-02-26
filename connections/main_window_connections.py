@@ -1,4 +1,4 @@
-from GUI.main_window_gui import MqttHubUi
+from UI.main_window_ui import MqttHubUi
 from settings.profile_manager import profile_manager
 
 

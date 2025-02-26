@@ -17,13 +17,13 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from GUI import styles
-from GUI.interface_utils import (
+from UI import styles
+from UI.interface_utils import (
     create_button,
     create_frame,
     create_layout,
     create_list,
-    horizontal_spacer,
+    create_spacer, Spacer,
 )
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
@@ -44,7 +44,7 @@ class MainTabUI(QWidget):
         self.clear_layout = create_layout(
             QHBoxLayout, [-1, 15, 10, 19], 0, out_layout=self.clear_frame
         )
-        self.clear_layout.addItem(horizontal_spacer)
+        self.clear_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.clear_button = create_button(
             'clear', self.clear_frame, max_size=(50, 21), add_layout=self.clear_layout
         )
@@ -75,11 +75,11 @@ class MainTabUI(QWidget):
             add_layout=self.message_formating,
         )
 
-        self.convertor_button.setIcon(QIcon('GUI/icons/expand-profile-icon.png'))
+        self.convertor_button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
         self.convertor_button.setIconSize(QSize(24, 24))
         self.convertor_button.setLayoutDirection(Qt.RightToLeft)
 
-        self.message_formating.addItem(horizontal_spacer)
+        self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
 
         self.all_button = create_button(
             'All',
@@ -175,7 +175,7 @@ class MainTabUI(QWidget):
             max_size=(80, 25),
             add_layout=self.horizontalLayout_5,
         )
-        self.qos_button.setIcon(QIcon('GUI/icons/expand-profile-icon.png'))
+        self.qos_button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
         self.qos_button.setIconSize(QSize(24, 24))
         self.qos_button.setLayoutDirection(Qt.RightToLeft)
 
@@ -302,7 +302,7 @@ class TagsWidget(QFrame):
 
         add_button_style = (
             'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
-            'border-image: url(GUI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
+            'border-image: url(UI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
             'QPushButton:hover {background-color: rgb(45, 45, 45)}'
         )
         self.add_button = create_button(
@@ -336,7 +336,7 @@ class TagsWidget(QFrame):
         )
 
         icon_button = QToolButton(tag_frame)
-        icon_button.setIcon(QIcon("GUI/icons/edit-icon.png"))
+        icon_button.setIcon(QIcon("UI/icons/edit-icon.png"))
         icon_button.setIconSize(QSize(32, 32))
         icon_button.setFixedSize(18, 18)
         icon_button.setStyleSheet(

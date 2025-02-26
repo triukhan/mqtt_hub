@@ -1,3 +1,5 @@
+from email.header import SPACE
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QIcon
@@ -5,17 +7,16 @@ from PyQt5.QtWidgets import QHBoxLayout, QWidget
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
-from GUI import styles
-from GUI.interface_utils import (
+from UI import styles
+from UI.interface_utils import (
     create_button,
     create_frame,
     create_label,
     create_layout,
-    horizontal_spacer,
-    vertical_spacer,
+ Spacer, create_spacer,
 )
-from GUI.tabs.info_tab_gui import InfoTab
-from GUI.tabs.settings_tab_gui import SettingsTabUi
+from UI.tabs.info_tab_ui import InfoTab
+from UI.tabs.settings_tab_ui import SettingsTabUi
 from settings.profile_manager import profile_manager
 
 
@@ -124,8 +125,8 @@ class MqttHubUi(QWidget):
             max_size=50,
             add_layout=self.sidebar_layout,
         )
-        self.logo_button.setStyleSheet(styles.sidebar_button('GUI/icons/logo-icon.png'))
-        self.sidebar_layout.addItem(vertical_spacer)
+        self.logo_button.setStyleSheet(styles.sidebar_button('UI/icons/logo-icon.png'))
+        self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.main_button = create_button(
             '',
             self.sidebar_frame,
@@ -133,7 +134,7 @@ class MqttHubUi(QWidget):
             max_size=50,
             add_layout=self.sidebar_layout,
         )
-        self.main_button.setStyleSheet(styles.sidebar_button('GUI/icons/main-icon.png'))
+        self.main_button.setStyleSheet(styles.sidebar_button('UI/icons/main-icon.png'))
 
         self.plus_button = create_button(
             '',
@@ -142,10 +143,10 @@ class MqttHubUi(QWidget):
             max_size=50,
             add_layout=self.sidebar_layout,
         )
-        self.plus_button.setStyleSheet(styles.sidebar_button('GUI/icons/plus-icon.png'))
+        self.plus_button.setStyleSheet(styles.sidebar_button('UI/icons/plus-icon.png'))
 
-        self.sidebar_layout.addItem(vertical_spacer)
-        self.sidebar_layout.addItem(vertical_spacer)
+        self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
+        self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
 
         self.settings_button = create_button(
             '',
@@ -155,7 +156,7 @@ class MqttHubUi(QWidget):
             add_layout=self.sidebar_layout,
         )
         self.settings_button.setStyleSheet(
-            styles.sidebar_button('GUI/icons/settings-icon.png')
+            styles.sidebar_button('UI/icons/settings-icon.png')
         )
 
         self.info_button = create_button(
@@ -165,7 +166,7 @@ class MqttHubUi(QWidget):
             max_size=(50, 50),
             add_layout=self.sidebar_layout,
         )
-        self.info_button.setStyleSheet(styles.sidebar_button('GUI/icons/info-icon.png'))
+        self.info_button.setStyleSheet(styles.sidebar_button('UI/icons/info-icon.png'))
 
         self.verticalLayout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
@@ -193,11 +194,11 @@ class MqttHubUi(QWidget):
             max_size=30,
             add_layout=self.header_horizontal_layout,
         )
-        self.edit_button.setStyleSheet(styles.header_button('GUI/icons/edit-icon.png'))
+        self.edit_button.setStyleSheet(styles.header_button('UI/icons/edit-icon.png'))
         if profile_manager.current_profile.id == 'profile_00':
             self.edit_button.hide()
 
-        self.header_horizontal_layout.addItem(horizontal_spacer)
+        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.header_layout = QtWidgets.QGridLayout()
 
         self.profile_button = create_button(
@@ -211,7 +212,7 @@ class MqttHubUi(QWidget):
             'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: none;'
             'border-radius: 5px; padding: 0px 10px, 5px,} QPushButton:hover {background-color: rgb(45, 45, 45);}'
         )
-        self.profile_button.setIcon(QIcon('GUI/icons/expand-profile-icon.png'))
+        self.profile_button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
         self.profile_button.setIconSize(QSize(24, 24))
         self.profile_button.setLayoutDirection(Qt.RightToLeft)
 
@@ -224,7 +225,7 @@ class MqttHubUi(QWidget):
             add_params=[0, 3, 1, 1],
         )
         self.connect_button.setStyleSheet(
-            styles.header_button('GUI/icons/connect-icon.png')
+            styles.header_button('UI/icons/connect-icon.png')
         )
 
         self.header_horizontal_layout.addLayout(self.header_layout)
@@ -235,7 +236,7 @@ class MqttHubUi(QWidget):
     def setup_plus_header(self):
         self.header_layout = QtWidgets.QGridLayout()
 
-        self.header_layout.addItem(horizontal_spacer, 0, 0, 1, 1)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = create_frame(
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
         )
@@ -244,7 +245,7 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.setContentsMargins(10, 5, 25, 5)
         self.header_horizontal_layout.setSpacing(20)
 
-        self.header_horizontal_layout.addItem(horizontal_spacer)
+        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
         self.profile_name = create_label(
             'New Profile',
@@ -253,7 +254,7 @@ class MqttHubUi(QWidget):
             add_params=[0, 1, 1, 1],
         )
 
-        self.header_layout.addItem(horizontal_spacer, 0, 2, 1, 1)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
 
         self.save_plus_button = create_button(
             'Save',
@@ -277,7 +278,7 @@ class MqttHubUi(QWidget):
         self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
 
     def setup_edit_header(self):
-        self.header_layout.addItem(horizontal_spacer, 0, 0, 1, 1)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = QtWidgets.QFrame(self.main_window)
         self.header_frame.setStyleSheet(
             "QFrame {\n" "   background-color: rgb(35, 35, 35);\n" "}"
@@ -287,7 +288,7 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.setContentsMargins(10, 5, 25, 5)
         self.header_horizontal_layout.setSpacing(20)
 
-        self.header_horizontal_layout.addItem(horizontal_spacer)
+        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.header_layout = QtWidgets.QGridLayout()
 
         self.profile_name = create_label(
@@ -297,7 +298,7 @@ class MqttHubUi(QWidget):
             add_params=[0, 1, 1, 1],
         )
 
-        self.header_layout.addItem(horizontal_spacer, 0, 2, 1, 1)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
 
         self.save_edit_button = create_button(
             'Save',

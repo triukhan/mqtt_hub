@@ -1,3 +1,5 @@
+from enum import Enum
+
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
     QCheckBox,
@@ -11,14 +13,15 @@ from PyQt5.QtWidgets import (
     QSpacerItem,
 )
 
-from GUI import styles
+from UI import styles
 
 LABEL_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
 )
-vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-horizontal_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
+class Spacer(Enum):
+    HORIZONTAL = 0
+    VERTICAL = 1
 
 def create_label(  # TODO: typing
     text: str,
@@ -27,8 +30,8 @@ def create_label(  # TODO: typing
     add_params: list | None = None,
     style: str = styles.LABEL,
     *,
-    min_size: tuple | None = None,
-    max_size: tuple | None = None,
+    min_size: list | None = None,
+    max_size: list | None = None,
 ):
     label = QLabel(main_layout)
     label.setText(text)
@@ -68,7 +71,10 @@ def create_checkbox(
     checkbox = QCheckBox(main_layout)
     checkbox.setStyleSheet(styles.CHECK_BOX)
     checkbox.setText(text)
-    add_layout.addWidget(checkbox, *add_params)
+    if add_params:
+        add_layout.addWidget(checkbox, *add_params)
+    else:
+        add_layout.addWidget(checkbox)
     return checkbox
 
 
@@ -79,9 +85,10 @@ def create_radio(text: str, main_layout, add_layout, add_params: list | None = N
     add_layout.addWidget(radio)
 
 
-def create_frame(main_layout, style: str = styles.FRAME_PART, add_layout=None):
+def create_frame(main_layout, style: str | bool = styles.FRAME_PART, add_layout=None):
     frame = QFrame(main_layout)
-    frame.setStyleSheet(style)
+    if style:
+        frame.setStyleSheet(style)
 
     if add_layout is not None:
         add_layout.addWidget(frame)
@@ -148,3 +155,10 @@ def create_list(layout, style=styles.LIST, add_layout=None):
         add_layout.addWidget(qlist)
 
     return qlist
+
+def create_spacer(spacer_type: Spacer):
+    match spacer_type:
+        case Spacer.HORIZONTAL:
+            return QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        case Spacer.VERTICAL:
+            return QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)

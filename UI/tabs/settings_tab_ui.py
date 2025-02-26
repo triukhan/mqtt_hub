@@ -1,14 +1,14 @@
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QSpinBox, QVBoxLayout, QWidget
 
-from GUI import styles
-from GUI.interface_utils import (
+from UI import styles
+from UI.interface_utils import (
     create_button,
     create_checkbox,
     create_field,
     create_frame,
     create_label,
     create_layout,
-    vertical_spacer,
+    create_spacer, Spacer,
 )
 
 
@@ -22,8 +22,8 @@ class SettingsTabUi(QWidget):
             self,
             self.settings_layout,
             style=styles.LABEL,
-            min_size=(100, 20),
-            max_size=(100, 20),
+            min_size=[100, 20],
+            max_size=[100, 20],
         )
         self.logger_frame = create_frame(self, styles.FRAME_PART)
         self.logger_layout = create_layout(
@@ -76,7 +76,7 @@ class SettingsTabUi(QWidget):
         self.logger_layout.addLayout(self.logger_path_layout, 2, 1, 1, 1)
 
         self.settings_layout.addWidget(self.logger_frame)
-        self.settings_layout.addItem(vertical_spacer)
+        self.settings_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.settings_inner_layout = QGridLayout()
         self.settings_layout.addLayout(self.settings_inner_layout)
         self.gridLayout_10.addLayout(self.settings_layout, 0, 0, 1, 1)

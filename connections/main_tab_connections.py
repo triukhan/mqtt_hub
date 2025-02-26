@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidgetItem
 
 from connections.clipboard_dialog_connections import ClipboardDialog
-from connections.edit_subscription_dialog_connections import EditSubscribeDialog
-from GUI.tabs.main_tab_gui import MainTabUI, TagsWidget
+from connections.topic_dialog_connections import TopicDialog
+from UI.tabs.main_tab_ui import MainTabUI, TagsWidget
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 
@@ -75,7 +75,7 @@ class MainTab(MainTabUI):
             )
 
     def show_edit_subscription_dialog(self):
-        EditSubscribeDialog(self.save_and_subscribe_topic, self).exec_()
+        TopicDialog(self.save_and_subscribe_topic, self).exec_()
 
     def show_edit_topic_dialog(self, topic, tag_dict):
-        EditSubscribeDialog(self.save_topic, self, topic=topic, tag=tag_dict).exec_()
+        TopicDialog(self.save_topic, self, topic, tag_dict).exec_()

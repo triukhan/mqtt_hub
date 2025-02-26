@@ -1,13 +1,12 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QGridLayout
 
-from GUI.interface_utils import create_button, create_label, create_field, horizontal_spacer, create_layout, \
-    create_frame
-from GUI.styles import X_BUTTON
+from UI.interface_utils import create_button, create_label, create_field, create_layout, create_frame
+from UI.styles import X_BUTTON
 
 
-class ClipboardDialogUI(object):
-    def setup_ui(self, clipboard_dialog):
+class ClipboardDialogUI:
+    def _setup_ui(self, clipboard_dialog):
         clipboard_dialog.resize(365, 190)
         clipboard_dialog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
         clipboard_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
