@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
-from PyQt5.QtWidgets import QGraphicsOpacityEffect
+from PyQt5.QtWidgets import QGraphicsOpacityEffect, QPushButton
 
 from settings.profile_manager import profile_manager
 from UI.main_window_ui import MqttHubUi
@@ -9,7 +9,7 @@ class MainWindow(MqttHubUi):
     def __init__(self):
         super().__init__()
         self._setup_ui()
-        self.setup_main_header()
+        self.open_main_tab()
 
         self.connect_sidebar()
         self.main_tab.setup_topics()
@@ -27,29 +27,39 @@ class MainWindow(MqttHubUi):
         self.show_positive_notification('Profile successfully created')
 
     def open_main_tab(self):
+        self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(0)
         self.setup_main_header()
         self.update_profile_button()
+        self.select_button(self.main_button)
 
     def open_plus_tab(self):
+        self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(1)
         self._setup_plus_header()
+        self.select_button(self.plus_button)
 
     def open_edit_tab(self):
+        self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(2)
         self._setup_edit_header()
         self.save_edit_button.clicked.connect(self.save_edit_profile)
 
     def save_edit_profile(self):
+        self.clear_sidebar_selections()
         self.edit_tab.save_settings()
         self.open_main_tab()
         self.show_positive_notification('Settings were successfully saved')
 
     def open_settings_tab(self):
+        self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(3)
+        self.select_button(self.settings_button)
 
     def open_info_tab(self):
+        self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(4)
+        self.select_button(self.info_button)
 
     def connect_sidebar(self):
         self.main_button.clicked.connect(self.open_main_tab)
@@ -126,3 +136,20 @@ class MainWindow(MqttHubUi):
             self.timer.start(5000)
             self.notification_opacity.setOpacity(0.7)
         return super().eventFilter(source, event)
+
+    @staticmethod
+    def select_button(button: QPushButton):
+        button.setStyleSheet(
+            button.styleSheet() + 'QPushButton {background-color: rgb(40, 40, 40);}'
+        )
+
+    def clear_sidebar_selections(self):
+        for button in (
+            self.main_button,
+            self.plus_button,
+            self.settings_button,
+            self.info_button,
+        ):
+            button.setStyleSheet(
+                button.styleSheet() + 'QPushButton {background-color: rgb(30, 30, 30)}'
+            )

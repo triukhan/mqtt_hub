@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QListWidgetItem
 
 from connections.clipboard_dialog_connections import ClipboardDialog
 from connections.topic_dialog_connections import TopicDialog
-from UI.tabs.main_tab_ui import MainTabUI, TagsWidget
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
+from UI.tabs.main_tab_ui import MainTabUI, TagsWidget
 
 
 class MainTab(MainTabUI):
@@ -65,7 +65,8 @@ class MainTab(MainTabUI):
         for topic in profile_manager.current_profile.topics:
             self.tags_widget.add_tag(topic)
 
-    def save_topic(self, topic: Topic, new_settings: dict, tag_dict: dict):
+    @staticmethod
+    def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):
         topic.set_fields_from_dict(new_settings)
         tag_dict['label'].setText(topic.get_name())
         if color := topic.color:

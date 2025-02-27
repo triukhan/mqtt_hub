@@ -2,8 +2,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QDialog
 
-from UI.dialogs.topic_dialog_ui import TopicDialogUI
 from settings.topic import Topic
+from UI.dialogs.topic_dialog_ui import TopicDialogUI
 
 
 class TopicDialog(QDialog, TopicDialogUI):
@@ -33,7 +33,7 @@ class TopicDialog(QDialog, TopicDialogUI):
     def _open_color_picker(self):
         color = QColorDialog.getColor()
         if color.isValid():
-            self.set_color_button(color)
+            self._set_color_button(color)
             self.color_field.setText(color.name())
 
     def _get_topic_settings(self):

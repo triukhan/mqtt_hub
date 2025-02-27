@@ -17,16 +17,18 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from settings.profile_manager import profile_manager
+from settings.topic import Topic
 from UI import styles
 from UI.interface_utils import (
+    Spacer,
     create_button,
     create_frame,
     create_layout,
     create_list,
-    create_spacer, Spacer,
+    create_spacer,
 )
-from settings.profile_manager import profile_manager
-from settings.topic import Topic
+from UI.styles import CLIPBOARD_LIST
 
 
 class MainTabUI(QWidget):
@@ -161,10 +163,10 @@ class MainTabUI(QWidget):
         self.add_clipboard_button = create_button(
             'Add to Clipboard',
             self.publisher_head_frame,
-            min_size=(0, 25),
-            max_size=(150, 25),
+            [0, 25],
+            [150, 25],
+            self.horizontalLayout_5,
             style=styles.APP_BUTTON,
-            add_layout=self.horizontalLayout_5,
         )
 
         self.qos_button = create_button(
@@ -202,12 +204,7 @@ class MainTabUI(QWidget):
         self.clipboard_list.setSizePolicy(sizePolicy)
         self.clipboard_list.setMinimumSize(QtCore.QSize(220, 0))
         self.clipboard_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.clipboard_list.setStyleSheet(
-            'QListView {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50);'
-            'background-color: rgb(35, 35, 35);} QListView::item {color: rgb(186, 189, 182); background-color: '
-            'rgb(45, 45, 45);} QListView::item:selected {background-color: rgb(40, 40, 40); color: #FFF;'
-            'border-color: rgb(114, 159, 207);}'
-        )
+        self.clipboard_list.setStyleSheet(CLIPBOARD_LIST)
         self.clipboard_list.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.addWidget(self.clipboard_list)
         self.command_field = QTextEdit(self.main_left_layout)
@@ -356,14 +353,19 @@ class TagsWidget(QFrame):
 
     def select_tag(self, tag_frame, topic):
         if self.selected_tag:
-            self.selected_tag.setStyleSheet(
-                "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 5px;}"
+            style = (
+                'QFrame {border-right: none; border-top: none; border-bottom: none;}'
+                if 'border-left' in self.selected_tag.styleSheet()
+                else 'QFrame {border: none;}'
             )
+            self.selected_tag.setStyleSheet(self.selected_tag.styleSheet() + style)
 
         self.selected_tag = tag_frame
-        self.selected_tag.setStyleSheet(
-            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding-left: 2px; "
-            "border: 2px solid rgb(70, 70, 70);}"
+        border = '2px solid rgb(70, 70, 70);'
+        style = (
+            f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
+            if 'border-left' in self.selected_tag.styleSheet()
+            else f'QFrame {{border: {border}}}'
         )
-
+        self.selected_tag.setStyleSheet(self.selected_tag.styleSheet() + style)
         profile_manager.topic_to_publish = topic
