@@ -170,7 +170,7 @@ class MainTabUI(QWidget):
         self.qos_button = create_button(
             'Qos 0',
             self.publisher_head_frame,
-            styles.PICKER_BUTTON,
+            style=styles.PICKER_BUTTON,
             min_size=(0, 25),
             max_size=(80, 25),
             add_layout=self.horizontalLayout_5,
@@ -306,7 +306,7 @@ class TagsWidget(QFrame):
             'QPushButton:hover {background-color: rgb(45, 45, 45)}'
         )
         self.add_button = create_button(
-            '', self, add_button_style, min_size=30, max_size=30
+            '', self, style=add_button_style, min_size=30, max_size=30
         )
         self.tags_layout.addWidget(self.add_button)
 

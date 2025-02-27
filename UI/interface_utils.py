@@ -1,6 +1,8 @@
 from enum import Enum
 
 from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -116,11 +118,11 @@ def create_layout(
 def create_button(
     text,
     layout,
-    style=styles.APP_BUTTON,
     min_size=None,
     max_size=None,
     add_layout=None,
     add_params=None,
+    style=styles.APP_BUTTON,
     font=None,
 ):  # TODO: font
     button = QPushButton(layout)
@@ -162,3 +164,21 @@ def create_spacer(spacer_type: Spacer):
             return QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         case Spacer.VERTICAL:
             return QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+def create_expand_button(text, layout, add_layout, add_params: list):
+    button = create_button(
+        text,
+        layout,
+        min_size=(0, 30),
+        add_layout=add_layout,
+        add_params=add_params,
+    )
+    button.setStyleSheet(
+        'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: none;'
+        'border-radius: 5px; padding: 0px 10px, 5px,} QPushButton:hover {background-color: rgb(45, 45, 45);}'
+    )
+    button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
+    button.setIconSize(QSize(24, 24))
+    button.setLayoutDirection(Qt.RightToLeft)
+
+    return button

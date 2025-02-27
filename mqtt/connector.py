@@ -70,6 +70,7 @@ class MQTTConnector:
 
 class MQTTMixin(QObject, MQTTConnector):
     message_received = pyqtSignal(str, str)
+    notification_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -80,3 +81,10 @@ class MQTTMixin(QObject, MQTTConnector):
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)
         print(formatted_message)
+
+    def on_connect(self, _, __, ___, rc):
+        if rc == 0:
+            self.notification_signal.emit(f'Successfully connected!')
+            for topic in self.topics:
+                print(f'Topic: {topic.address}')
+                self.client.subscribe(topic.address)

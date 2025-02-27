@@ -8,7 +8,8 @@ from UI.main_window_ui import MqttHubUi
 class MainWindow(MqttHubUi):
     def __init__(self):
         super().__init__()
-        self.setup_ui()
+        self._setup_ui()
+        self.setup_main_header()
 
         self.connect_sidebar()
         self.main_tab.setup_topics()
@@ -23,6 +24,7 @@ class MainWindow(MqttHubUi):
         settings = self.plus_tab.get_settings()
         profile_manager.create_profile(**settings)
         self.open_main_tab()
+        self.show_positive_notification('Profile successfully created')
 
     def open_main_tab(self):
         self.all_tabs.setCurrentIndex(0)
@@ -31,11 +33,17 @@ class MainWindow(MqttHubUi):
 
     def open_plus_tab(self):
         self.all_tabs.setCurrentIndex(1)
-        self.setup_plus_header()
+        self._setup_plus_header()
 
     def open_edit_tab(self):
         self.all_tabs.setCurrentIndex(2)
-        self.setup_edit_header()
+        self._setup_edit_header()
+        self.save_edit_button.clicked.connect(self.save_edit_profile)
+
+    def save_edit_profile(self):
+        self.edit_tab.save_settings()
+        self.open_main_tab()
+        self.show_positive_notification('Settings were successfully saved')
 
     def open_settings_tab(self):
         self.all_tabs.setCurrentIndex(3)
@@ -86,8 +94,11 @@ class MainWindow(MqttHubUi):
         )  # TODO
 
     def setup_main_header(self):
-        super().setup_main_header()
+        super()._setup_main_header()
+        if profile_manager.current_profile.id == 'profile_00':
+            self.edit_button.hide()
         self._setup_notifications()
+        self.edit_button.clicked.connect(self.open_edit_tab)
 
     def fade_notification(self):
         self.opacity_fade = QPropertyAnimation(self.notification_opacity, b"opacity")

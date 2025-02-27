@@ -13,6 +13,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.connector = MQTTMixin()
 
         self.connector.message_received.connect(self.update_list_widget)
+        self.connector.notification_signal.connect(self.show_positive_notification)
 
         self.main_tab.publish_button.clicked.connect(
             lambda: self.connector.publish(self.main_tab.get_command_text())
@@ -25,7 +26,6 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
     def start_connection(self):
         try:
             self.connector.start(self.current_profile.topics)
-            self.show_positive_notification('Connected!')
         except Exception as e:
             self.show_fail_notification(f'Error: {e}')
 
