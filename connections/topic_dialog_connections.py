@@ -1,15 +1,26 @@
+from typing import Callable
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QColorDialog, QDialog
 
+from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI.dialogs.topic_dialog_ui import TopicDialogUI
 
 
 class TopicDialog(QDialog, TopicDialogUI):
-    def __init__(self, save_method, parent, topic: Topic = None, tag: dict = None):
+    def __init__(
+        self,
+        save_method: Callable,
+        parent,
+        topic: Topic = None,
+        tag: dict = None,
+        delete_method: Callable = None,
+    ):
         super().__init__(parent)
         self._save_method = save_method
+        self._delete_method = delete_method
         self._tag = tag
         self._topic = topic
 
@@ -19,10 +30,19 @@ class TopicDialog(QDialog, TopicDialogUI):
         self._setup_connections()
 
     def _setup_connections(self):
+        if not self._delete_method:
+            self.delete_button.hide()
+        else:
+            self.delete_button.clicked.connect(self._delete_and_close)
         self.exit_button.clicked.connect(self.close)
         self.color_button.clicked.connect(self._open_color_picker)
         self.save_button.clicked.connect(self.save_and_close)
         self.cancel_button.clicked.connect(self.close)
+
+    def _delete_and_close(self):
+        self._delete_method(self._topic)
+        profile_manager.current_profile.delete_topic(self._topic)
+        self.close()
 
     def _set_color_button(self, color):
         color_hex = color.name() if isinstance(color, QColor) else QColor(color).name()

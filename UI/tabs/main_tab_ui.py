@@ -331,6 +331,7 @@ class TagsWidget(QFrame):
         tag_layout.addWidget(tag_label)
         tag_layout.addWidget(icon_button)
         tag.setLayout(tag_layout)
+        tag.setProperty('address', topic.address)
 
         tag.mousePressEvent = lambda event: self.select_tag(tag, topic)
         self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag)
@@ -354,3 +355,15 @@ class TagsWidget(QFrame):
                 if tag_frame.property('add_button'):
                     continue
                 self.remove_tag(tag_frame)
+
+    def find_tag_by_address(self, address):
+        for i in range(self.tags_layout.count() - 1, -1, -1):
+            item = self.tags_layout.itemAt(i)
+            if item:
+                tag_frame = item.widget()
+                if tag_frame.property('address') == address:
+                    return tag_frame
+
+    def remove_tag_by_address(self, address):
+        tag = self.find_tag_by_address(address)
+        self.remove_tag(tag)

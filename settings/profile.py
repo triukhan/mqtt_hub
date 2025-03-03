@@ -181,3 +181,9 @@ class Profile:
         topic.create()
         self._topics.append(topic)
         return topic
+
+    def delete_topic(self, topic):
+        if topic in self._topics:
+            self._topics.remove(topic)
+        self.settings.remove_section(topic.address)
+        self.settings.remove_option('topics', topic.address)

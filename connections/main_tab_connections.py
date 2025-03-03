@@ -25,7 +25,7 @@ class MainTab(MainTabUI):
         self.add_button.clicked.connect(self.create_topic)
 
     def create_topic(self):
-        self.show_edit_subscription_dialog()
+        self.show_create_topic_dialog()
 
     def get_command_text(self):
         return self.command_field.toPlainText()
@@ -61,19 +61,6 @@ class MainTab(MainTabUI):
         topic = profile_manager.current_profile.add_topic(topic_settings)
         self.tags_widget.add_tag(topic)
 
-    # def setup_topics(self):
-    #     for topic in profile_manager.current_profile.topics:
-    #         self.tags_widget.add_tag(topic)
-    #
-    # def clear_topics(self):
-    #     for topic in profile_manager.current_profile.topics:
-    #         self.tags_widget.remove_tag(topic)
-    #
-    # def set_profile(self):
-    #     self.clear_topics()
-    #     super(self.set_profile())
-    #     self.setup_topics()
-
     @staticmethod
     def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):
         topic.set_fields_from_dict(new_settings)
@@ -84,8 +71,11 @@ class MainTab(MainTabUI):
                 + f'QFrame {{border-left: 2px solid {color};}} QFrame:hover {{border-left: 2px solid {color};}}'
             )
 
-    def show_edit_subscription_dialog(self):
+    def delete_topic(self, topic):
+        self.tags_widget.remove_tag_by_address(topic.address)
+
+    def show_create_topic_dialog(self):
         TopicDialog(self.save_and_subscribe_topic, self).exec_()
 
     def show_edit_topic_dialog(self, topic, tag_dict):
-        TopicDialog(self.save_topic, self, topic, tag_dict).exec_()
+        TopicDialog(self.save_topic, self, topic, tag_dict, self.delete_topic).exec_()

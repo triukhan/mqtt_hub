@@ -49,6 +49,23 @@ class Settings:
         self.config.set(section, key, str(value))
         self.save_settings()
 
+    def remove_section(self, section):
+        self.load_settings()
+        self.config.remove_section(section)
+        self.save_settings()
+
+    def remove_option(self, section, option):
+        self.load_settings()
+        if self.config.has_section(section):
+            if self.config.has_option(section, option):
+                self.config.remove_option(section, option)
+            else:
+                print(f"Option '{section}' not found in section '{section}'.")
+        else:
+            print(f"Section '{section}' not found.")
+
+        self.save_settings()
+
 
 def create_ini_file(filename: str, path: str, data: dict | None = None):
     config = configparser.ConfigParser()
