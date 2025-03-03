@@ -23,6 +23,7 @@ class Profile:
     _crt_file: str | None = None
     _key_file: str | None = None
     _topics: list | None = field(default_factory=list)
+    _is_default: bool | None = None
     clipboard: dict = defaultdict
     is_created: bool = False
 
@@ -164,6 +165,10 @@ class Profile:
     @property
     def topics(self):
         return self._topics
+
+    @property
+    def is_default(self):
+        return self._is_default
 
     def add_clipboard(self, message_name: str, message_text: str):
         self.clipboard[message_name] = message_text

@@ -1,20 +1,29 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtCore import QPoint, QSize, Qt
+from PyQt5.QtGui import QFontMetrics, QIcon
+from PyQt5.QtWidgets import (
+    QAction,
+    QGridLayout,
+    QHBoxLayout,
+    QMenu,
+    QVBoxLayout,
+    QWidget,
+)
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
+from settings.profile_manager import profile_manager
 from UI import styles
 from UI.interface_utils import (
     Spacer,
     create_button,
-    create_expand_button,
     create_frame,
     create_label,
     create_layout,
     create_spacer,
+    set_button_text,
 )
-from UI.styles import sidebar_button
+from UI.styles import MENU, sidebar_button
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -146,7 +155,7 @@ class MqttHubUi(QWidget):
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
         )
         self.header_horizontal_layout = create_layout(
-            QHBoxLayout, [20, 5, 10, 5], 15, out_layout=self.header_frame
+            QHBoxLayout, [20, 5, 10, 5], 100, out_layout=self.header_frame
         )
         self.edit_button = create_button(
             '',
@@ -167,8 +176,8 @@ class MqttHubUi(QWidget):
         )
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        self.header_layout = create_layout(QGridLayout)
-        self.profile_button = create_expand_button(
+        self.header_layout = create_layout(QGridLayout, spacing=12)
+        self.profile_button = self.create_profile_button(
             'No Profile',
             self.header_frame,
             self.header_layout,
@@ -287,3 +296,68 @@ class MqttHubUi(QWidget):
 
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
+
+    def create_profile_button(self, text, layout, add_layout, add_params: list):
+        button = create_button(
+            text,
+            layout,
+            min_size=(0, 30),
+            add_layout=add_layout,
+            add_params=add_params,
+        )
+
+        button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
+        button.setIconSize(QSize(24, 24))
+        button.setLayoutDirection(Qt.RightToLeft)
+
+        button.setStyleSheet(
+            'QPushButton {'
+            'color: rgb(186, 189, 182);'
+            'background-color: rgb(35, 35, 35);'
+            'border-radius: 5px;'
+            'padding: 5px'
+            '} '
+            'QPushButton:hover {background-color: rgb(45, 45, 45);}'
+            'QPushButton::menu-indicator { image: none; }'
+        )
+
+        menu = QMenu()
+
+        profiles = profile_manager.profiles
+        for _, profile in profiles.items():
+            if profile.is_default == 'True':
+                continue
+            font_metrics = QFontMetrics(button.font())
+            elided_text = font_metrics.elidedText(profile.name, Qt.ElideRight, 110)
+
+            action = QAction(elided_text, button)
+            action.triggered.connect(lambda _, p=profile: self.set_profile(p))
+            menu.addAction(action)
+
+        def show_menu():
+            menu.setStyleSheet(MENU)
+            menu.setMinimumWidth(button.width())
+            menu.setMaximumWidth(150)
+            menu.popup(button.mapToGlobal(QPoint(0, button.height())))
+
+        button.clicked.connect(show_menu)
+
+        return button
+
+    def update_profile_button(self):
+        set_button_text(self.profile_button, self.current_profile.name, 100)
+
+    def set_profile(self, profile):
+        if profile == profile_manager.current_profile:
+            return None
+        profile_manager.switch_profile(profile.id)
+        self.update_profile_button()
+        self.clear_topics()
+        self.setup_topics()
+
+    def setup_topics(self):
+        for topic in profile_manager.current_profile.topics:
+            self.main_tab.tags_widget.add_tag(topic)
+
+    def clear_topics(self):
+        self.main_tab.tags_widget.clear_tags()

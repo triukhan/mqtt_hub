@@ -27,8 +27,11 @@ from UI.interface_utils import (
     create_layout,
     create_list,
     create_spacer,
+    deselect_tag,
+    select_tag,
+    set_topic_color,
 )
-from UI.styles import CLIPBOARD_LIST
+from UI.styles import ADD_TAG, CLIPBOARD_LIST, EDIT_TAG, FRAME_COLOR, TAG
 
 
 class MainTabUI(QWidget):
@@ -291,81 +294,63 @@ class TagsWidget(QFrame):
         self.selected_tag = None
 
         self.setFixedHeight(100)
-        self.setStyleSheet("QFrame {background: rgb(35, 35, 35); border: none;}")
+        self.setStyleSheet(FRAME_COLOR)
         self.setContentsMargins(10, 10, 0, 0)
 
         self.tags_layout = FlowLayout(self, spacing=10)
         self.setLayout(self.tags_layout)
 
-        add_button_style = (
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
-            'border-image: url(UI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
-            'QPushButton:hover {background-color: rgb(45, 45, 45)}'
-        )
         self.add_button = create_button(
-            '', self, style=add_button_style, min_size=30, max_size=30
+            '', self, style=ADD_TAG, min_size=30, max_size=30
         )
+        self.add_button.setProperty('add_button', True)
         self.tags_layout.addWidget(self.add_button)
 
     def add_tag(self, topic: Topic):
-        tag_frame = QFrame(self)
-        tag_frame.setStyleSheet(
-            "QFrame {background-color: rgb(45, 45, 45); border-radius: 8; padding: 2px;} "
-            "QFrame:hover {border: 1px solid rgb(70, 70, 70);}"
-        )
-        if topic.color:
-            if color := topic.color:
-                tag_frame.setStyleSheet(
-                    tag_frame.styleSheet()
-                    + f'QFrame {{border-left: 2px solid {color};}} QFrame:hover {{border-left: 2px solid {color};}}'
-                )
+        tag = create_frame(self, TAG)
+        set_topic_color(topic, tag)
+        tag.setFixedSize(115, 30)
+        tag_layout = create_layout(QHBoxLayout, 0, 0, tag)
 
-        tag_frame.setFixedSize(115, 30)
-        tag_layout = QHBoxLayout(tag_frame)
-        tag_layout.setContentsMargins(0, 0, 0, 0)
-        tag_layout.setSpacing(0)
-
-        tag_label = QLabel(topic.get_name(), tag_frame)
+        tag_label = QLabel(topic.get_name(), tag)
         tag_label.setFixedWidth(90)
         tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none}")
         tag_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )
 
-        icon_button = QToolButton(tag_frame)
+        icon_button = QToolButton(tag)
         icon_button.setIcon(QIcon("UI/icons/edit-icon.png"))
         icon_button.setIconSize(QSize(32, 32))
         icon_button.setFixedSize(18, 18)
-        icon_button.setStyleSheet(
-            "QToolButton {background-color: rgb(45, 45, 45); border: none; border-radius: 5} QToolButton:hover {background-color: rgb(60, 60, 60);}"
-        )
+        icon_button.setStyleSheet(EDIT_TAG)
         icon_button.clicked.connect(
-            lambda: self.edit_method(topic, {'frame': tag_frame, 'label': tag_label})
+            lambda: self.edit_method(topic, {'frame': tag, 'label': tag_label})
         )
 
         tag_layout.addWidget(tag_label)
         tag_layout.addWidget(icon_button)
-        tag_frame.setLayout(tag_layout)
+        tag.setLayout(tag_layout)
 
-        tag_frame.mousePressEvent = lambda event: self.select_tag(tag_frame, topic)
+        tag.mousePressEvent = lambda event: self.select_tag(tag, topic)
+        self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag)
 
-        self.tags_layout.insertWidget(self.tags_layout.count() - 1, tag_frame)
-
-    def select_tag(self, tag_frame, topic):
+    def select_tag(self, tag, topic):
         if self.selected_tag:
-            style = (
-                'QFrame {border-right: none; border-top: none; border-bottom: none;}'
-                if 'border-left' in self.selected_tag.styleSheet()
-                else 'QFrame {border: none;}'
-            )
-            self.selected_tag.setStyleSheet(self.selected_tag.styleSheet() + style)
+            deselect_tag(self.selected_tag)
 
-        self.selected_tag = tag_frame
-        border = '2px solid rgb(70, 70, 70);'
-        style = (
-            f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
-            if 'border-left' in self.selected_tag.styleSheet()
-            else f'QFrame {{border: {border}}}'
-        )
-        self.selected_tag.setStyleSheet(self.selected_tag.styleSheet() + style)
+        self.selected_tag = tag
+        select_tag(self.selected_tag)
         profile_manager.topic_to_publish = topic
+
+    def remove_tag(self, tag):
+        self.tags_layout.removeWidget(tag)
+
+    def clear_tags(self):
+        for i in range(self.tags_layout.count() - 1, -1, -1):
+            item = self.tags_layout.itemAt(i)
+            if item:
+                tag_frame = item.widget()
+                if tag_frame.property('add_button'):
+                    continue
+                self.remove_tag(tag_frame)

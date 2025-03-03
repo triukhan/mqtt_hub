@@ -1,8 +1,8 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -21,9 +21,11 @@ LABEL_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
 )
 
+
 class Spacer(Enum):
     HORIZONTAL = 0
     VERTICAL = 1
+
 
 def create_label(  # TODO: typing
     text: str,
@@ -158,27 +160,45 @@ def create_list(layout, style=styles.LIST, add_layout=None):
 
     return qlist
 
+
 def create_spacer(spacer_type: Spacer):
-    match spacer_type:
-        case Spacer.HORIZONTAL:
-            return QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        case Spacer.VERTICAL:
-            return QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-def create_expand_button(text, layout, add_layout, add_params: list):
-    button = create_button(
-        text,
-        layout,
-        min_size=(0, 30),
-        add_layout=add_layout,
-        add_params=add_params,
+    size = (
+        (QSizePolicy.Expanding, QSizePolicy.Minimum)
+        if spacer_type == Spacer.HORIZONTAL
+        else (QSizePolicy.Minimum, QSizePolicy.Expanding)
     )
-    button.setStyleSheet(
-        'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: none;'
-        'border-radius: 5px; padding: 0px 10px, 5px,} QPushButton:hover {background-color: rgb(45, 45, 45);}'
-    )
-    button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
-    button.setIconSize(QSize(24, 24))
-    button.setLayoutDirection(Qt.RightToLeft)
+    return QSpacerItem(40, 20, *size)
 
-    return button
+
+def set_button_text(button, text, max_width):
+    font_metrics = QFontMetrics(button.font())
+    elided_text = font_metrics.elidedText(text, Qt.ElideRight, max_width)
+    button.setText(elided_text)
+
+
+def set_topic_color(topic, tag):
+    if topic.color:
+        if color := topic.color:
+            tag.setStyleSheet(
+                tag.styleSheet()
+                + f'QFrame {{border-left: 2px solid {color};}} QFrame:hover {{border-left: 2px solid {color};}}'
+            )
+
+
+def select_tag(tag):
+    border = '2px solid rgb(70, 70, 70);'
+    style = (
+        f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
+        if 'border-left' in tag.styleSheet()
+        else f'QFrame {{border: {border}}}'
+    )
+    tag.setStyleSheet(tag.styleSheet() + style)
+
+
+def deselect_tag(tag):
+    style = (
+        'QFrame {border-right: none; border-top: none; border-bottom: none;}'
+        if 'border-left' in tag.styleSheet()
+        else 'QFrame {border: none;}'
+    )
+    tag.setStyleSheet(tag.styleSheet() + style)

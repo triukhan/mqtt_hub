@@ -12,7 +12,7 @@ class MainWindow(MqttHubUi):
         self.open_main_tab()
 
         self.connect_sidebar()
-        self.main_tab.setup_topics()
+        self.setup_topics()
         self.update_profile_button()
         self._setup_notifications()
 
@@ -44,6 +44,7 @@ class MainWindow(MqttHubUi):
         self.all_tabs.setCurrentIndex(2)
         self._setup_edit_header()
         self.save_edit_button.clicked.connect(self.save_edit_profile)
+        self.edit_tab.load_current_profile_settings()
 
     def save_edit_profile(self):
         self.clear_sidebar_selections()
@@ -67,9 +68,6 @@ class MainWindow(MqttHubUi):
         self.settings_button.clicked.connect(self.open_settings_tab)
         self.info_button.clicked.connect(self.open_info_tab)
         self.exit_button.clicked.connect(self.close)
-
-    def update_profile_button(self):
-        self.profile_button.setText(self.current_profile.name)
 
     def show_fail_notification(self, text=None):
         self.notification.setStyleSheet(

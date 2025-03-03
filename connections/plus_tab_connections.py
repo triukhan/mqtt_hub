@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox
 
-from UI.tabs.plus_tab_ui import PlusTabUI
 from settings.profile_manager import profile_manager
+from UI.tabs.plus_tab_ui import PlusTabUI
 
 
 class PlusTab(PlusTabUI):
@@ -53,7 +53,11 @@ class EditTab(PlusTabUI):
     def on_button_click(self):
         QMessageBox.information(self, "Info", "Button clicked in Plus Tab!")
 
+    def _update_current_profile(self):
+        self.current_profile = profile_manager.current_profile
+
     def load_current_profile_settings(self):
+        self._update_current_profile()
         self.name_field.setText(self.current_profile.name)
         self.host_field.setText(self.current_profile.host)
         self.port_field.setText(self.current_profile.port)
@@ -63,6 +67,7 @@ class EditTab(PlusTabUI):
         self.ssl_checkbox.setChecked(self.current_profile.ssl == 'True')
 
     def save_settings(self):  # TODO: check if it can be better
+        self._update_current_profile()
         self.current_profile.name = self.name_field.text()
         self.current_profile.host = self.host_field.text()
         self.current_profile.port = self.port_field.text()

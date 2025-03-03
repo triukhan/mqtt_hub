@@ -61,9 +61,18 @@ class MainTab(MainTabUI):
         topic = profile_manager.current_profile.add_topic(topic_settings)
         self.tags_widget.add_tag(topic)
 
-    def setup_topics(self):
-        for topic in profile_manager.current_profile.topics:
-            self.tags_widget.add_tag(topic)
+    # def setup_topics(self):
+    #     for topic in profile_manager.current_profile.topics:
+    #         self.tags_widget.add_tag(topic)
+    #
+    # def clear_topics(self):
+    #     for topic in profile_manager.current_profile.topics:
+    #         self.tags_widget.remove_tag(topic)
+    #
+    # def set_profile(self):
+    #     self.clear_topics()
+    #     super(self.set_profile())
+    #     self.setup_topics()
 
     @staticmethod
     def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):
