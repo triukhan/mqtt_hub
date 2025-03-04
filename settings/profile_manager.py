@@ -8,7 +8,7 @@ from settings.topic import Topic
 
 class ProfileManager:
     def __init__(self):
-        self._profiles_ini: Settings = Settings('settings/profiles/profiles.ini')
+        self._profiles_ini: Settings = Settings(PROFILES_PATH + 'profiles.ini')
         self._profiles = {}
         self.__profiles_from_ini()
         self.topic_to_publish = None

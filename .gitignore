@@ -1,3 +1,7 @@
 settings/profiles/*
 !settings/profiles/profiles.ini
 !settings/profiles/profile_00.ini
+dist/main/_internal/settings
+!dist/main/_internal/settings/profile_00.ini
+!dist/main/_internal/settings/profiles.ini
+__pycache__/
