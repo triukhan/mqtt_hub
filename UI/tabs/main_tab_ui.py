@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
+from UI.icons.icons import EDIT_ICON, EXPAND_ICON
 from UI.interface_utils import (
     Spacer,
     create_button,
@@ -80,7 +81,7 @@ class MainTabUI(QWidget):
             add_layout=self.message_formating,
         )
 
-        self.convertor_button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
+        self.convertor_button.setIcon(QIcon(EXPAND_ICON))
         self.convertor_button.setIconSize(QSize(24, 24))
         self.convertor_button.setLayoutDirection(Qt.RightToLeft)
 
@@ -180,7 +181,7 @@ class MainTabUI(QWidget):
             max_size=(80, 25),
             add_layout=self.horizontalLayout_5,
         )
-        self.qos_button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
+        self.qos_button.setIcon(QIcon(EXPAND_ICON))
         self.qos_button.setIconSize(QSize(24, 24))
         self.qos_button.setLayoutDirection(Qt.RightToLeft)
 
@@ -320,7 +321,7 @@ class TagsWidget(QFrame):
         )
 
         icon_button = QToolButton(tag)
-        icon_button.setIcon(QIcon("UI/icons/edit-icon.png"))
+        icon_button.setIcon(QIcon(EDIT_ICON))
         icon_button.setIconSize(QSize(32, 32))
         icon_button.setFixedSize(18, 18)
         icon_button.setStyleSheet(EDIT_TAG)

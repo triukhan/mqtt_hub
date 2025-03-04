@@ -2,7 +2,7 @@ import configparser
 import os
 
 from settings.profile import PROFILES_PATH, Profile
-from settings.settings import Settings, create_ini_file
+from settings.settings import Settings, create_ini_file, get_path
 from settings.topic import Topic
 
 
@@ -18,9 +18,9 @@ class ProfileManager:
         return self.get_current_profile()
 
     def __profiles_from_ini(self):
-        for filename in os.listdir(PROFILES_PATH):
+        for filename in os.listdir(get_path(PROFILES_PATH)):
             if filename.endswith('.ini') and not filename == 'profiles.ini':
-                filepath = os.path.join(PROFILES_PATH, filename)
+                filepath = get_path(os.path.join(PROFILES_PATH, filename))
                 profile_file = configparser.ConfigParser()
                 profile_file.read(filepath, encoding='utf-8')
                 profile_id = os.path.splitext(filename)[0]

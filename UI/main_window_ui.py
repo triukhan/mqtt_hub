@@ -14,6 +14,16 @@ from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
 from settings.profile_manager import profile_manager
 from UI import styles
+from UI.icons.icons import (
+    CONNECT_ICON,
+    EDIT_ICON,
+    EXPAND_ICON,
+    INFO_ICON,
+    LOGO_ICON,
+    MAIN_ICON,
+    PLUS_ICON,
+    SETTINGS_ICON,
+)
 from UI.interface_utils import (
     Spacer,
     create_button,
@@ -105,7 +115,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.logo_button.setStyleSheet(styles.sidebar_button('UI/icons/logo-icon.png'))
+        self.logo_button.setStyleSheet(styles.sidebar_button(LOGO_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.main_button = create_button(
             '',
@@ -114,7 +124,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.main_button.setStyleSheet(styles.sidebar_button('UI/icons/main-icon.png'))
+        self.main_button.setStyleSheet(styles.sidebar_button(MAIN_ICON))
         self.plus_button = create_button(
             '',
             self.sidebar_frame,
@@ -122,7 +132,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.plus_button.setStyleSheet(sidebar_button('UI/icons/plus-icon.png'))
+        self.plus_button.setStyleSheet(sidebar_button(PLUS_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.settings_button = create_button(
@@ -132,9 +142,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.settings_button.setStyleSheet(
-            styles.sidebar_button('UI/icons/settings-icon.png')
-        )
+        self.settings_button.setStyleSheet(styles.sidebar_button(SETTINGS_ICON))
         self.info_button = create_button(
             '',
             self.sidebar_frame,
@@ -142,7 +150,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.info_button.setStyleSheet(styles.sidebar_button('UI/icons/info-icon.png'))
+        self.info_button.setStyleSheet(styles.sidebar_button(INFO_ICON))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
 
@@ -164,7 +172,7 @@ class MqttHubUi(QWidget):
             30,
             self.header_horizontal_layout,
         )
-        self.edit_button.setStyleSheet(styles.header_button('UI/icons/edit-icon.png'))
+        self.edit_button.setStyleSheet(styles.header_button(EDIT_ICON))
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.notification = create_button(
@@ -191,9 +199,7 @@ class MqttHubUi(QWidget):
             self.header_layout,
             [0, 3, 1, 1],
         )
-        self.connect_button.setStyleSheet(
-            styles.header_button('UI/icons/connect-icon.png')
-        )
+        self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
@@ -306,7 +312,7 @@ class MqttHubUi(QWidget):
             add_params=add_params,
         )
 
-        button.setIcon(QIcon('UI/icons/expand-profile-icon.png'))
+        button.setIcon(QIcon(EXPAND_ICON))
         button.setIconSize(QSize(24, 24))
         button.setLayoutDirection(Qt.RightToLeft)
 

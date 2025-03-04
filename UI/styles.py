@@ -1,3 +1,5 @@
+from UI.icons.icons import INFO_ICON, PLUS_ICON
+
 MAIN_BUTTON = (
     "QPushButton {color: rgb(103, 159, 95); background-color: rgb(35, 35, 35); border-radius: 5; "
     "padding-left: 5; padding-right: 5;} QPushButton:hover {background-color: rgb(45, 45, 45);}"
@@ -50,7 +52,7 @@ FILTER_BUTTON_2 = (
 EXIT_BUTTON = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
     'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;}'
-    'QPushButton:hover {border-image: url(UI/icons/info-icon.png) 0 0 0 0 stretch stretch;}'
+    f'QPushButton:hover {{border-image: url({INFO_ICON}) 0 0 0 0 stretch stretch;}}'
 )
 SCROLLBAR = """
     QScrollBar:vertical {background-color: rgb(34, 34, 34); border-right: 1px solid rgb(50, 50, 50);
@@ -99,7 +101,7 @@ TAG = (
 )
 ADD_TAG = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
-    'border-image: url(UI/icons/plus-icon.png) 0 0 0 0 stretch stretch;}}'
+    f'border-image: url(f{PLUS_ICON}) 0 0 0 0 stretch stretch;}}'
     'QPushButton:hover {background-color: rgb(45, 45, 45)}'
 )
 FRAME_COLOR = 'QFrame {background: rgb(35, 35, 35); border: none;}'

@@ -1,20 +1,30 @@
 import configparser
 import os
+import sys
+
+
+def get_path(relative_path):
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    return os.path.join(base_path, relative_path)
 
 
 class Settings:
     """Universal class to parse .ini files."""
 
     def __init__(self, settings_path: str | None = None):
-        self.settings_path = settings_path
+        self.settings_path = get_path(settings_path)
         self.config = configparser.ConfigParser()
         self.load_settings()
 
     def load_settings(self):
         if os.path.exists(self.settings_path):
-            self.config.read(self.settings_path, encoding="utf-8")
+            self.config.read(self.settings_path, encoding='utf-8')
         else:
-            raise ValueError("Settings file not found")
+            raise ValueError('Settings file not found')
 
     def sections(self):
         return self.config.sections()
@@ -69,6 +79,7 @@ class Settings:
 
 def create_ini_file(filename: str, path: str, data: dict | None = None):
     config = configparser.ConfigParser()
+    path = get_path(path)
 
     if data:
         for section, values in data.items():
