@@ -15,6 +15,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.notification_signal.connect(self.show_positive_notification)
+        self.disconnect = self.connector.stop
 
         self.main_tab.publish_button.clicked.connect(
             lambda: self.connector.publish(
@@ -46,6 +47,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
     def save_profile_and_connect(self):
         self.save_new_profile()
+        self.main_tab.tags_widget.clear_tags()
         self.connector.start(profile_manager.current_profile)
 
 

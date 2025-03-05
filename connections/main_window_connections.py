@@ -15,6 +15,7 @@ class MainWindow(MqttHubUi):
         self.setup_topics()
         self.update_profile_button()
         self._setup_notifications()
+        self.disconnect = None
 
     @property
     def current_profile(self):
@@ -23,7 +24,10 @@ class MainWindow(MqttHubUi):
     def save_new_profile(self):
         settings = self.plus_tab.get_settings()
         profile_manager.create_profile(**settings)
+        self.disconnect()
+        self.main_tab.set_clipboard_messages(new=True)
         self.open_main_tab()
+        self.main_tab.tags_widget.clear_tags()
         self.show_positive_notification('Profile successfully created')
 
     def open_main_tab(self):

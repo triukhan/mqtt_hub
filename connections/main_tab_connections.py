@@ -35,8 +35,10 @@ class MainTab(MainTabUI):
         payload = item.data(Qt.UserRole)
         self.receiver_text_edit.setPlainText(payload)
 
-    def set_clipboard_messages(self):
-        clipboard_messages = profile_manager.current_profile.clipboard
+    def set_clipboard_messages(self, *, new: bool = False):
+        clipboard_messages = {} if new else profile_manager.current_profile.clipboard
+
+        self.clipboard_list.clear()
 
         for message_name, message_text in clipboard_messages.items():
             item = QListWidgetItem()
