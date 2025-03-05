@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt
 
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
+from settings.profile_manager import profile_manager
 
 
 class MqttHub(QtWidgets.QMainWindow, MainWindow):
@@ -24,6 +25,10 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.connect_button.clicked.connect(self.start_connection)
 
     def start_connection(self):
+        if profile_manager.current_profile.is_default == 'True':
+            self.show_fail_notification('You need to create a profile first')
+            return
+
         try:
             self.connector.start(self.current_profile.topics)
         except Exception as e:

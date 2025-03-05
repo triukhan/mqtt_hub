@@ -8,11 +8,7 @@ from settings.profile_manager import profile_manager
 
 class MQTTConnector:
     def __init__(self):
-        self.profile = profile_manager.current_profile
-        if not self.profile.client_id:
-            # TODO: make unnecessary
-            raise ValueError('Client ID is not set')
-        self.client = Client(self.profile.client_id)
+        self.client = Client(profile_manager.current_profile.client_id)
         self.topics = []
 
         self.client.on_connect = self.on_connect
@@ -21,17 +17,17 @@ class MQTTConnector:
 
     def setup_mqtt_settings(self):
         # TODO: rename
-        if self.profile.ssl_tls == 'True':
+        if profile_manager.current_profile.ssl_tls == 'True':
             self.client.tls_set(
-                ca_certs=self.profile.ca_file,
-                certfile=self.profile.crt_file,
-                keyfile=self.profile.key_file,
+                ca_certs=profile_manager.current_profile.ca_file,
+                certfile=profile_manager.current_profile.crt_file,
+                keyfile=profile_manager.current_profile.key_file,
                 tls_version=ssl.PROTOCOL_TLS,
             )
 
     def on_connect(self, _, __, ___, rc):
         if rc == 0:
-            print(f'Successfully connected to {self.profile.host}:{self.profile.port}')
+            print(f'Successfully connected to {profile_manager.current_profile.host}:{profile_manager.current_profile.port}')
             for topic in self.topics:
                 print(f'Topic: {topic.address}')
                 self.client.subscribe(topic.address)
@@ -45,7 +41,7 @@ class MQTTConnector:
     def start(self, topics: list | None = None):
         self.topics = topics
         self.setup_mqtt_settings()
-        self.client.connect(self.profile.host, int(self.profile.port), keepalive=60)
+        self.client.connect(profile_manager.current_profile.host, int(profile_manager.current_profile.port), keepalive=60)
         self.client.loop_start()
         print('MQTT connection started in the background.')
 
@@ -75,7 +71,7 @@ class MQTTMixin(QObject, MQTTConnector):
     def __init__(self):
         super().__init__()
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, _, __, msg):
         received_payload = msg.payload.decode()
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
