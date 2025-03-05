@@ -24,8 +24,14 @@ class MainTab(MainTabUI):
             self.display_message_in_command_field
         )
         self.add_button.clicked.connect(self.create_topic)
+        self.show_fail_message = None
 
     def create_topic(self):
+        if profile_manager.current_profile.is_default == 'True':
+            self.show_fail_message(
+                'You can\'t add a topic. You need to create or switch the profile'
+            )
+            return None
         self.show_create_topic_dialog()
 
     def get_command_text(self):
