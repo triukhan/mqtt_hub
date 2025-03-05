@@ -24,11 +24,15 @@ class MainWindow(MqttHubUi):
     def save_new_profile(self):
         settings = self.plus_tab.get_settings()
         profile_manager.create_profile(**settings)
-        self.disconnect()
-        self.main_tab.set_clipboard_messages(new=True)
+        # self.disconnect() #TODO uncomment after disconnect
+        self.clear_tab()
+        self.show_positive_notification('Profile was successfully created')
+
+    def clear_tab(self):
         self.open_main_tab()
+        self.main_tab.set_clipboard_messages(new=True)
+        self.main_tab.receiver_list.clear()
         self.main_tab.tags_widget.clear_tags()
-        self.show_positive_notification('Profile successfully created')
 
     def open_main_tab(self):
         self.clear_sidebar_selections()

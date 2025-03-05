@@ -13,11 +13,14 @@ from PyQt5.QtWidgets import (
 
 from UI import styles
 from UI.interface_utils import (
+    Spacer,
     create_checkbox,
     create_field,
     create_frame,
     create_label,
-    create_radio, create_spacer, Spacer,
+    create_layout,
+    create_radio,
+    create_spacer,
 )
 
 vertical_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -45,16 +48,16 @@ class PlusTabUI(QWidget):
             'General',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
-            max_size=(100, 20),
-            min_size=(0, 20),
+            max_size=[100, 20],
+            min_size=[0, 20],
         )
 
         self.general_frame = create_frame(
             self.plus_scroll_layout, add_layout=self.plus_scroll_box
         )
-        self.general_layout = QGridLayout(self.general_frame)  # TODO: custom_func
-        self.general_layout.setContentsMargins(30, 20, 60, 20)
-        self.general_layout.setSpacing(15)
+        self.general_layout = create_layout(
+            QGridLayout, [30, 20, 60, 20], 15, self.general_frame
+        )
 
         self.name_label = create_label(
             'Name', self.general_frame, self.general_layout, [1, 0, 1, 1]

@@ -23,6 +23,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
             )
         )
         self.main_tab.unsubscribe_topic = self.connector.unsubscribe
+        self.edit_tab.delete_button.clicked.connect(self.delete_profile)
 
     def setup_main_header(self):
         super().setup_main_header()
@@ -49,6 +50,12 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.save_new_profile()
         self.main_tab.tags_widget.clear_tags()
         self.connector.start(profile_manager.current_profile)
+
+    def delete_profile(self):
+        profile_manager.delete_current_profile()
+        # self.disconnect() #TODO uncomment after disconnect
+        self.clear_tab()
+        self.show_positive_notification('Profile was successfully deleted')
 
 
 if __name__ == "__main__":

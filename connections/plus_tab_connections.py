@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox
 
 from settings.profile_manager import profile_manager
+from UI.interface_utils import create_button
 from UI.tabs.plus_tab_ui import PlusTabUI
 
 
@@ -43,6 +44,15 @@ class PlusTab(PlusTabUI):
 class EditTab(PlusTabUI):
     def __init__(self):
         super().__init__()
+        self.delete_button = create_button(
+            'Delete',
+            self.plus_scroll_layout,
+            add_layout=self.plus_scroll_box,
+            max_size=[100, 25],
+            min_size=[0, 25],
+        )
+        self.delete_method = None
+
         self.setup_connections()
         self.current_profile = profile_manager.current_profile
         self.load_current_profile_settings()

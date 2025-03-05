@@ -1,7 +1,8 @@
+import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from settings.settings import Settings
+from settings.settings import Settings, get_path
 from settings.topic import Topic
 
 DEFAULT_NAME = 'default_mqtt_user'
@@ -67,7 +68,8 @@ class Profile:
                     'mqtt_settings', attr_name, str(getattr(self, attr_name))
                 )
 
-    def delete(self): ...
+    def delete(self):
+        os.remove(get_path(self.profile_ini))
 
     @property
     def id(self):

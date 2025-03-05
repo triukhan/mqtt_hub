@@ -91,12 +91,10 @@ class ProfileManager:
     def switch_profile(self, profile_id):
         self._profiles_ini.set_with_save('current_profile', 'current', profile_id)
 
-    def delete_profile(self, profile_name):
-        # TODO: dont forget delete from current and set some another
-        profile = self.get_profile_by_id(profile_name)
-        profile.delete()
-        del self._profiles[profile]
-        ...
+    def delete_current_profile(self):
+        self.current_profile.delete()
+        del self._profiles[self.current_profile.id]
+        self.switch_profile('profile_00')
 
     @property
     def profiles(self):
