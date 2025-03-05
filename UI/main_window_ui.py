@@ -351,7 +351,7 @@ class MqttHubUi(QWidget):
         return button
 
     def update_profile_button(self):
-        text = profile_manager.current_profile.name or 'No Name'
+        text = profile_manager.current_profile.name
         set_button_text(self.profile_button, text, 100)
 
     def set_profile(self, profile):

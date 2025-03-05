@@ -77,7 +77,7 @@ class Profile:
 
     @property
     def name(self):
-        return self._name
+        return self._name or 'No Name'
 
     @name.setter
     def name(self, name):
