@@ -368,3 +368,5 @@ class TagsWidget(QFrame):
     def remove_tag_by_address(self, address):
         tag = self.find_tag_by_address(address)
         self.remove_tag(tag)
+        profile_manager.topic_to_publish = None
+        self.selected_tag = None

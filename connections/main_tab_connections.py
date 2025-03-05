@@ -12,6 +12,7 @@ class MainTab(MainTabUI):
     def __init__(self):
         super().__init__()
 
+        self.unsubscribe_topic = None
         self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
         self.add_button = self.tags_widget.add_button
         self.verticalLayout_3.addWidget(self.tags_widget)
@@ -73,6 +74,8 @@ class MainTab(MainTabUI):
 
     def delete_topic(self, topic):
         self.tags_widget.remove_tag_by_address(topic.address)
+        profile_manager.current_profile.delete_topic(topic)
+        self.unsubscribe_topic(topic)
 
     def show_create_topic_dialog(self):
         TopicDialog(self.save_and_subscribe_topic, self).exec_()

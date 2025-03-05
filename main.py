@@ -17,8 +17,11 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.connector.notification_signal.connect(self.show_positive_notification)
 
         self.main_tab.publish_button.clicked.connect(
-            lambda: self.connector.publish(self.main_tab.get_command_text())
+            lambda: self.connector.publish(
+                profile_manager.topic_to_publish, self.main_tab.get_command_text()
+            )
         )
+        self.main_tab.unsubscribe_topic = self.connector.unsubscribe
 
     def setup_main_header(self):
         super().setup_main_header()
@@ -30,7 +33,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
             return
 
         try:
-            self.connector.start(self.current_profile.topics)
+            self.connector.start(profile_manager.current_profile)
         except Exception as e:
             self.show_fail_notification(f'Error: {e}')
 
@@ -43,7 +46,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
     def save_profile_and_connect(self):
         self.save_new_profile()
-        self.connector.start()
+        self.connector.start(profile_manager.current_profile)
 
 
 if __name__ == "__main__":

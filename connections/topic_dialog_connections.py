@@ -41,7 +41,6 @@ class TopicDialog(QDialog, TopicDialogUI):
 
     def _delete_and_close(self):
         self._delete_method(self._topic)
-        profile_manager.current_profile.delete_topic(self._topic)
         self.close()
 
     def _set_color_button(self, color):
@@ -83,5 +82,13 @@ class TopicDialog(QDialog, TopicDialogUI):
         self._set_color_button(self._topic.color or Qt.gray)
 
     def save_and_close(self):
-        self._save_method(self._topic, *self._get_topic_settings())
+        topic_settings, tag = self._get_topic_settings()
+        if (
+            topic_settings.get('_address')
+            in (t.address for t in profile_manager.current_profile.topics)
+            and not tag
+        ):
+            print('Topic with the same address is already exists')
+            return
+        self._save_method(self._topic, topic_settings, tag)
         self.close()
