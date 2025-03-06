@@ -370,3 +370,9 @@ class MqttHubUi(QWidget):
 
     def clear_topics(self):
         self.main_tab.tags_widget.clear_tags()
+
+    def change_connect_button(self, connect):
+        if connect:
+            self.connect_button.setStyleSheet(styles.header_button(PLUS_ICON))
+        else:
+            self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))

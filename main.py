@@ -1,4 +1,5 @@
 import sys
+from contextlib import suppress
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -15,6 +16,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.notification_signal.connect(self.show_positive_notification)
+        self.connector.connected_signal.connect(self.change_connect_button)
         self.disconnect = self.connector.stop
 
         self.main_tab.publish_button.clicked.connect(
@@ -27,7 +29,15 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
     def setup_main_header(self):
         super().setup_main_header()
-        self.connect_button.clicked.connect(self.start_connection)
+        with suppress(AttributeError):
+            self.change_connect_button(self.connector.is_connected)
+        self.connect_button.clicked.connect(self.handle_connect_click)
+
+    def handle_connect_click(self):
+        if self.connector.is_connected:
+            self.connector.stop()
+        else:
+            self.start_connection()
 
     def start_connection(self):
         if profile_manager.current_profile.is_default == 'True':
