@@ -357,6 +357,7 @@ class MqttHubUi(QWidget):
     def set_profile(self, profile):
         if profile == profile_manager.current_profile:
             return None
+        self.edit_button.show()
         profile_manager.switch_profile(profile.id)
         self.main_tab.set_clipboard_messages()
         self.update_profile_button()
