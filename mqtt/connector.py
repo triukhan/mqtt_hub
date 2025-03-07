@@ -62,6 +62,10 @@ class MQTTConnector:
         else:
             print("Failed to send message.")
 
+    def subscribe(self, topic):
+        self.client.subscribe(topic.address)
+        print('Subscribe successful:', topic.address)
+
     def unsubscribe(self, topic):
         self.client.unsubscribe(topic.address)
         print('Unsubscribe successful')
@@ -86,8 +90,7 @@ class MQTTMixin(QObject, MQTTConnector):
         if rc == 0:
             self.handle_connect(True)
             for topic in self.topics:
-                print(f'Topic: {topic.address}')
-                self.client.subscribe(topic.address)
+                self.subscribe(topic)
         else:
             self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
 
