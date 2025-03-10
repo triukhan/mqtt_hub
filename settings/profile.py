@@ -20,9 +20,23 @@ class Profile:
     _password: str | None = None
     _ssl_tls: bool | None = None
     _ssl: str | None = None
+    _ca_signed: bool | None = None
+    _self_signed: bool | None = None
     _ca_file: str | None = None
     _crt_file: str | None = None
     _key_file: str | None = None
+    _mqtt_version: str | None = None
+    _connect_timeout: int | None = None
+    _keep_alive: int | None = None
+    _auto_reconnect: bool | None = None
+    _reconnect_period: int | None = None
+    _clean_start: bool | None = None
+    _session_expiry_interval: int | None = None
+    _receive_maximum: int | None = None
+    _maximum_packet_size: int | None = None
+    _topic_alias_maximum: int | None = None
+    _request_response: bool | None = None
+    _request_problem_info: bool | None = None
     _topics: list | None = field(default_factory=list)
     _is_default: bool | None = None
     clipboard: dict = defaultdict
@@ -163,6 +177,118 @@ class Profile:
     @key_file.setter
     def key_file(self, path: str):
         self._set_field('key_file', path)
+
+    @property
+    def ca_signed(self):
+        return self._ca_signed
+
+    @ca_signed.setter
+    def ca_signed(self, value: bool):
+        self._set_field('ca_signed', value)
+
+    @property
+    def self_signed(self):
+        return self._self_signed
+
+    @self_signed.setter
+    def self_signed(self, value: bool):
+        self._set_field('self_signed', value)
+
+    @property
+    def mqtt_version(self):
+        return self._mqtt_version
+
+    @mqtt_version.setter
+    def mqtt_version(self, value: str):
+        self._set_field('mqtt_version', value)
+
+    @property
+    def connect_timeout(self):
+        return self._connect_timeout
+
+    @connect_timeout.setter
+    def connect_timeout(self, value: int):
+        self._set_field('connect_timeout', value)
+
+    @property
+    def keep_alive(self):
+        return self._keep_alive
+
+    @keep_alive.setter
+    def keep_alive(self, value: int):
+        self._set_field('keep_alive', value)
+
+    @property
+    def auto_reconnect(self):
+        return self._auto_reconnect
+
+    @auto_reconnect.setter
+    def auto_reconnect(self, value: bool):
+        self._set_field('auto_reconnect', value)
+
+    @property
+    def reconnect_period(self):
+        return self._reconnect_period
+
+    @reconnect_period.setter
+    def reconnect_period(self, value: int):
+        self._set_field('reconnect_period', value)
+
+    @property
+    def clean_start(self):
+        return self._clean_start
+
+    @clean_start.setter
+    def clean_start(self, value: bool):
+        self._set_field('clean_start', value)
+
+    @property
+    def session_expiry_interval(self):
+        return self._session_expiry_interval
+
+    @session_expiry_interval.setter
+    def session_expiry_interval(self, value: int):
+        self._set_field('session_expiry_interval', value)
+
+    @property
+    def receive_maximum(self):
+        return self._receive_maximum
+
+    @receive_maximum.setter
+    def receive_maximum(self, value: int):
+        self._set_field('receive_maximum', value)
+
+    @property
+    def maximum_packet_size(self):
+        return self._maximum_packet_size
+
+    @maximum_packet_size.setter
+    def maximum_packet_size(self, value: int):
+        self._set_field('maximum_packet_size', value)
+
+    @property
+    def topic_alias_maximum(self):
+        return self._topic_alias_maximum
+
+    @topic_alias_maximum.setter
+    def topic_alias_maximum(self, value: int):
+        self._set_field('topic_alias_maximum', value)
+
+    @property
+    def request_response(self):
+        return self._request_response
+
+    @request_response.setter
+    def request_response(self, value: bool):
+        self._set_field('request_response', value)
+
+    @property
+    def request_problem_info(self):
+        return self._request_problem_info
+
+    @request_problem_info.setter
+    def request_problem_info(self, value: bool):
+        self._set_field('request_problem_info', value)
 
     @property
     def topics(self):
