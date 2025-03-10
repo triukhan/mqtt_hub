@@ -11,7 +11,7 @@ from UI.interface_utils import (
     create_layout,
     create_spacer,
 )
-from UI.styles import HEADER_FRAME, WIDGET
+from UI.styles import HEADER_FRAME, WIDGET, DELETE_BUTTON
 
 
 class TopicDialogUI:
@@ -124,7 +124,7 @@ class TopicDialogUI:
 
         self.save_layout = create_layout(QHBoxLayout, [15, 15, 20, 15], 15)
         self.delete_button = create_button(
-            'Delete', self.main_frame, add_layout=self.save_layout
+            'Delete', self.main_frame, add_layout=self.save_layout, style=DELETE_BUTTON
         )
         self.save_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.cancel_button = create_button(

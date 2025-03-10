@@ -105,9 +105,6 @@ class MainWindow(MqttHubUi):
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.fade_notification)
-        self.main_tab.qos_button.clicked.connect(
-            self.show_positive_notification
-        )  # TODO
         self.main_tab.show_fail_message = self.show_fail_notification
 
     def setup_main_header(self):

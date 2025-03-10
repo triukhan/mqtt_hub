@@ -24,6 +24,7 @@ class MainTab(MainTabUI):
             self.display_message_in_command_field
         )
         self.add_button.clicked.connect(self.create_topic)
+        self.clear_button.clicked.connect(self.receiver_list.clear)
         self.show_fail_message = None
         self.connector = None
 
