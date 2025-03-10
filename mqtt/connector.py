@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, ssl
+from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from settings.profile import Profile
@@ -14,14 +14,27 @@ class MQTTConnector:
         self.is_connected = False
 
     def setup_mqtt_settings(self):
-        # TODO: rename
-        if self.profile.ssl_tls == 'True':
-            self.client.tls_set(
-                ca_certs=self.profile.ca_file,
-                certfile=self.profile.crt_file,
-                keyfile=self.profile.key_file,
-                tls_version=ssl.PROTOCOL_TLS,
-            )
+        if self.profile.username:
+            self.client.username_pw_set(username=self.profile.username)
+        if self.profile.password:
+            self.client.username_pw_set(password=self.profile.password)
+        if self.profile.connect_timeout:
+            self.client._connect_timeout = int(self.profile.connect_timeout)
+        if not self.profile.auto_reconnect:
+            self.client.reconnect_delay_set(min_delay=0, max_delay=0)
+        if self.profile.ssl_tls:
+            if self.profile.ssl:
+                if self.profile.self_signed:
+                    self.client.tls_set(
+                        ca_certs=self.profile.ca_file,
+                        certfile=self.profile.crt_file,
+                        keyfile=self.profile.key_file,
+                        tls_version=ssl.PROTOCOL_TLS,
+                    )
+                else:
+                    self.client.tls_set()  # todo: resolve it
+            else:
+                self.client.tls_set()
 
     def on_message(self, client, userdata, msg): ...
 
@@ -32,14 +45,18 @@ class MQTTConnector:
     def start(self, profile: Profile):
         self.profile = profile
         self.topics = profile.topics
-        self.client = Client(self.profile.client_id)
+        self.client = Client(self.profile.client_id, protocol=self.profile.mqtt_version)
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
 
         self.setup_mqtt_settings()
-        self.client.connect(self.profile.host, int(self.profile.port), keepalive=60)
+        self.client.connect(
+            self.profile.host,
+            int(self.profile.port),
+            keepalive=int(self.profile.keep_alive),
+        )
         self.client.loop_start()
         print('MQTT connection started in the background.')
 
@@ -92,17 +109,48 @@ class MQTTMixin(QObject, MQTTConnector):
             for topic in self.topics:
                 self.subscribe(topic)
         else:
-            self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
+            self.notification_signal.emit(
+                f'MQTT Error. Return code: {rc}'
+            )  # todo: make red
 
     def on_disconnect(self, _, __, rc):
         if rc == 0:
             self.handle_connect(False)
             print(f"Client disconnected. Return code: {rc}")
         else:
-            self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
+            self.notification_signal.emit(
+                f'MQTT Error. Return code: {rc}'
+            )  # todo: make red
 
-    def handle_connect(self, connect: bool):
-        self.is_connected = connect
+    def handle_connect(self, conn: bool):
+        self.is_connected = conn
         prefix = '' if self.is_connected else 'dis'
         self.notification_signal.emit(f'Successfully {prefix}connected')
         self.connected_signal.emit(self.is_connected)
+
+    def start(self, profile: Profile):
+        if not profile.host:
+            self.notification_signal.emit(
+                'Error: Host is absent is settings'
+            )  # todo: make red
+            return
+        if not profile.port:
+            self.notification_signal.emit(
+                'Error: Port is absent is settings'
+            )  # todo: make red
+            return
+        if not profile.client_id and profile.mqtt_version != MQTTv5:
+            self.notification_signal.emit(
+                'Error: Client ID is absent is settings'
+            )  # todo: make red
+            return
+        if profile.self_signed and '' in (
+            profile.ca_file,
+            profile.crt_file,
+            profile.key_file,
+        ):
+            self.notification_signal.emit(
+                'Error: Some certificates are absent is settings'
+            )  # todo: make red
+            return
+        super().start(profile)

@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QMessageBox
 
-from UI.styles import DELETE_BUTTON
 from settings.profile_manager import profile_manager
 from UI.interface_utils import create_button
+from UI.styles import DELETE_BUTTON
 from UI.tabs.plus_tab_ui import PlusTabUI
 
 SETTINGS = {
@@ -19,9 +19,26 @@ SETTINGS = {
     'key_file': 'client_key_field',
 }
 
+mqtt_versions = {
+    3: '3.1',
+    4: '3.1.1',
+    5: '5.0',
+}
+
+
+def parse_mqtt_ver(ver: int):
+    if ver == '4':
+        return '3.1.1'
+    if ver == '3':
+        return '3.1'
+    if ver == '5':
+        return '5.0'
+
+
 class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
+        self.keep_alive_field.setText('60')
 
     def get_settings(self):
         settings = {
@@ -36,6 +53,20 @@ class PlusTab(PlusTabUI):
             'ca_file': self.ca_field.text(),
             'crt_file': self.client_cert_field.text(),
             'key_file': self.client_key_field.text(),
+            'mqtt_version': self.mqtt_ver_field.text(),
+            'connect_timeout': self.con_timeout_field.text(),
+            'keep_alive': self.keep_alive_field.text(),
+            'auto_reconnect': self.auto_recon_checkbox.isChecked(),
+            'reconnect_period': self.recon_period_field.text(),
+            'clean_start': self.clean_start_checkbox.isChecked(),
+            'session_expiry_interval': self.session_expiry_field.text(),
+            'receive_maximum': self.receive_max_field.text(),
+            'maximum_packet_size': self.max_packet_field.text(),
+            'topic_alias_maximum': self.topic_alias_field.text(),
+            'request_response': self.request_resp_checkbox.isChecked(),
+            'request_problem_info': self.request_problem_checkbox.isChecked(),
+            'ca_signed': self.ca_signed_radio.isChecked(),
+            'self_signed': self.self_signed_radio.isChecked(),
         }
         self.clear_settings()
         return settings
@@ -52,6 +83,18 @@ class PlusTab(PlusTabUI):
         self.ca_field.clear()
         self.client_cert_field.clear()
         self.client_key_field.clear()
+        self.mqtt_ver_field.clear()
+        self.con_timeout_field.clear()
+        self.keep_alive_field.setText('60')
+        self.auto_recon_checkbox.setChecked(False)
+        self.recon_period_field.clear()
+        self.clean_start_checkbox.setChecked(False)
+        self.session_expiry_field.clear()
+        self.receive_max_field.clear()
+        self.max_packet_field.clear()
+        self.topic_alias_field.clear()
+        self.request_resp_checkbox.setChecked(False)
+        self.request_problem_checkbox.setChecked(False)
         self.setFocus()
 
 
@@ -64,13 +107,12 @@ class EditTab(PlusTabUI):
             add_layout=self.plus_scroll_box,
             max_size=[100, 25],
             min_size=[0, 25],
-            style=DELETE_BUTTON
+            style=DELETE_BUTTON,
         )
         self.delete_method = None
 
         self.setup_connections()
         self.current_profile = profile_manager.current_profile
-        self.load_current_profile_settings()
 
     def setup_connections(self):
         self.client_cert_button.clicked.connect(self.on_button_click)
@@ -89,22 +131,29 @@ class EditTab(PlusTabUI):
         self.client_id_field.setText(self.current_profile.client_id)
         self.username_field.setText(self.current_profile.username)
         self.password_field.setText(self.current_profile.password)
-        self.ssl_checkbox.setChecked(self.current_profile.ssl == 'True')
-        self.ssl_tls_checkbox.setChecked(self.current_profile.ssl_tls == 'True')
-        self.ca_signed_radio.setChecked(self.current_profile.ca_signed == 'True')
-        self.self_signed_radio.setChecked(self.current_profile.self_signed == 'True')
-        self.mqtt_ver_field.setText(self.current_profile.mqtt_version)
+        self.ssl_checkbox.setChecked(self.current_profile.ssl)
+        self.ssl_tls_checkbox.setChecked(self.current_profile.ssl_tls)
+        self.ca_signed_radio.setChecked(self.current_profile.ca_signed)
+        self.self_signed_radio.setChecked(self.current_profile.self_signed)
+        self.ca_field.setText(self.current_profile.ca_file)
+        self.client_cert_field.setText(self.current_profile.crt_file)
+        self.client_key_field.setText(self.current_profile.key_file)
+        self.mqtt_ver_field.setText(
+            mqtt_versions.get(self.current_profile.mqtt_version)
+        )
         self.con_timeout_field.setText(self.current_profile.connect_timeout)
         self.keep_alive_field.setText(self.current_profile.keep_alive)
-        self.auto_recon_checkbox.setChecked(self.current_profile.auto_reconnect == 'True')
+        self.auto_recon_checkbox.setChecked(self.current_profile.auto_reconnect)
         self.recon_period_field.setText(self.current_profile.reconnect_period)
-        self.clean_start_checkbox.setChecked(self.current_profile.clean_start == 'True')
+        self.clean_start_checkbox.setChecked(self.current_profile.clean_start)
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)
         self.receive_max_field.setText(self.current_profile.receive_maximum)
         self.max_packet_field.setText(self.current_profile.maximum_packet_size)
         self.topic_alias_field.setText(self.current_profile.topic_alias_maximum)
-        self.request_resp_checkbox.setChecked(self.current_profile.request_response == 'True')
-        self.request_problem_checkbox.setChecked(self.current_profile.request_problem_info == 'True')
+        self.request_resp_checkbox.setChecked(self.current_profile.request_response)
+        self.request_problem_checkbox.setChecked(
+            self.current_profile.request_problem_info
+        )
 
     def save_settings(self):  # TODO: make dict and set by dict
         self._update_current_profile()
@@ -118,6 +167,9 @@ class EditTab(PlusTabUI):
         self.current_profile.ssl_tls = str(self.ssl_checkbox.isChecked())
         self.current_profile.ca_signed = self.ca_signed_radio.isChecked()
         self.current_profile.self_signed = self.self_signed_radio.isChecked()
+        self.current_profile.ca_file = self.ca_field.text()
+        self.current_profile.key_file = self.client_key_field.text()
+        self.current_profile.crt_file = self.client_cert_field.text()
         self.current_profile.mqtt_version = self.mqtt_ver_field.text()
         self.current_profile.connect_timeout = self.con_timeout_field.text()
         self.current_profile.keep_alive = self.keep_alive_field.text()
@@ -129,4 +181,6 @@ class EditTab(PlusTabUI):
         self.current_profile.maximum_packet_size = self.max_packet_field.text()
         self.current_profile.topic_alias_maximum = self.topic_alias_field.text()
         self.current_profile.request_response = self.request_resp_checkbox.isChecked()
-        self.current_profile.request_problem_info = self.request_problem_checkbox.isChecked()
+        self.current_profile.request_problem_info = (
+            self.request_problem_checkbox.isChecked()
+        )

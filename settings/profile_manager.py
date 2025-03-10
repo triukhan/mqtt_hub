@@ -24,12 +24,21 @@ class ProfileManager:
                 profile_file = configparser.ConfigParser()
                 profile_file.read(filepath, encoding='utf-8')
                 profile_id = os.path.splitext(filename)[0]
-                mqtt_settings, clipboard, topics = {}, {}, []
+                clipboard, topics = {}, []
+
+                profile = Profile(
+                    profile_id,
+                    clipboard=clipboard,
+                    _topics=topics,
+                    is_created=True,
+                )
 
                 for section in profile_file.sections():
                     if section == 'mqtt_settings':
                         for key, value in profile_file[section].items():
-                            mqtt_settings['_' + key] = value
+                            if key == 'is_default':
+                                continue
+                            setattr(profile, key, value)
 
                     if section == 'clipboard':
                         for key, value in profile_file[section].items():
@@ -43,13 +52,9 @@ class ProfileManager:
                             topic = Topic(filepath, **topic_settings)
                             topics.append(topic)
 
-                self._profiles[profile_id] = Profile(
-                    profile_id,
-                    **mqtt_settings,
-                    clipboard=clipboard,
-                    _topics=topics,
-                    is_created=True,
-                )
+                profile.clipboard = clipboard
+                profile._topics = topics
+                self._profiles[profile_id] = profile
 
     def _generate_profile_id(self):
         existing_numbers = [

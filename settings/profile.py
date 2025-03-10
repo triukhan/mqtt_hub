@@ -2,11 +2,21 @@ import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 
+import paho.mqtt.client as mqtt
+
 from settings.settings import Settings, get_path
 from settings.topic import Topic
 
 DEFAULT_NAME = 'default_mqtt_user'
 PROFILES_PATH = 'settings/profiles/'
+
+
+def bool_param(func):
+    def wrapper(instance, value):
+        value = (value == 'True') if isinstance(value, str) else value
+        return func(instance, value)
+
+    return wrapper
 
 
 @dataclass
@@ -143,6 +153,7 @@ class Profile:
         return self._ssl
 
     @ssl.setter
+    @bool_param
     def ssl(self, ssl: bool):
         self._set_field('ssl', ssl)
 
@@ -151,6 +162,7 @@ class Profile:
         return self._ssl
 
     @ssl_tls.setter
+    @bool_param
     def ssl_tls(self, ssl_tls: bool):
         self._set_field('ssl_tls', ssl_tls)
 
@@ -183,6 +195,7 @@ class Profile:
         return self._ca_signed
 
     @ca_signed.setter
+    @bool_param
     def ca_signed(self, value: bool):
         self._set_field('ca_signed', value)
 
@@ -191,12 +204,18 @@ class Profile:
         return self._self_signed
 
     @self_signed.setter
+    @bool_param
     def self_signed(self, value: bool):
         self._set_field('self_signed', value)
 
     @property
     def mqtt_version(self):
-        return self._mqtt_version
+        if not self._mqtt_version or self._mqtt_version == '3.1.1':
+            return mqtt.MQTTv311
+        if self._mqtt_version == '3.1':
+            return mqtt.MQTTv31
+        if self._mqtt_version == '5.0':
+            return mqtt.MQTTv5
 
     @mqtt_version.setter
     def mqtt_version(self, value: str):
@@ -216,6 +235,7 @@ class Profile:
 
     @keep_alive.setter
     def keep_alive(self, value: int):
+        value = 60 if not value else value
         self._set_field('keep_alive', value)
 
     @property
@@ -223,6 +243,7 @@ class Profile:
         return self._auto_reconnect
 
     @auto_reconnect.setter
+    @bool_param
     def auto_reconnect(self, value: bool):
         self._set_field('auto_reconnect', value)
 
@@ -239,6 +260,7 @@ class Profile:
         return self._clean_start
 
     @clean_start.setter
+    @bool_param
     def clean_start(self, value: bool):
         self._set_field('clean_start', value)
 
@@ -279,6 +301,7 @@ class Profile:
         return self._request_response
 
     @request_response.setter
+    @bool_param
     def request_response(self, value: bool):
         self._set_field('request_response', value)
 
@@ -287,6 +310,7 @@ class Profile:
         return self._request_problem_info
 
     @request_problem_info.setter
+    @bool_param
     def request_problem_info(self, value: bool):
         self._set_field('request_problem_info', value)
 

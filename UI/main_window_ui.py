@@ -307,7 +307,7 @@ class MqttHubUi(QWidget):
         button = create_button(
             text,
             layout,
-            min_size=(0, 30),
+            min_size=[0, 30],
             add_layout=add_layout,
             add_params=add_params,
         )
@@ -373,6 +373,8 @@ class MqttHubUi(QWidget):
 
     def change_connect_button(self, connect):
         if connect:
-            self.connect_button.setStyleSheet(styles.header_button(PLUS_ICON))
+            pass
+            # self.connect_button.setStyleSheet(styles.header_button(PLUS_ICON))
         else:
-            self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
+            pass
+            # self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
