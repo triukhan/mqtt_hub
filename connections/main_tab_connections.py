@@ -24,7 +24,9 @@ class MainTab(MainTabUI):
             self.display_message_in_command_field
         )
         self.add_button.clicked.connect(self.create_topic)
+        self.clear_button.clicked.connect(self.receiver_list.clear)
         self.show_fail_message = None
+        self.connector = None
 
     def create_topic(self):
         if profile_manager.current_profile.is_default == 'True':
@@ -69,6 +71,8 @@ class MainTab(MainTabUI):
     def save_and_subscribe_topic(self, _, topic_settings: dict, __):
         topic = profile_manager.current_profile.add_topic(topic_settings)
         self.tags_widget.add_tag(topic)
+        if self.connector.is_connected:
+            self.connector.subscribe(topic)
 
     @staticmethod
     def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):

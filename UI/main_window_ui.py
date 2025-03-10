@@ -357,6 +357,7 @@ class MqttHubUi(QWidget):
     def set_profile(self, profile):
         if profile == profile_manager.current_profile:
             return None
+        self.edit_button.show()
         profile_manager.switch_profile(profile.id)
         self.main_tab.set_clipboard_messages()
         self.update_profile_button()
@@ -369,3 +370,9 @@ class MqttHubUi(QWidget):
 
     def clear_topics(self):
         self.main_tab.tags_widget.clear_tags()
+
+    def change_connect_button(self, connect):
+        if connect:
+            self.connect_button.setStyleSheet(styles.header_button(PLUS_ICON))
+        else:
+            self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))

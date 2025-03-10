@@ -32,7 +32,8 @@ from UI.interface_utils import (
     select_tag,
     set_topic_color,
 )
-from UI.styles import ADD_TAG, CLIPBOARD_LIST, EDIT_TAG, FRAME_COLOR, TAG
+from UI.styles import ADD_TAG, CLIPBOARD_LIST, EDIT_TAG, FRAME_COLOR, TAG, COMMAND_FIELD, DELETE_BUTTON, RECEIVER_TEXT, \
+    FILTER_FRAME
 
 
 class MainTabUI(QWidget):
@@ -41,10 +42,9 @@ class MainTabUI(QWidget):
         self.gridLayout_2 = create_layout(QGridLayout, [0, 0, 0, 0], 0, out_layout=self)
         self.main_right_layout = create_layout(QVBoxLayout, [0, -1, 0, 0], 0)
 
-        # clear
         self.clear_frame = create_frame(
             self,
-            'QFrame {background-color: rgb(35, 35, 35)}',
+            FRAME_COLOR,
             add_layout=self.main_right_layout,
         )
         self.clear_layout = create_layout(
@@ -52,7 +52,7 @@ class MainTabUI(QWidget):
         )
         self.clear_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.clear_button = create_button(
-            'clear', self.clear_frame, max_size=(50, 21), add_layout=self.clear_layout
+            'clear', self.clear_frame, max_size=[50, 21], add_layout=self.clear_layout
         )
 
         self.receiver_list = create_list(
@@ -64,8 +64,7 @@ class MainTabUI(QWidget):
 
         self.filter_frame = create_frame(
             self,
-            'QFrame {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50);'
-            'background-color: rgb(35, 35, 35)}',
+            FILTER_FRAME,
             add_layout=self.main_right_layout,
         )
         self.message_formating = create_layout(
@@ -75,8 +74,8 @@ class MainTabUI(QWidget):
         self.convertor_button = create_button(
             'JSON',
             self.filter_frame,
-            min_size=(100, 25),
-            max_size=(100, 25),
+            min_size=[100, 25],
+            max_size=[100, 25],
             style=styles.PICKER_BUTTON,
             add_layout=self.message_formating,
         )
@@ -90,16 +89,16 @@ class MainTabUI(QWidget):
         self.all_button = create_button(
             'All',
             self.filter_frame,
-            min_size=(40, 23),
-            max_size=(80, 23),
+            min_size=[40, 23],
+            max_size=[80, 23],
             style=styles.FILTER_BUTTON_2,
             add_layout=self.message_formating,
         )
         self.divider_1 = create_button(
             '',
             self.filter_frame,
-            min_size=(1, 17),
-            max_size=(1, 17),
+            min_size=[1, 17],
+            max_size=[1, 17],
             style=styles.DIVIDER,
             add_layout=self.message_formating,
         )
@@ -107,8 +106,8 @@ class MainTabUI(QWidget):
         self.received_button = create_button(
             'Received',
             self.filter_frame,
-            min_size=(80, 23),
-            max_size=(80, 23),
+            min_size=[80, 23],
+            max_size=[80, 23],
             style=styles.FILTER_BUTTON_2,
             add_layout=self.message_formating,
         )
@@ -116,8 +115,8 @@ class MainTabUI(QWidget):
         self.divider_2 = create_button(
             '',
             self.filter_frame,
-            min_size=(1, 17),
-            max_size=(1, 17),
+            min_size=[1, 17],
+            max_size=[1, 17],
             style=styles.DIVIDER,
             add_layout=self.message_formating,
         )
@@ -125,14 +124,14 @@ class MainTabUI(QWidget):
         self.published_button = create_button(
             'Published',
             self.filter_frame,
-            min_size=(80, 23),
-            max_size=(85, 23),
+            min_size=[80, 23],
+            max_size=[85, 23],
             style=styles.FILTER_BUTTON_1,
             add_layout=self.message_formating,
         )
 
         self.receiver_text_edit = QTextEdit(self)
-        self.receiver_text_edit.setStyleSheet('QTextEdit {color: rgb(186, 189, 182);}')
+        self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         self.main_right_layout.addWidget(self.receiver_text_edit)
 
@@ -145,7 +144,7 @@ class MainTabUI(QWidget):
         )
 
         self.publisher_head_frame = create_frame(
-            self.main_left_layout, style='QFrame {background-color: rgb(35, 35, 35)}'
+            self.main_left_layout, style=FRAME_COLOR
         )
 
         self.horizontalLayout_5 = create_layout(
@@ -155,14 +154,11 @@ class MainTabUI(QWidget):
         self.delete_button = create_button(
             'Delete',
             self.publisher_head_frame,
-            min_size=(0, 25),
-            max_size=(100, 25),
+            min_size=[0, 25],
+            max_size=[100, 25],
             add_layout=self.horizontalLayout_5,
         )
-        self.delete_button.setStyleSheet(
-            "QPushButton {color: rgb(140, 50, 0); background-color: rgb(35, 35, 35); border: 1px solid "
-            "rgb(50, 50, 50); border-radius: 5; padding: 5px; } QPushButton:hover {border: 1px solid rgb(70, 70, 70)}"
-        )
+        self.delete_button.setStyleSheet(DELETE_BUTTON)
 
         self.add_clipboard_button = create_button(
             'Add to Clipboard',
@@ -173,25 +169,11 @@ class MainTabUI(QWidget):
             style=styles.APP_BUTTON,
         )
 
-        self.qos_button = create_button(
-            'Qos 0',
-            self.publisher_head_frame,
-            style=styles.PICKER_BUTTON,
-            min_size=(0, 25),
-            max_size=(80, 25),
-            add_layout=self.horizontalLayout_5,
-        )
-        self.qos_button.setIcon(QIcon(EXPAND_ICON))
-        self.qos_button.setIconSize(QSize(24, 24))
-        self.qos_button.setLayoutDirection(Qt.RightToLeft)
-
-        self.horizontalLayout_5.addWidget(self.qos_button)
-
         self.publish_button = create_button(
             'Publish',
             self.publisher_head_frame,
-            min_size=(0, 25),
-            max_size=(150, 25),
+            min_size=[0, 25],
+            max_size=[150, 25],
             add_layout=self.horizontalLayout_5,
         )
 
@@ -212,9 +194,7 @@ class MainTabUI(QWidget):
         self.clipboard_list.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.addWidget(self.clipboard_list)
         self.command_field = QTextEdit(self.main_left_layout)
-        self.command_field.setStyleSheet(
-            'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
-        )
+        self.command_field.setStyleSheet(COMMAND_FIELD)
         self.command_field.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.addWidget(self.command_field)
         self.clipboard_layout.setStretch(0, 1)
@@ -313,7 +293,7 @@ class TagsWidget(QFrame):
         tag.setFixedSize(115, 30)
         tag_layout = create_layout(QHBoxLayout, 0, 0, tag)
 
-        tag_label = QLabel(topic.get_name(), tag)
+        tag_label = QLabel(topic.get_name(), tag) # todo: create_label
         tag_label.setFixedWidth(90)
         tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none}")
         tag_label.setSizePolicy(

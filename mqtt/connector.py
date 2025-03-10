@@ -11,6 +11,7 @@ class MQTTConnector:
         self.client = None
         self.profile = None
         self.topics = []
+        self.is_connected = False
 
     def setup_mqtt_settings(self):
         # TODO: rename
@@ -24,18 +25,9 @@ class MQTTConnector:
 
     def on_message(self, client, userdata, msg): ...
 
-    def on_connect(self, _, __, ___, rc):
-        if rc == 0:
-            print(f'Successfully connected to {self.profile.host}:{self.profile.port}')
-            for topic in self.topics:
-                print(f'Topic: {topic.address}')
-                self.client.subscribe(topic.address)
-        else:
-            print(f'Connection failed with code {rc}')
+    def on_connect(self, _, __, ___, rc): ...
 
-    @staticmethod
-    def on_disconnect(_, __, rc):
-        print(f"Client disconnected. Return code: {rc}")
+    def on_disconnect(self, _, __, rc): ...
 
     def start(self, profile: Profile):
         self.profile = profile
@@ -52,9 +44,12 @@ class MQTTConnector:
         print('MQTT connection started in the background.')
 
     def stop(self):
-        self.client.loop_stop()
-        self.client.disconnect()
-        print("Client stopped.")
+        if self.is_connected:
+            self.client.loop_stop()
+            self.client.disconnect()
+            print('Client stopped')
+        else:
+            print('Client not connected')
 
     def publish(self, topic, message):
         if not topic:
@@ -67,14 +62,19 @@ class MQTTConnector:
         else:
             print("Failed to send message.")
 
+    def subscribe(self, topic):
+        self.client.subscribe(topic.address)
+        print('Subscribe successful:', topic.address)
+
     def unsubscribe(self, topic):
         self.client.unsubscribe(topic.address)
-        print('unsubscribe successful')
+        print('Unsubscribe successful')
 
 
 class MQTTMixin(QObject, MQTTConnector):
     message_received = pyqtSignal(str, str)
     notification_signal = pyqtSignal(str)
+    connected_signal = pyqtSignal(bool)
 
     def __init__(self):
         super().__init__()
@@ -88,7 +88,21 @@ class MQTTMixin(QObject, MQTTConnector):
 
     def on_connect(self, _, __, ___, rc):
         if rc == 0:
-            self.notification_signal.emit('Successfully connected!')
+            self.handle_connect(True)
             for topic in self.topics:
-                print(f'Topic: {topic.address}')
-                self.client.subscribe(topic.address)
+                self.subscribe(topic)
+        else:
+            self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
+
+    def on_disconnect(self, _, __, rc):
+        if rc == 0:
+            self.handle_connect(False)
+            print(f"Client disconnected. Return code: {rc}")
+        else:
+            self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
+
+    def handle_connect(self, connect: bool):
+        self.is_connected = connect
+        prefix = '' if self.is_connected else 'dis'
+        self.notification_signal.emit(f'Successfully {prefix}connected')
+        self.connected_signal.emit(self.is_connected)

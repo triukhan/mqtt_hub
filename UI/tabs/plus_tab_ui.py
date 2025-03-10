@@ -198,8 +198,8 @@ class PlusTabUI(QWidget):
             'Advanced',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
-            min_size=(100, 20),
-            max_size=(100, 20),
+            min_size=[00, 20],
+            max_size=[100, 20],
         )
 
         self.advanced_frame = create_frame(self.plus_scroll_layout)

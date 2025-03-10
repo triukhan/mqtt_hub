@@ -105,6 +105,11 @@ ADD_TAG = (
     'QPushButton:hover {background-color: rgb(45, 45, 45)}'
 )
 FRAME_COLOR = 'QFrame {background: rgb(35, 35, 35); border: none;}'
+COMMAND_FIELD = 'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
+DELETE_BUTTON = ('QPushButton {color: rgb(140, 50, 0); background-color: rgb(35, 35, 35); border: 1px solid '
+                 'rgb(50, 50, 50); border-radius: 5; padding: 5px; } QPushButton:hover {border: 1px solid rgb(70, 70, 70)}')
+RECEIVER_TEXT = 'QTextEdit {color: rgb(186, 189, 182);}'
+FILTER_FRAME = 'QFrame {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50); background-color: rgb(35, 35, 35)}'
 
 
 def sidebar_button(icon_path):

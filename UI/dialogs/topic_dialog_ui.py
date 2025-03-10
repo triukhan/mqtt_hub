@@ -11,7 +11,7 @@ from UI.interface_utils import (
     create_layout,
     create_spacer,
 )
-from UI.styles import HEADER_FRAME, WIDGET
+from UI.styles import HEADER_FRAME, WIDGET, DELETE_BUTTON
 
 
 class TopicDialogUI:
@@ -54,6 +54,7 @@ class TopicDialogUI:
             'Topic',
             self.main_frame,
             self.topic_layout,
+            align='left',
             min_size=[0, 30],
             max_size=[16777215, 30],
         )
@@ -65,6 +66,7 @@ class TopicDialogUI:
             'Alias',
             self.main_frame,
             self.alias_layout,
+            align='left',
             min_size=[0, 35],
             max_size=[16777215, 30],
         )
@@ -80,12 +82,12 @@ class TopicDialogUI:
         self.qos_field.setMinimumSize(QtCore.QSize(230, 30))
         self.qos_field.setMaximumSize(QtCore.QSize(200, 30))
         self.qos_label = create_label(
-            'Qos', self.main_frame, self.qos_color_layout, [0, 0, 1, 1]
+            'Qos', self.main_frame, self.qos_color_layout, [0, 0, 1, 1], align='left',
         )
         self.color_layout = create_layout(QHBoxLayout)
-        self.color_label = create_label('Color', self.main_frame, self.color_layout)
+        self.color_label = create_label('Color', self.main_frame, self.color_layout, align='left')
         self.color_button = create_button(
-            '■', self.main_frame, min_size=30, max_size=30, add_layout=self.color_layout
+            '■', self.main_frame, min_size=30, max_size=30, add_layout=self.color_layout,
         )
         self.qos_color_layout.addLayout(self.color_layout, 0, 3, 1, 1)
         self.color_field = create_field(
@@ -97,14 +99,14 @@ class TopicDialogUI:
 
         self.no_local_layout = create_layout(QHBoxLayout, [20, 15, 20, 15])
         self.no_local_label = create_label(
-            'No Local Flag', self.main_frame, self.no_local_layout
+            'No Local Flag', self.main_frame, self.no_local_layout, align='left'
         )
         self.no_local_checkbox = create_checkbox(self.main_frame, self.no_local_layout)
         self.body_layout.addLayout(self.no_local_layout)
 
         self.retain_published_layout = create_layout(QHBoxLayout, [20, 15, 20, 15])
         self.retain_published_label = create_label(
-            'Retain as Published Flag', self.main_frame, self.retain_published_layout
+            'Retain as Published Flag', self.main_frame, self.retain_published_layout, align='left'
         )
         self.retain_published_checkbox = create_checkbox(
             self.main_frame, self.retain_published_layout
@@ -113,16 +115,16 @@ class TopicDialogUI:
 
         self.retain_handling_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], 15)
         self.retain_handling_label = create_label(
-            'Retain Handling', self.main_frame, self.retain_handling_layout
+            'Retain Handling', self.main_frame, self.retain_handling_layout, align='left'
         )
         self.retain_handling_field = create_field(
             self.main_frame, self.retain_handling_layout
         )
         self.body_layout.addLayout(self.retain_handling_layout)
 
-        self.save_layout = create_layout(QHBoxLayout, [-1, 15, 20, 15], 15)
+        self.save_layout = create_layout(QHBoxLayout, [15, 15, 20, 15], 15)
         self.delete_button = create_button(
-            'Delete', self.main_frame, add_layout=self.save_layout
+            'Delete', self.main_frame, add_layout=self.save_layout, style=DELETE_BUTTON
         )
         self.save_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.cancel_button = create_button(

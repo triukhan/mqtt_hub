@@ -2,7 +2,7 @@ from enum import Enum
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtGui import QFontMetrics, QFont
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -16,10 +16,13 @@ from PyQt5.QtWidgets import (
 )
 
 from UI import styles
+from settings.topic import Topic
 
-LABEL_ALIGNMENT = (
+LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
 )
+LABEL_LEFT_ALIGNMENT = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+
 
 
 class Spacer(Enum):
@@ -27,20 +30,25 @@ class Spacer(Enum):
     VERTICAL = 1
 
 
-def create_label(  # TODO: typing
+def create_label(
     text: str,
     main_layout,
     add_layout=None,
     add_params: list | None = None,
     style: str = styles.LABEL,
     *,
+    align: str = 'right',
     min_size: list | None = None,
     max_size: list | None = None,
 ):
     label = QLabel(main_layout)
     label.setText(text)
     label.setStyleSheet(style)
-    label.setAlignment(LABEL_ALIGNMENT)
+
+    if align == 'left':
+        label.setAlignment(LABEL_LEFT_ALIGNMENT)
+    elif align == 'right':
+        label.setAlignment(LABEL_RIGHT_ALIGNMENT)
 
     if add_layout is not None:
         if add_params is not None:
@@ -88,6 +96,8 @@ def create_radio(text: str, main_layout, add_layout, add_params: list | None = N
     radio.setStyleSheet(styles.RADIO)
     add_layout.addWidget(radio)
 
+    return radio
+
 
 def create_frame(main_layout, style: str | bool = styles.FRAME_PART, add_layout=None):
     frame = QFrame(main_layout)
@@ -118,14 +128,14 @@ def create_layout(
 
 
 def create_button(
-    text,
+    text: str,
     layout,
-    min_size=None,
-    max_size=None,
+    min_size: int | list | None = None,
+    max_size: int | list | None = None,
     add_layout=None,
     add_params=None,
-    style=styles.APP_BUTTON,
-    font=None,
+    style: str = styles.APP_BUTTON,
+    font: QFont = None,
 ):  # TODO: font
     button = QPushButton(layout)
     button.setText(text)
@@ -150,7 +160,7 @@ def create_button(
     return button
 
 
-def create_list(layout, style=styles.LIST, add_layout=None):
+def create_list(layout, style: str = styles.LIST, add_layout=None):
     qlist = QListWidget(layout)
     qlist.setStyleSheet(style)
     qlist.setFrameShape(QFrame.NoFrame)
@@ -170,13 +180,13 @@ def create_spacer(spacer_type: Spacer):
     return QSpacerItem(40, 20, *size)
 
 
-def set_button_text(button, text, max_width):
+def set_button_text(button: QPushButton, text: str, max_width):
     font_metrics = QFontMetrics(button.font())
     elided_text = font_metrics.elidedText(text, Qt.ElideRight, max_width)
     button.setText(elided_text)
 
 
-def set_topic_color(topic, tag):
+def set_topic_color(topic: Topic, tag: QFrame):
     if topic.color:
         if color := topic.color:
             tag.setStyleSheet(
@@ -185,7 +195,7 @@ def set_topic_color(topic, tag):
             )
 
 
-def select_tag(tag):
+def select_tag(tag: QFrame):
     border = '2px solid rgb(70, 70, 70);'
     style = (
         f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
@@ -195,7 +205,7 @@ def select_tag(tag):
     tag.setStyleSheet(tag.styleSheet() + style)
 
 
-def deselect_tag(tag):
+def deselect_tag(tag: QFrame):
     style = (
         'QFrame {border-right: none; border-top: none; border-bottom: none;}'
         if 'border-left' in tag.styleSheet()
