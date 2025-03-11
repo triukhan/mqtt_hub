@@ -26,7 +26,7 @@ from UI.interface_utils import (
     create_spacer,
     set_button_text,
 )
-from UI.styles import sidebar_button
+from UI.styles import sidebar_button, HEADER_FRAME, FRAME_COLOR
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -221,7 +221,7 @@ class MqttHubUi(QWidget):
 
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = create_frame(
-            self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
+            self.main_window, FRAME_COLOR + HEADER_FRAME
         )
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
@@ -243,6 +243,7 @@ class MqttHubUi(QWidget):
             'Create',
             self.header_frame,
             style=styles.MAIN_BUTTON,
+            min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 3, 1, 1],
         )
@@ -250,6 +251,7 @@ class MqttHubUi(QWidget):
             'Connect',
             self.header_frame,
             style=styles.MAIN_BUTTON,
+            min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 4, 1, 1],
         )
@@ -263,7 +265,7 @@ class MqttHubUi(QWidget):
     def _setup_edit_header(self):
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = create_frame(
-            self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
+            self.main_window, FRAME_COLOR + HEADER_FRAME
         )
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)

@@ -29,22 +29,20 @@ class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
         self.plus_layout = QGridLayout(self)
-        self.plus_layout.setContentsMargins(0, 0, 0, 0)
-        self.plus_layout.setSpacing(0)
         self.plus_scroll = QScrollArea(self)
         self.plus_scroll.setStyleSheet("QScrollArea {border: 0px}")
 
         self.plus_scroll_layout = QWidget()
-        self.plus_scroll_layout.setGeometry(QtCore.QRect(0, 0, 969, 1231))
         self.plus_scroll_box = QVBoxLayout(self.plus_scroll_layout)
 
         # general
         self.general_label = create_label(
-            'General',
+            '  General',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
             max_size=[100, 20],
             min_size=[0, 20],
+            align='left'
         )
 
         self.general_frame = create_frame(
@@ -124,11 +122,12 @@ class PlusTabUI(QWidget):
 
         # certificates
         self.certificates_label = create_label(
-            'Certificates',
+            '  Certificates',
             self.plus_scroll_layout,
             self.plus_scroll_box,
             min_size=[100, 30],
             max_size=[100, 30],
+            align='left'
         )
         self.certificates_frame = create_frame(self.plus_scroll_layout, add_layout=self.plus_scroll_box)
 
@@ -186,11 +185,12 @@ class PlusTabUI(QWidget):
 
         # advanced
         self.advanced_label = create_label(
-            'Advanced',
+            '  Advanced',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
-            min_size=[00, 20],
-            max_size=[100, 20],
+            min_size=[100, 30],
+            max_size=[100, 30],
+            align='left'
         )
 
         self.advanced_frame = create_frame(self.plus_scroll_layout, add_layout=self.plus_scroll_box)

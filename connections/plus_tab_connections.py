@@ -105,9 +105,9 @@ class EditTab(PlusTabUI):
             'Delete',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
-            max_size=[100, 25],
-            min_size=[0, 25],
-            style=DELETE_BUTTON,
+            max_size=[100, 35],
+            min_size=[0, 35],
+            style=DELETE_BUTTON + 'QPushButton {margin-left: 10px; margin-top: 10px}',
         )
         self.delete_method = None
 
