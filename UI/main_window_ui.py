@@ -225,13 +225,11 @@ class MqttHubUi(QWidget):
         )
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
-        self.header_horizontal_layout.setContentsMargins(10, 5, 25, 5)
-        self.header_horizontal_layout.setSpacing(20)
-
-        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+        self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
+        self.header_horizontal_layout.setSpacing(0)
 
         self.profile_name = create_label(
-            'New Profile',
+            '    New Profile',
             self.header_frame,
             add_layout=self.header_layout,
             add_params=[0, 1, 1, 1],
@@ -269,8 +267,8 @@ class MqttHubUi(QWidget):
         )
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
-        self.header_horizontal_layout.setContentsMargins(10, 5, 25, 5)
-        self.header_horizontal_layout.setSpacing(20)
+        self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
+        self.header_horizontal_layout.setSpacing(0)
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.header_layout = QtWidgets.QGridLayout()
