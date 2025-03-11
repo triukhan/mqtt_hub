@@ -51,6 +51,7 @@ class Profile:
     _is_default: bool | None = None
     clipboard: dict = defaultdict
     is_created: bool = False
+    convertor: str | None = 'JSON'
 
     def __post_init__(self):
         self.profile_ini = f'{PROFILES_PATH}{self._id}.ini'
@@ -339,3 +340,8 @@ class Profile:
             self._topics.remove(topic)
         self.settings.remove_section(topic.address)
         self.settings.remove_option('topics', topic.address)
+
+    def find_topic_by_address(self, address: str):
+        for topic in self._topics:
+            if topic.address == address:
+                return topic

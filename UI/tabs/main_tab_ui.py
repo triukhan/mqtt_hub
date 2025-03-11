@@ -83,7 +83,7 @@ class MainTabUI(QWidget):
             QHBoxLayout, [12, 5, 0, 5], 0, out_layout=self.filter_frame
         )
 
-        self.convertor_button, menu, show_menu = create_expand_button(
+        self.convertor_button, self.convert_menu, self.show_convert_menu = create_expand_button(
             'JSON',
             self.filter_frame,
             min_size=[100, 25],
@@ -91,18 +91,6 @@ class MainTabUI(QWidget):
             style=styles.PICKER_BUTTON,
             add_layout=self.message_formating,
         )
-
-        for format in ('JSON', 'NotJSON'):
-            font_metrics = QFontMetrics(self.convertor_button.font())
-            elided_text = font_metrics.elidedText(
-                format, Qt.ElideRight, 110
-            )  # todo what is this
-
-            action = QAction(elided_text, self.convertor_button)
-            action.triggered.connect(lambda _, f=format: self.set_convertor(format))
-            menu.addAction(action)
-
-        self.convertor_button.clicked.connect(show_menu)
 
         self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
 
@@ -227,9 +215,6 @@ class MainTabUI(QWidget):
         self.bottom_frame = QWidget(self.main_left_layout)
         self.bottom_frame.setFixedHeight(0)
         self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
-
-    def set_convertor(self, f):
-        self.convertor_button.setText(f)
 
 
 class FlowLayout(QLayout):

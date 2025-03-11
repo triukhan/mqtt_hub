@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QGridLayout, QSpacerItem
 
 from UI.interface_utils import create_button, create_label, create_field, create_layout, create_frame
 from UI.styles import X_BUTTON
@@ -21,11 +21,11 @@ class ClipboardDialogUI:
 
         self.header_layout = create_layout(QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame)
 
-        left_spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        left_spacer = QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.header_layout.addItem(left_spacer)
         self.clipboard_label = create_label('Add to Clipboard', self.header_frame, self.header_layout, min_size=(30, 30), max_size=(200, 30))
 
-        spacerItem = QtWidgets.QSpacerItem(
+        spacerItem = QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
         self.header_layout.addItem(spacerItem)

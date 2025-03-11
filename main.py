@@ -3,7 +3,10 @@ from contextlib import suppress
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPen, QColor
+from PyQt5.QtWidgets import QStyledItemDelegate
 
+from UI.interface_utils import BorderDelegate
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
@@ -28,6 +31,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.main_tab.connector = self.connector
 
         self.edit_tab.delete_button.clicked.connect(self.delete_profile)
+        self.main_tab.receiver_list.setItemDelegate(BorderDelegate(self.main_tab.receiver_list))
 
     def setup_main_header(self):
         super().setup_main_header()
@@ -53,7 +57,8 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
     def update_list_widget(self, topic, payload):
         item = QtWidgets.QListWidgetItem(topic)
-        item.setData(Qt.UserRole, payload)
+        color = profile_manager.current_profile.find_topic_by_address(topic).color
+        item.setData(Qt.UserRole, [payload, color])
         self.main_tab.receiver_list.addItem(item)
         item.setSelected(True)
         self.main_tab.receiver_text_edit.setPlainText(payload)

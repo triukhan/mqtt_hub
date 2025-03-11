@@ -5,6 +5,7 @@ from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from settings.profile import Profile
+from settings.profile_manager import profile_manager
 
 
 class MQTTConnector:
@@ -98,7 +99,8 @@ class MQTTMixin(QObject, MQTTConnector):
         super().__init__()
 
     def on_message(self, _, __, msg):
-        received_payload = convert_to_json(msg.payload.decode())
+        convertor = convert_to_json if profile_manager.current_profile.convertor == 'JSON' else None
+        received_payload = convertor(msg.payload.decode())
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)

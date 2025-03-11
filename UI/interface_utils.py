@@ -2,7 +2,7 @@ from enum import Enum
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QFont, QFontMetrics, QIcon
+from PyQt5.QtGui import QFont, QFontMetrics, QIcon, QPen, QColor
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QRadioButton,
     QSizePolicy,
-    QSpacerItem,
+    QSpacerItem, QStyledItemDelegate,
 )
 
 from settings.topic import Topic
@@ -242,3 +242,10 @@ def create_expand_button(
         menu.popup(button.mapToGlobal(QPoint(0, button.height())))
 
     return button, menu, show_menu
+
+class BorderDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        super().paint(painter, option, index)
+        if color := index.data(Qt.UserRole)[1]:
+            painter.setPen(QPen(QColor(color), 4))
+            painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())

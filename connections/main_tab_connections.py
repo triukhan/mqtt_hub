@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QListWidgetItem, QAction
 
 from connections.clipboard_dialog_connections import ClipboardDialog
 from connections.topic_dialog_connections import TopicDialog
@@ -32,6 +33,22 @@ class MainTab(MainTabUI):
         self.show_fail_message = None
         self.connector = None
 
+        for convert_format in ('JSON', 'NotJSON'):
+            font_metrics = QFontMetrics(self.convertor_button.font())
+            elided_text = font_metrics.elidedText(
+                convert_format, Qt.ElideRight, 110
+            )  # todo what is this
+
+            action = QAction(elided_text, self.convertor_button)
+            action.triggered.connect(lambda _, f=convert_format: self.set_convertor(convert_format))
+            self.convert_menu.addAction(action)
+
+        self.convertor_button.clicked.connect(self.show_convert_menu)
+
+    def set_convertor(self, convert_format):
+        self.convertor_button.setText(convert_format)
+        profile_manager.current_profile.convertor = convert_format
+
     def create_topic(self):
         if profile_manager.current_profile.is_default == 'True':
             self.show_fail_message(
@@ -44,7 +61,7 @@ class MainTab(MainTabUI):
         return self.command_field.toPlainText()
 
     def display_message_from_receiver_list(self, item):
-        payload = item.data(Qt.UserRole)
+        payload = item.data(Qt.UserRole)[0]
         self.receiver_text_edit.setPlainText(payload)
 
     def set_clipboard_messages(self, *, new: bool = False):
