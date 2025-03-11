@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtCore import QEvent, QSize, Qt
+from PyQt5.QtGui import QFontMetrics, QIcon, QPainter, QPixmap
+from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
 
 from connections.main_tab_connections import MainTab
@@ -166,6 +167,13 @@ class MqttHubUi(QWidget):
     def set_hover(self, hover):
         style = styles.EXIT_BUTTON_HOVER if hover else styles.EXIT_BUTTON
         for button in self.buttons:
+            if hover:
+                icon_folder = QIcon()
+                icon_folder.addPixmap(
+                    QPixmap('UI/icons/icons8-close.svg'), QIcon.Disabled, QIcon.On
+                )
+                button.setIcon(icon_folder)
+                button.setIconSize(QSize(10, 10))
             button.setStyleSheet(style)
 
     def _setup_main_header(self):
@@ -209,7 +217,17 @@ class MqttHubUi(QWidget):
             self.header_layout,
             [0, 3, 1, 1],
         )
-        self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
+        icon = QIcon()
+        renderer = QSvgRenderer('UI/icons/icons8-close.svg')
+        pixmap = QPixmap(renderer.defaultSize())
+        pixmap.fill(Qt.transparent)
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        icon.addPixmap(pixmap, QIcon.Normal, QIcon.On)
+        self.connect_button.setIcon(icon)
+
+        # self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)

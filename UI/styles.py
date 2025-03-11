@@ -59,13 +59,12 @@ FILTER_BUTTON_2 = (
 )
 
 EXIT_BUTTON = (
-    'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
+    'QPushButton {color: rgb(20, 20, 20); icon-size: 0px; background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
     'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;}'
 )
 EXIT_BUTTON_HOVER = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
-    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;'
-    f'border-image: url({INFO_ICON}) 0 0 0 0 stretch stretch;}}'
+    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;}'
 )
 SCROLLBAR = """
     QScrollBar:vertical {background-color: rgb(34, 34, 34); border-right: 1px solid rgb(50, 50, 50);
