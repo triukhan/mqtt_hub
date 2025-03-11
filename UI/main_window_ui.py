@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
 
@@ -82,6 +82,7 @@ class MqttHubUi(QWidget):
             self.exit_layout,
             style=styles.EXIT_BUTTON,
         )
+        self.exit_button.installEventFilter(self)
         self.collapse_button = create_button(
             '',
             self.sidebar_frame,
@@ -90,6 +91,7 @@ class MqttHubUi(QWidget):
             self.exit_layout,
             style=styles.EXIT_BUTTON,
         )
+        self.collapse_button.installEventFilter(self)
         self.expand_button = create_button(
             '',
             self.sidebar_frame,
@@ -98,6 +100,7 @@ class MqttHubUi(QWidget):
             self.exit_layout,
             style=styles.EXIT_BUTTON,
         )
+        self.expand_button.installEventFilter(self)
         self.sidebar_vertical_layout.addLayout(self.exit_layout)
 
         self.sidebar_layout = create_layout(QVBoxLayout, [20, 30, 20, 30], 20)
@@ -146,10 +149,25 @@ class MqttHubUi(QWidget):
         self.info_button.setStyleSheet(styles.sidebar_button(INFO_ICON))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
+        self.buttons = [self.exit_button, self.collapse_button, self.expand_button]
 
         self.horizontalLayout_2.addLayout(self.main_layout)
         self.setCentralWidget(self.main_window)
-        # self.setup_plus_header() #TODO testing it
+
+    def eventFilter(self, obj, event):
+        if obj in self.buttons:
+            if event.type() == QEvent.Enter:
+                self.set_hover(True)
+            elif event.type() == QEvent.Leave:
+                if not any(btn.underMouse() for btn in self.buttons):
+                    self.set_hover(False)
+        return super().eventFilter(obj, event)
+
+    def set_hover(self, hover):
+        style = styles.EXIT_BUTTON_HOVER if hover else styles.EXIT_BUTTON
+        for button in self.buttons:
+            button.setStyleSheet(style)
+
 
     def _setup_main_header(self):
         self.header_frame = create_frame(

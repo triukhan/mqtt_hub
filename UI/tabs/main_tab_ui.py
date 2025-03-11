@@ -88,7 +88,7 @@ class MainTabUI(QWidget):
             self.filter_frame,
             min_size=[100, 25],
             max_size=[100, 25],
-            # style=styles.PICKER_BUTTON,
+            style=styles.PICKER_BUTTON,
             add_layout=self.message_formating,
         )
 
