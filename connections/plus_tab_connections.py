@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from settings.profile_manager import profile_manager
 from UI.interface_utils import create_button
@@ -39,6 +39,17 @@ class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
         self.keep_alive_field.setText('60')
+        self.ca_folder_button.clicked.connect(
+            lambda: self.open_file_dialog(self.ca_field)
+        )
+
+    def open_file_dialog(self, field):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, 'Choose File', '', 'All Files (*)', options=options
+        )
+        if file_name:
+            field.setText(file_name)
 
     def get_settings(self):
         settings = {
@@ -105,9 +116,9 @@ class EditTab(PlusTabUI):
             'Delete',
             self.plus_scroll_layout,
             add_layout=self.plus_scroll_box,
-            max_size=[100, 35],
-            min_size=[0, 35],
-            style=DELETE_BUTTON + 'QPushButton {margin-left: 10px; margin-top: 10px}',
+            max_size=[100, 25],
+            min_size=[0, 25],
+            style=DELETE_BUTTON + 'QPushButton {margin-left: 10px;}',
         )
         self.delete_method = None
 

@@ -32,11 +32,20 @@ FOLDER_FIELD_LEFT = (
     'border-bottom-left-radius: 5;}'
 )
 FOLDER_FIELD_RIGHT = (
-    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid'
-    'rgb(50, 50, 50); border-left: 0px; border-top-right-radius: 5; border-bottom-right-radius: 5;'
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-right: 1px solid rgb(50, 50, 50);'
+    'border-bottom: 1px solid rgb(50, 50, 50); border-top: 1px solid rgb(50, 50, 50);'
+    'border-top-right-radius: 5; border-bottom-right-radius: 5;'
     'padding: 6px;}'
+    'QPushButton::hover {background-color: rgb(40, 40, 40);}'
 )
-RADIO = 'QRadioButton {color: rgb(186, 189, 182);background-color: rgb(35, 35, 35);}'
+RADIO = (
+    'QRadioButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding-left: 10px;}'
+    'QRadioButton::indicator {width: 14px; height: 14px; border: 1px solid rgb(50, 50, 50); border-radius: 8px;margin-right: 7px}'
+    'QRadioButton::indicator:checked {width: 8px; height: 8px; background-color: rgb(200, 200, 200);border-radius: 8px; border: 4px solid rgb(150, 150, 150);}'
+    'QRadioButton::indicator:hover {width: 14px; height: 14px; border: 1px solid rgb(70, 70, 70);}'
+)
+
+
 FRAME_PART = 'QFrame {background-color: rgb(35, 35, 35); border-radius: 5; border: 1px solid rgb(50, 50, 50);}'
 CHECK_BOX = 'QCheckBox {color: rgb(186, 189, 182);background-color: rgb(35, 35, 35);}'
 LIST = (
@@ -67,6 +76,10 @@ SCROLLBAR = """
 
     QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {background: none; border: none}
     """
+
+BLANK_SCROLLBAR = (
+    'QScrollBar:vertical, QScrollBar:horizontal {width: 0px; height: 0px;}'
+)
 
 RECEIVER_LIST = """
     QListView {background-color: rgb(35, 35, 35); border-top: 1px solid rgb(50, 50, 50)}
@@ -110,12 +123,16 @@ ADD_TAG = (
 )
 FRAME_COLOR = 'QFrame {background: rgb(35, 35, 35); border: none;}'
 COMMAND_FIELD = 'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
-DELETE_BUTTON = ('QPushButton {color: rgb(140, 50, 0); background-color: rgb(35, 35, 35); border: 1px solid '
-                 'rgb(50, 50, 50); border-radius: 5; padding: 5px;} QPushButton:hover {border: 1px solid rgb(70, 70, 70)}')
+DELETE_BUTTON = (
+    'QPushButton {color: rgb(140, 50, 0); background-color: rgb(35, 35, 35); border: 1px solid '
+    'rgb(50, 50, 50); border-radius: 5; padding: 5px;} QPushButton:hover {border: 1px solid rgb(70, 70, 70)}'
+)
 RECEIVER_TEXT = 'QTextEdit {color: rgb(186, 189, 182);}'
 FILTER_FRAME = 'QFrame {border-top: 1px solid rgb(50, 50, 50); border-bottom: 1px solid rgb(50, 50, 50); background-color: rgb(35, 35, 35)}'
-EXPAND_BUTTON = ('QPushButton { color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
-                 'padding: 5px} QPushButton:hover {background-color: rgb(45, 45, 45);} QPushButton::menu-indicator { image: none; }')
+EXPAND_BUTTON = (
+    'QPushButton { color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
+    'padding: 5px} QPushButton:hover {background-color: rgb(45, 45, 45);} QPushButton::menu-indicator { image: none; }'
+)
 
 
 def sidebar_button(icon_path):

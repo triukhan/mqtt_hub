@@ -2,25 +2,28 @@ from enum import Enum
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QFont, QFontMetrics, QIcon, QPen, QColor
+from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
     QListWidget,
     QMenu,
     QPushButton,
     QRadioButton,
+    QScrollBar,
     QSizePolicy,
-    QSpacerItem, QStyledItemDelegate,
+    QSpacerItem,
+    QStyledItemDelegate,
 )
 from qtwidgets import AnimatedToggle
 
 from settings.topic import Topic
 from UI import styles
 from UI.icons.icons import EXPAND_ICON
-from UI.styles import MENU, EXPAND_BUTTON
+from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -67,9 +70,14 @@ def create_label(
     return label
 
 
-def create_field(main_layout, add_layout=None, add_params: list | None = None):
+def create_field(
+    main_layout,
+    add_layout=None,
+    add_params: list | None = None,
+    style: str = styles.FIELD,
+):
     field = QLineEdit(main_layout)
-    field.setStyleSheet(styles.FIELD)
+    field.setStyleSheet(style)
 
     if add_layout is not None:
         if add_params is not None:
@@ -93,9 +101,7 @@ def create_checkbox(
     return checkbox
 
 
-def create_toggle(
-    add_layout=None, add_params: list | None = None
-):
+def create_toggle(add_layout=None, add_params: list | None = None):
     toggle = AnimatedToggle(
         handle_color=Qt.gray,
         bar_color=Qt.darkGray,
@@ -203,6 +209,28 @@ def create_spacer(spacer_type: Spacer):
     return QSpacerItem(40, 20, *size)
 
 
+def create_scroll_bar(obj, layout, style=SCROLLBAR):
+    scroll_bar = QScrollBar(obj)
+    scroll_bar.setStyleSheet(style)
+    layout.setVerticalScrollBar(scroll_bar)
+
+
+def create_folder_field(frame, add_layout, add_params: list):
+    layout = create_layout(QHBoxLayout, spacing=0)
+    field = create_field(frame, layout, style=styles.FOLDER_FIELD_LEFT)
+    button = create_button(
+        '', frame, add_layout=layout, style=styles.FOLDER_FIELD_RIGHT
+    )
+
+    icon_folder = QIcon()
+    icon_folder.addPixmap(QPixmap('UI/icons/folder-icon.svg'), QIcon.Normal, QIcon.Off)
+    button.setIcon(icon_folder)
+
+    add_layout.addLayout(layout, *add_params)
+
+    return field, button
+
+
 def set_button_text(button: QPushButton, text: str, max_width):
     font_metrics = QFontMetrics(button.font())
     elided_text = font_metrics.elidedText(text, Qt.ElideRight, max_width)
@@ -238,7 +266,13 @@ def deselect_tag(tag: QFrame):
 
 
 def create_expand_button(
-    text, layout, add_layout, add_params=None, min_size=None, max_size=None, style=EXPAND_BUTTON
+    text,
+    layout,
+    add_layout,
+    add_params=None,
+    min_size=None,
+    max_size=None,
+    style=EXPAND_BUTTON,
 ):
     button = create_button(
         text,
@@ -263,6 +297,7 @@ def create_expand_button(
         menu.popup(button.mapToGlobal(QPoint(0, button.height())))
 
     return button, menu, show_menu
+
 
 class BorderDelegate(QStyledItemDelegate):
     def paint(self, painter, option, index):

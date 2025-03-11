@@ -1,24 +1,25 @@
 from PyQt5.QtWidgets import (
+    QFileDialog,
     QGridLayout,
     QHBoxLayout,
-    QLineEdit,
-    QPushButton,
     QScrollArea,
     QVBoxLayout,
     QWidget,
 )
 
-from UI import styles
 from UI.interface_utils import (
     Spacer,
     create_field,
+    create_folder_field,
     create_frame,
     create_label,
     create_layout,
     create_radio,
+    create_scroll_bar,
     create_spacer,
     create_toggle,
 )
+from UI.styles import BLANK_SCROLLBAR
 
 
 class PlusTabUI(QWidget):
@@ -27,6 +28,8 @@ class PlusTabUI(QWidget):
         self.plus_layout = QGridLayout(self)
         self.plus_layout.setContentsMargins(0, 0, 0, 0)
         self.plus_scroll = QScrollArea(self)
+        create_scroll_bar(self, self.plus_scroll, BLANK_SCROLLBAR)
+
         self.plus_scroll.setStyleSheet("QScrollArea {border: 0px}")
 
         self.plus_scroll_layout = QWidget()
@@ -75,12 +78,6 @@ class PlusTabUI(QWidget):
         )
         self.certificate_label = create_label(
             'Certificate', self.general_frame, self.general_layout, [9, 0, 1, 1]
-        )
-        self.generate_id_label = create_label(
-            'gen', self.general_frame, self.general_layout, [4, 3, 1, 1]
-        )
-        self.name_info_button = create_label(
-            'inf', self.general_frame, self.general_layout, [1, 3, 1, 1]
         )
 
         self.name_field = create_field(
@@ -143,38 +140,15 @@ class PlusTabUI(QWidget):
             'Client Key File', self.certificates_frame, self.cert_layout, [2, 0, 1, 1]
         )
 
-        self.ca_layout = QHBoxLayout()
-        self.ca_layout.setSpacing(0)
-        self.ca_field = QLineEdit(self.certificates_frame)
-        self.ca_field.setStyleSheet(styles.FOLDER_FIELD_LEFT)
-        self.ca_layout.addWidget(self.ca_field)
-        self.ca_button = QPushButton(self.certificates_frame)
-        self.ca_button.setText('fff')
-        self.ca_button.setStyleSheet(styles.FOLDER_FIELD_RIGHT)
-        self.ca_layout.addWidget(self.ca_button)
-        self.cert_layout.addLayout(self.ca_layout, 0, 1, 1, 1)
-
-        self.client_cert_layout = QHBoxLayout()
-        self.client_cert_layout.setSpacing(0)
-        self.client_cert_field = QLineEdit(self.certificates_frame)
-        self.client_cert_field.setStyleSheet(styles.FOLDER_FIELD_LEFT)
-        self.client_cert_layout.addWidget(self.client_cert_field)
-        self.client_cert_button = QPushButton(self.certificates_frame)
-        self.client_cert_button.setText('fff')
-        self.client_cert_button.setStyleSheet(styles.FOLDER_FIELD_RIGHT)
-        self.client_cert_layout.addWidget(self.client_cert_button)
-        self.cert_layout.addLayout(self.client_cert_layout, 1, 1, 1, 1)
-
-        self.client_key_layout = QHBoxLayout()
-        self.client_key_layout.setSpacing(0)
-        self.client_key_field = QLineEdit(self.certificates_frame)
-        self.client_key_field.setStyleSheet(styles.FOLDER_FIELD_LEFT)
-        self.client_key_layout.addWidget(self.client_key_field)
-        self.client_key_button = QPushButton(self.certificates_frame)
-        self.client_key_button.setText('fff')
-        self.client_key_button.setStyleSheet(styles.FOLDER_FIELD_RIGHT)
-        self.client_key_layout.addWidget(self.client_key_button)
-        self.cert_layout.addLayout(self.client_key_layout, 2, 1, 1, 1)
+        self.ca_field, self.ca_folder_button = create_folder_field(
+            self.certificates_frame, self.cert_layout, [0, 1, 1, 1]
+        )
+        self.client_cert_field, self.client_cert_button = create_folder_field(
+            self.certificates_frame, self.cert_layout, [1, 1, 1, 1]
+        )
+        self.client_key_field, self.client_key_button = create_folder_field(
+            self.certificates_frame, self.cert_layout, [2, 1, 1, 1]
+        )
 
         self.plus_scroll_box.addWidget(self.certificates_frame)
 
@@ -292,3 +266,21 @@ class PlusTabUI(QWidget):
         self.plus_scroll_box.addWidget(self.advanced_frame)
         self.plus_scroll.setWidget(self.plus_scroll_layout)
         self.plus_layout.addWidget(self.plus_scroll, 0, 1, 1, 1)
+
+        self.ca_folder_button.clicked.connect(
+            lambda: self.open_file_dialog(self.ca_field)
+        )
+        self.client_cert_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_cert_field)
+        )
+        self.client_key_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_key_field)
+        )
+
+    def open_file_dialog(self, field):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, 'Choose File', '', 'All Files (*)', options=options
+        )
+        if file_name:
+            field.setText(file_name)

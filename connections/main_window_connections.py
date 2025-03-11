@@ -22,6 +22,8 @@ class MainWindow(MqttHubUi):
         return profile_manager.current_profile
 
     def save_new_profile(self):
+        self._setup_notifications()
+        # self.show_fail_notification('', 5) #todo: to validate settings
         settings = self.plus_tab.get_settings()
         profile_manager.create_profile(**settings)
         # self.disconnect() #TODO uncomment after disconnect
@@ -77,15 +79,15 @@ class MainWindow(MqttHubUi):
         self.info_button.clicked.connect(self.open_info_tab)
         self.exit_button.clicked.connect(self.close)
 
-    def show_fail_notification(self, text=None):
+    def show_fail_notification(self, text=None, pos=10):
         self.notification.setStyleSheet(
             "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
             "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
         )
         self.notification.setText(text or 'Fail')
-        self._start_notification_animation()
+        self._start_notification_animation(pos)
 
-    def show_positive_notification(self, text='Success'):
+    def show_positive_notification(self, text='Success', pos=10):
         self.notification.setStyleSheet(
             "QPushButton {color: rgb(255, 250, 250); background-color: rgb(103, 159, 95); border: 1px solid "
             "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
@@ -94,7 +96,7 @@ class MainWindow(MqttHubUi):
             self.notification.setText(text)
         else:
             self.notification.setText('Success')
-        self._start_notification_animation()
+        self._start_notification_animation(pos)
 
     def _setup_notifications(self):
         self.notification.setMouseTracking(True)
@@ -122,13 +124,13 @@ class MainWindow(MqttHubUi):
         self.opacity_fade.start()
         QTimer.singleShot(250, self.notification.hide)
 
-    def _start_notification_animation(self):
+    def _start_notification_animation(self, pos: int = 10):
         self.notification.show()
-        self.notification_opacity.setOpacity(0.7)
+        self.notification_opacity.setOpacity(1)
         self.rolling_animation = QPropertyAnimation(self.notification, b"geometry")
         self.rolling_animation.setDuration(100)
         self.rolling_animation.setStartValue(QRect(230, 0, 0, 0))
-        self.rolling_animation.setEndValue(QRect(230, 10, 100, 50))
+        self.rolling_animation.setEndValue(QRect(230, pos, 100, 50))
         self.rolling_animation.start()
         self.timer.start(5000)
 

@@ -231,6 +231,15 @@ class MqttHubUi(QWidget):
             add_layout=self.header_layout,
             add_params=[0, 1, 1, 1],
         )
+        self.notification = create_button(
+            '',
+            self.header_frame,
+            [400, 30],
+            30,
+            self.header_layout,
+            [0, 1, 1, 1],
+        )
+        self.notification.hide()
 
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
 
@@ -258,41 +267,41 @@ class MqttHubUi(QWidget):
         self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
 
     def _setup_edit_header(self):
-        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
-        self.header_horizontal_layout.setSpacing(0)
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
-        self.header_layout = QtWidgets.QGridLayout()
-
         self.profile_name = create_label(
-            'New Profile',
-            self.header_frame,
-            add_layout=self.header_layout,
-            add_params=[0, 1, 1, 1],
+            '  ' + profile_manager.current_profile.name, self.header_frame
         )
+        self.profile_name.setAlignment(Qt.AlignCenter)
+        self.header_horizontal_layout.addWidget(self.profile_name, 1)
 
-        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
+        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+
+        self.buttons_layout = QtWidgets.QHBoxLayout()
+        self.buttons_layout.setSpacing(10)
 
         self.save_edit_button = create_button(
             'Save',
             self.header_frame,
-            add_layout=self.header_layout,
-            add_params=[0, 3, 1, 1],
-            style=styles.MAIN_BUTTON,
+            style=styles.MAIN_BUTTON + 'QPushButton {margin-right: 5px}',
+            min_size=[0, 30],
         )
         self.connect_button = create_button(
             'Connect',
             self.header_frame,
-            add_layout=self.header_layout,
-            add_params=[0, 4, 1, 1],
             style=styles.MAIN_BUTTON,
+            min_size=[0, 30],
         )
 
-        self.header_horizontal_layout.addLayout(self.header_layout)
+        self.buttons_layout.addWidget(self.save_edit_button)
+        self.buttons_layout.addWidget(self.connect_button)
+
+        self.header_horizontal_layout.addLayout(self.buttons_layout)
+
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 

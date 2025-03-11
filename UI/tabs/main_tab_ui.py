@@ -1,9 +1,8 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QRect, QSize, Qt
-from PyQt5.QtGui import QFontMetrics, QIcon
+from PyQt5.QtCore import QPoint, QRect, QSize
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QAbstractItemView,
-    QAction,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -11,7 +10,6 @@ from PyQt5.QtWidgets import (
     QLayout,
     QListWidget,
     QPushButton,
-    QScrollBar,
     QSizePolicy,
     QTextEdit,
     QToolButton,
@@ -30,6 +28,7 @@ from UI.interface_utils import (
     create_frame,
     create_layout,
     create_list,
+    create_scroll_bar,
     create_spacer,
     deselect_tag,
     select_tag,
@@ -70,9 +69,7 @@ class MainTabUI(QWidget):
         self.receiver_list = create_list(
             self, styles.RECEIVER_LIST, self.main_right_layout
         )
-        scroll_bar = QScrollBar(self)
-        scroll_bar.setStyleSheet(styles.SCROLLBAR)
-        self.receiver_list.setVerticalScrollBar(scroll_bar)
+        create_scroll_bar(self, self.receiver_list)
 
         self.filter_frame = create_frame(
             self,
@@ -83,13 +80,15 @@ class MainTabUI(QWidget):
             QHBoxLayout, [12, 5, 0, 5], 0, out_layout=self.filter_frame
         )
 
-        self.convertor_button, self.convert_menu, self.show_convert_menu = create_expand_button(
-            'JSON',
-            self.filter_frame,
-            min_size=[100, 25],
-            max_size=[100, 25],
-            style=styles.PICKER_BUTTON,
-            add_layout=self.message_formating,
+        self.convertor_button, self.convert_menu, self.show_convert_menu = (
+            create_expand_button(
+                'JSON',
+                self.filter_frame,
+                min_size=[100, 25],
+                max_size=[100, 25],
+                style=styles.PICKER_BUTTON,
+                add_layout=self.message_formating,
+            )
         )
 
         self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
