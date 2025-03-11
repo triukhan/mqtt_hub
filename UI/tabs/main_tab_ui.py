@@ -1,7 +1,9 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QRect, QSize, Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QFontMetrics, QIcon
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QAction,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -20,10 +22,11 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
-from UI.icons.icons import EDIT_ICON, EXPAND_ICON
+from UI.icons.icons import EDIT_ICON
 from UI.interface_utils import (
     Spacer,
     create_button,
+    create_expand_button,
     create_frame,
     create_layout,
     create_list,
@@ -32,8 +35,17 @@ from UI.interface_utils import (
     select_tag,
     set_topic_color,
 )
-from UI.styles import ADD_TAG, CLIPBOARD_LIST, EDIT_TAG, FRAME_COLOR, TAG, COMMAND_FIELD, DELETE_BUTTON, RECEIVER_TEXT, \
-    FILTER_FRAME
+from UI.styles import (
+    ADD_TAG,
+    CLIPBOARD_LIST,
+    COMMAND_FIELD,
+    DELETE_BUTTON,
+    EDIT_TAG,
+    FILTER_FRAME,
+    FRAME_COLOR,
+    RECEIVER_TEXT,
+    TAG,
+)
 
 
 class MainTabUI(QWidget):
@@ -71,18 +83,26 @@ class MainTabUI(QWidget):
             QHBoxLayout, [12, 5, 0, 5], 0, out_layout=self.filter_frame
         )
 
-        self.convertor_button = create_button(
+        self.convertor_button, menu, show_menu = create_expand_button(
             'JSON',
             self.filter_frame,
             min_size=[100, 25],
             max_size=[100, 25],
-            style=styles.PICKER_BUTTON,
+            # style=styles.PICKER_BUTTON,
             add_layout=self.message_formating,
         )
 
-        self.convertor_button.setIcon(QIcon(EXPAND_ICON))
-        self.convertor_button.setIconSize(QSize(24, 24))
-        self.convertor_button.setLayoutDirection(Qt.RightToLeft)
+        for format in ('JSON', 'NotJSON'):
+            font_metrics = QFontMetrics(self.convertor_button.font())
+            elided_text = font_metrics.elidedText(
+                format, Qt.ElideRight, 110
+            )  # todo what is this
+
+            action = QAction(elided_text, self.convertor_button)
+            action.triggered.connect(lambda _, f=format: self.set_convertor(format))
+            menu.addAction(action)
+
+        self.convertor_button.clicked.connect(show_menu)
 
         self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
 
@@ -132,6 +152,7 @@ class MainTabUI(QWidget):
 
         self.receiver_text_edit = QTextEdit(self)
         self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
+        self.receiver_text_edit.setReadOnly(True)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         self.main_right_layout.addWidget(self.receiver_text_edit)
 
@@ -180,7 +201,10 @@ class MainTabUI(QWidget):
         self.verticalLayout_3.addWidget(self.publisher_head_frame)
         self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
 
-        self.clipboard_list = QListWidget(self.main_left_layout)
+        self.clipboard_list = QListWidget(self.main_left_layout)  # todo: refactor
+        self.clipboard_list.setDragEnabled(True)
+        self.clipboard_list.setAcceptDrops(True)
+        self.clipboard_list.setDragDropMode(QAbstractItemView.InternalMove)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -203,6 +227,9 @@ class MainTabUI(QWidget):
         self.bottom_frame = QWidget(self.main_left_layout)
         self.bottom_frame.setFixedHeight(0)
         self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
+
+    def set_convertor(self, f):
+        self.convertor_button.setText(f)
 
 
 class FlowLayout(QLayout):
@@ -293,7 +320,7 @@ class TagsWidget(QFrame):
         tag.setFixedSize(115, 30)
         tag_layout = create_layout(QHBoxLayout, 0, 0, tag)
 
-        tag_label = QLabel(topic.get_name(), tag) # todo: create_label
+        tag_label = QLabel(topic.get_name(), tag)  # todo: create_label
         tag_label.setFixedWidth(90)
         tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none}")
         tag_label.setSizePolicy(

@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
@@ -97,7 +98,7 @@ class MQTTMixin(QObject, MQTTConnector):
         super().__init__()
 
     def on_message(self, _, __, msg):
-        received_payload = msg.payload.decode()
+        received_payload = convert_to_json(msg.payload.decode())
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)
@@ -154,3 +155,12 @@ class MQTTMixin(QObject, MQTTConnector):
             )  # todo: make red
             return
         super().start(profile)
+
+
+def convert_to_json(payload):
+    try:
+        json_obj = json.loads(payload)
+        formatted_payload = json.dumps(json_obj, indent=4)
+        return formatted_payload
+    except json.JSONDecodeError:
+        return payload

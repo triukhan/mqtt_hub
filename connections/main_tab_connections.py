@@ -18,6 +18,10 @@ class MainTab(MainTabUI):
         self.verticalLayout_3.addWidget(self.tags_widget)
 
         self.receiver_list.itemClicked.connect(self.display_message_from_receiver_list)
+        self.receiver_list.currentItemChanged.connect(
+            self.display_message_from_receiver_list
+        )
+
         self.add_clipboard_button.clicked.connect(self.show_clipboard_dialog)
         self.set_clipboard_messages()
         self.clipboard_list.currentItemChanged.connect(

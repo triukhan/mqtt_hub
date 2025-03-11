@@ -1,28 +1,30 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFontMetrics, QFont
+from PyQt5.QtCore import QPoint, QSize, Qt
+from PyQt5.QtGui import QFont, QFontMetrics, QIcon
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
     QLabel,
     QLineEdit,
     QListWidget,
+    QMenu,
     QPushButton,
     QRadioButton,
     QSizePolicy,
     QSpacerItem,
 )
 
-from UI import styles
 from settings.topic import Topic
+from UI import styles
+from UI.icons.icons import EXPAND_ICON
+from UI.styles import MENU
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
 )
 LABEL_LEFT_ALIGNMENT = QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
-
 
 
 class Spacer(Enum):
@@ -212,3 +214,41 @@ def deselect_tag(tag: QFrame):
         else 'QFrame {border: none;}'
     )
     tag.setStyleSheet(tag.styleSheet() + style)
+
+
+def create_expand_button(
+    text, layout, add_layout, add_params=None, min_size=None, max_size=None
+):
+    button = create_button(
+        text,
+        layout,
+        min_size=min_size,
+        max_size=max_size,
+        add_layout=add_layout,
+        add_params=add_params,
+    )
+
+    button.setIcon(QIcon(EXPAND_ICON))
+    button.setIconSize(QSize(24, 24))
+    button.setLayoutDirection(Qt.RightToLeft)
+
+    button.setStyleSheet(
+        'QPushButton {'
+        'color: rgb(186, 189, 182);'
+        'background-color: rgb(35, 35, 35);'
+        'border-radius: 5px;'
+        'padding: 5px'
+        '} '
+        'QPushButton:hover {background-color: rgb(45, 45, 45);}'
+        'QPushButton::menu-indicator { image: none; }'
+    )
+
+    menu = QMenu()
+
+    def show_menu():
+        menu.setStyleSheet(MENU)
+        menu.setMinimumWidth(button.width())
+        menu.setMaximumWidth(150)
+        menu.popup(button.mapToGlobal(QPoint(0, button.height())))
+
+    return button, menu, show_menu

@@ -1,14 +1,7 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QFontMetrics, QIcon
-from PyQt5.QtWidgets import (
-    QAction,
-    QGridLayout,
-    QHBoxLayout,
-    QMenu,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
@@ -17,7 +10,6 @@ from UI import styles
 from UI.icons.icons import (
     CONNECT_ICON,
     EDIT_ICON,
-    EXPAND_ICON,
     INFO_ICON,
     LOGO_ICON,
     MAIN_ICON,
@@ -27,13 +19,14 @@ from UI.icons.icons import (
 from UI.interface_utils import (
     Spacer,
     create_button,
+    create_expand_button,
     create_frame,
     create_label,
     create_layout,
     create_spacer,
     set_button_text,
 )
-from UI.styles import MENU, sidebar_button
+from UI.styles import sidebar_button
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -303,8 +296,10 @@ class MqttHubUi(QWidget):
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
 
-    def create_profile_button(self, text, layout, add_layout, add_params: list):
-        button = create_button(
+    def create_profile_button(
+        self, text, layout, add_layout, add_params: list
+    ):  # todo: replace to utils somehow
+        button, menu, show_menu = create_expand_button(
             text,
             layout,
             min_size=[0, 30],
@@ -312,39 +307,18 @@ class MqttHubUi(QWidget):
             add_params=add_params,
         )
 
-        button.setIcon(QIcon(EXPAND_ICON))
-        button.setIconSize(QSize(24, 24))
-        button.setLayoutDirection(Qt.RightToLeft)
-
-        button.setStyleSheet(
-            'QPushButton {'
-            'color: rgb(186, 189, 182);'
-            'background-color: rgb(35, 35, 35);'
-            'border-radius: 5px;'
-            'padding: 5px'
-            '} '
-            'QPushButton:hover {background-color: rgb(45, 45, 45);}'
-            'QPushButton::menu-indicator { image: none; }'
-        )
-
-        menu = QMenu()
-
         profiles = profile_manager.profiles
         for _, profile in profiles.items():
             if profile.is_default == 'True':
                 continue
             font_metrics = QFontMetrics(button.font())
-            elided_text = font_metrics.elidedText(profile.name, Qt.ElideRight, 110)
+            elided_text = font_metrics.elidedText(
+                profile.name, Qt.ElideRight, 110
+            )  # todo what is this
 
             action = QAction(elided_text, button)
             action.triggered.connect(lambda _, p=profile: self.set_profile(p))
             menu.addAction(action)
-
-        def show_menu():
-            menu.setStyleSheet(MENU)
-            menu.setMinimumWidth(button.width())
-            menu.setMaximumWidth(150)
-            menu.popup(button.mapToGlobal(QPoint(0, button.height())))
 
         button.clicked.connect(show_menu)
 
