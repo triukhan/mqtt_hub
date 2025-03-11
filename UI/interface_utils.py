@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import (
     QSizePolicy,
     QSpacerItem, QStyledItemDelegate,
 )
+from qtwidgets import AnimatedToggle
 
 from settings.topic import Topic
 from UI import styles
@@ -90,6 +91,26 @@ def create_checkbox(
     else:
         add_layout.addWidget(checkbox)
     return checkbox
+
+
+def create_toggle(
+    add_layout=None, add_params: list | None = None
+):
+    toggle = AnimatedToggle(
+        handle_color=Qt.gray,
+        bar_color=Qt.darkGray,
+        checked_color=Qt.darkGray,
+        pulse_checked_color='#44999999',
+    )
+    toggle.setFixedWidth(55)
+    toggle.setFixedHeight(40)
+
+    if add_params:
+        add_layout.addWidget(toggle, *add_params)
+    else:
+        add_layout.addWidget(toggle)
+
+    return toggle
 
 
 def create_radio(text: str, main_layout, add_layout, add_params: list | None = None):

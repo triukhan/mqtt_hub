@@ -72,7 +72,7 @@ RECEIVER_LIST = """
     QListView {background-color: rgb(35, 35, 35); border-top: 1px solid rgb(50, 50, 50)}
 
     QListView::item {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); selection-color:rgb(255, 255, 255);
-    min-height: 30px}
+    min-height: 30px; margin-left: 5px}
 
     QListView::item:selected {background-color: rgb(40, 40, 40); border-color: rgb(114, 159, 207)}
     """
