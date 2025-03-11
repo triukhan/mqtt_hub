@@ -1,27 +1,23 @@
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLineEdit,
     QPushButton,
     QScrollArea,
-    QSizePolicy,
-    QSpacerItem,
     QVBoxLayout,
     QWidget,
 )
-from qtwidgets import AnimatedToggle
 
 from UI import styles
 from UI.interface_utils import (
     Spacer,
-    create_checkbox,
     create_field,
     create_frame,
     create_label,
     create_layout,
     create_radio,
-    create_spacer, create_toggle,
+    create_spacer,
+    create_toggle,
 )
 
 
@@ -29,6 +25,7 @@ class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
         self.plus_layout = QGridLayout(self)
+        self.plus_layout.setContentsMargins(0, 0, 0, 0)
         self.plus_scroll = QScrollArea(self)
         self.plus_scroll.setStyleSheet("QScrollArea {border: 0px}")
 
@@ -42,7 +39,7 @@ class PlusTabUI(QWidget):
             add_layout=self.plus_scroll_box,
             max_size=[100, 20],
             min_size=[0, 20],
-            align='left'
+            align='left',
         )
 
         self.general_frame = create_frame(
@@ -105,9 +102,7 @@ class PlusTabUI(QWidget):
             self.general_frame, self.general_layout, [6, 2, 1, 1]
         )
 
-        self.ssl_checkbox = create_toggle(
-            self.general_layout, [8, 2, 1, 1]
-        )
+        self.ssl_checkbox = create_toggle(self.general_layout, [8, 2, 1, 1])
         self.ssl_tls_checkbox = create_toggle(self.general_layout, [7, 2, 1, 1])
 
         self.certificate_layout = create_layout(QHBoxLayout)
@@ -127,9 +122,9 @@ class PlusTabUI(QWidget):
             self.plus_scroll_box,
             min_size=[100, 30],
             max_size=[100, 30],
-            align='left'
+            align='left',
         )
-        self.certificates_frame = create_frame(self.plus_scroll_layout, add_layout=self.plus_scroll_box)
+        self.certificates_frame = create_frame(self.plus_scroll_layout)
 
         self.cert_layout = create_layout(
             QGridLayout, [30, 20, 100, 20], 15, self.certificates_frame
@@ -190,11 +185,15 @@ class PlusTabUI(QWidget):
             add_layout=self.plus_scroll_box,
             min_size=[100, 30],
             max_size=[100, 30],
-            align='left'
+            align='left',
         )
 
-        self.advanced_frame = create_frame(self.plus_scroll_layout, add_layout=self.plus_scroll_box)
-        self.advanced_layout = create_layout(QGridLayout, [30, 20, 60, 20], 15, self.advanced_frame)
+        self.advanced_frame = create_frame(
+            self.plus_scroll_layout, add_layout=self.plus_scroll_box
+        )
+        self.advanced_layout = create_layout(
+            QGridLayout, [30, 20, 60, 20], 15, self.advanced_frame
+        )
 
         self.con_timeout_label = create_label(
             'Connect Timeout', self.advanced_frame, self.advanced_layout, [1, 0, 1, 1]
@@ -224,10 +223,16 @@ class PlusTabUI(QWidget):
             'Receive Maximum', self.advanced_frame, self.advanced_layout, [7, 0, 1, 1]
         )
         self.max_packet_label = create_label(
-            'Maximum Packet Size', self.advanced_frame, self.advanced_layout, [8, 0, 1, 1]
+            'Maximum Packet Size',
+            self.advanced_frame,
+            self.advanced_layout,
+            [8, 0, 1, 1],
         )
         self.topic_alias_label = create_label(
-            'Topic Alias Maximum', self.advanced_frame, self.advanced_layout, [9, 0, 1, 1]
+            'Topic Alias Maximum',
+            self.advanced_frame,
+            self.advanced_layout,
+            [9, 0, 1, 1],
         )
         self.request_resp_label = create_label(
             'Request Response', self.advanced_frame, self.advanced_layout, [10, 0, 1, 1]
@@ -254,45 +259,31 @@ class PlusTabUI(QWidget):
         self.con_timeout_field = create_field(
             self.advanced_frame, self.advanced_layout, [1, 2, 1, 1]
         )
-        self.con_timeout_field.setMinimumHeight(30)
         self.mqtt_ver_field = create_field(
             self.advanced_frame, self.advanced_layout, [0, 2, 1, 1]
         )
-        self.mqtt_ver_field.setMinimumHeight(30)
         self.keep_alive_field = create_field(
             self.advanced_frame, self.advanced_layout, [2, 2, 1, 1]
         )
-        self.keep_alive_field.setMinimumHeight(30)
         self.recon_period_field = create_field(
             self.advanced_frame, self.advanced_layout, [4, 2, 1, 1]
         )
-        self.recon_period_field.setMinimumHeight(30)
         self.session_expiry_field = create_field(
             self.advanced_frame, self.advanced_layout, [6, 2, 1, 1]
         )
-        self.session_expiry_field.setMinimumHeight(30)
         self.receive_max_field = create_field(
             self.advanced_frame, self.advanced_layout, [7, 2, 1, 1]
         )
-        self.receive_max_field.setMinimumHeight(30)
         self.max_packet_field = create_field(
             self.advanced_frame, self.advanced_layout, [8, 2, 1, 1]
         )
-        self.max_packet_field.setMinimumHeight(30)
         self.topic_alias_field = create_field(
             self.advanced_frame, self.advanced_layout, [9, 2, 1, 1]
         )
-        self.topic_alias_field.setMinimumHeight(30)
 
-        self.auto_recon_checkbox = create_toggle(
-            self.advanced_layout, [3, 2, 1, 1]
-        )
-        self.clean_start_checkbox = create_toggle(
-            self.advanced_layout, [5, 2, 1, 1]
-        )
-        self.request_resp_checkbox = create_toggle(
-            self.advanced_layout, [10, 2, 1, 1]
-        )
+        self.auto_recon_checkbox = create_toggle(self.advanced_layout, [3, 2, 1, 1])
+        self.clean_start_checkbox = create_toggle(self.advanced_layout, [5, 2, 1, 1])
+        self.request_resp_checkbox = create_toggle(self.advanced_layout, [10, 2, 1, 1])
         self.request_problem_checkbox = create_toggle(
             self.advanced_layout, [11, 2, 1, 1]
         )

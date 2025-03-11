@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
 
@@ -26,7 +26,7 @@ from UI.interface_utils import (
     create_spacer,
     set_button_text,
 )
-from UI.styles import sidebar_button, HEADER_FRAME, FRAME_COLOR
+from UI.styles import FRAME_COLOR, HEADER_FRAME, sidebar_button
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -168,7 +168,6 @@ class MqttHubUi(QWidget):
         for button in self.buttons:
             button.setStyleSheet(style)
 
-
     def _setup_main_header(self):
         self.header_frame = create_frame(
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
@@ -220,13 +219,11 @@ class MqttHubUi(QWidget):
         self.header_layout = QtWidgets.QGridLayout()
 
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
-        self.header_frame = create_frame(
-            self.main_window, FRAME_COLOR + HEADER_FRAME
-        )
+        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
-        self.header_horizontal_layout.setSpacing(0)
+        self.header_horizontal_layout.setSpacing(15)
 
         self.profile_name = create_label(
             '    New Profile',
@@ -262,9 +259,7 @@ class MqttHubUi(QWidget):
 
     def _setup_edit_header(self):
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
-        self.header_frame = create_frame(
-            self.main_window, FRAME_COLOR + HEADER_FRAME
-        )
+        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
         self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
