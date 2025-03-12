@@ -29,7 +29,7 @@ class MainTab(MainTabUI):
             self.display_message_in_command_field
         )
         self.add_button.clicked.connect(self.create_topic)
-        self.clear_button.clicked.connect(self.receiver_list.clear)
+        self.clear_button.clicked.connect(self.clear_list_and_message)
         self.show_fail_message = None
         self.connector = None
 
@@ -61,9 +61,10 @@ class MainTab(MainTabUI):
         return self.command_field.toPlainText()
 
     def display_message_from_receiver_list(self, item):
+        if item is None:
+            return
         payload = item.data(Qt.UserRole)[0]
-        if payload:
-            self.receiver_text_edit.setPlainText(payload)
+        self.receiver_text_edit.setPlainText(payload)
 
     def set_clipboard_messages(self, *, new: bool = False):
         clipboard_messages = {} if new else profile_manager.current_profile.clipboard
@@ -116,3 +117,7 @@ class MainTab(MainTabUI):
 
     def show_edit_topic_dialog(self, topic, tag_dict):
         TopicDialog(self.save_topic, self, topic, tag_dict, self.delete_topic).exec_()
+
+    def clear_list_and_message(self):
+        self.receiver_text_edit.clear()
+        self.receiver_list.clear()
