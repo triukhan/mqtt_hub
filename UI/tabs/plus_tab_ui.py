@@ -202,21 +202,6 @@ class PlusTabUI(QWidget):
             self.advanced_layout,
             [8, 0, 1, 1],
         )
-        self.topic_alias_label = create_label(
-            'Topic Alias Maximum',
-            self.advanced_frame,
-            self.advanced_layout,
-            [9, 0, 1, 1],
-        )
-        self.request_resp_label = create_label(
-            'Request Response', self.advanced_frame, self.advanced_layout, [10, 0, 1, 1]
-        )
-        self.request_problem_label = create_label(
-            'Request Problem Info',
-            self.advanced_frame,
-            self.advanced_layout,
-            [11, 0, 1, 1],
-        )
         self.ct_sec_label = create_label(
             'sec', self.advanced_frame, self.advanced_layout, [1, 4, 1, 1]
         )
@@ -251,16 +236,9 @@ class PlusTabUI(QWidget):
         self.max_packet_field = create_field(
             self.advanced_frame, self.advanced_layout, [8, 2, 1, 1]
         )
-        self.topic_alias_field = create_field(
-            self.advanced_frame, self.advanced_layout, [9, 2, 1, 1]
-        )
 
         self.auto_recon_checkbox = create_toggle(self.advanced_layout, [3, 2, 1, 1])
         self.clean_start_checkbox = create_toggle(self.advanced_layout, [5, 2, 1, 1])
-        self.request_resp_checkbox = create_toggle(self.advanced_layout, [10, 2, 1, 1])
-        self.request_problem_checkbox = create_toggle(
-            self.advanced_layout, [11, 2, 1, 1]
-        )
 
         self.plus_scroll.setWidgetResizable(True)
         self.plus_scroll_box.addWidget(self.advanced_frame)

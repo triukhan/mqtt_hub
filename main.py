@@ -2,7 +2,7 @@ import sys
 from contextlib import suppress
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QApplication
+from PyQt5.QtWidgets import QApplication, QListWidgetItem, QMainWindow
 
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
@@ -53,17 +53,19 @@ class MqttHub(QMainWindow, MainWindow):
             self.show_fail_notification('You need to create a profile first')
             return
 
-        try:
-            self.connector.start(profile_manager.current_profile)
-        except Exception as e:
-            self.show_fail_notification(f'Error: {e}')
+        # try:
+        self.connector.start(profile_manager.current_profile)
+        # except Exception as e:
+        #     self.show_fail_notification(f'Error: {e}')
 
     def update_list_widget(self, topic, payload):
         topic = profile_manager.current_profile.find_topic_by_address(topic)
         item = QListWidgetItem(topic.alias or topic.address)
         item.setData(Qt.UserRole, [payload, topic.color])
         self.main_tab.receiver_list.addItem(item)
-        self.main_tab.receiver_list.scrollToItem(self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1)) # todo: here is autoscroll
+        self.main_tab.receiver_list.scrollToItem(
+            self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1)
+        )  # todo: here is autoscroll
         item.setSelected(True)
         self.main_tab.receiver_text_edit.setPlainText(payload)
 

@@ -1,6 +1,6 @@
-import os
 from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import paho.mqtt.client as mqtt
 
@@ -44,9 +44,6 @@ class Profile:
     _session_expiry_interval: int | None = None
     _receive_maximum: int | None = None
     _maximum_packet_size: int | None = None
-    _topic_alias_maximum: int | None = None
-    _request_response: bool | None = None
-    _request_problem_info: bool | None = None
     _topics: list | None = field(default_factory=list)
     _is_default: bool | None = None
     clipboard: dict = defaultdict
@@ -94,7 +91,7 @@ class Profile:
                 )
 
     def delete(self):
-        os.remove(get_path(self.profile_ini))
+        Path(get_path(self.profile_ini)).unlink()
 
     @property
     def id(self):
@@ -288,32 +285,6 @@ class Profile:
     @maximum_packet_size.setter
     def maximum_packet_size(self, value: int):
         self._set_field('maximum_packet_size', value)
-
-    @property
-    def topic_alias_maximum(self):
-        return self._topic_alias_maximum
-
-    @topic_alias_maximum.setter
-    def topic_alias_maximum(self, value: int):
-        self._set_field('topic_alias_maximum', value)
-
-    @property
-    def request_response(self):
-        return self._request_response
-
-    @request_response.setter
-    @bool_param
-    def request_response(self, value: bool):
-        self._set_field('request_response', value)
-
-    @property
-    def request_problem_info(self):
-        return self._request_problem_info
-
-    @request_problem_info.setter
-    @bool_param
-    def request_problem_info(self, value: bool):
-        self._set_field('request_problem_info', value)
 
     @property
     def convertor(self):

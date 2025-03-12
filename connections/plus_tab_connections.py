@@ -73,9 +73,6 @@ class PlusTab(PlusTabUI):
             'session_expiry_interval': self.session_expiry_field.text(),
             'receive_maximum': self.receive_max_field.text(),
             'maximum_packet_size': self.max_packet_field.text(),
-            'topic_alias_maximum': self.topic_alias_field.text(),
-            'request_response': self.request_resp_checkbox.isChecked(),
-            'request_problem_info': self.request_problem_checkbox.isChecked(),
             'ca_signed': self.ca_signed_radio.isChecked(),
             'self_signed': self.self_signed_radio.isChecked(),
         }
@@ -103,9 +100,6 @@ class PlusTab(PlusTabUI):
         self.session_expiry_field.clear()
         self.receive_max_field.clear()
         self.max_packet_field.clear()
-        self.topic_alias_field.clear()
-        self.request_resp_checkbox.setChecked(False)
-        self.request_problem_checkbox.setChecked(False)
         self.setFocus()
 
 
@@ -160,11 +154,6 @@ class EditTab(PlusTabUI):
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)
         self.receive_max_field.setText(self.current_profile.receive_maximum)
         self.max_packet_field.setText(self.current_profile.maximum_packet_size)
-        self.topic_alias_field.setText(self.current_profile.topic_alias_maximum)
-        self.request_resp_checkbox.setChecked(self.current_profile.request_response)
-        self.request_problem_checkbox.setChecked(
-            self.current_profile.request_problem_info
-        )
 
     def save_settings(self):  # TODO: make dict and set by dict
         self._update_current_profile()
@@ -190,8 +179,3 @@ class EditTab(PlusTabUI):
         self.current_profile.session_expiry_interval = self.session_expiry_field.text()
         self.current_profile.receive_maximum = self.receive_max_field.text()
         self.current_profile.maximum_packet_size = self.max_packet_field.text()
-        self.current_profile.topic_alias_maximum = self.topic_alias_field.text()
-        self.current_profile.request_response = self.request_resp_checkbox.isChecked()
-        self.current_profile.request_problem_info = (
-            self.request_problem_checkbox.isChecked()
-        )
