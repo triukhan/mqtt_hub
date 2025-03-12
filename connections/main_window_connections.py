@@ -1,3 +1,6 @@
+import time
+from contextlib import suppress
+
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QPushButton
 
@@ -25,6 +28,10 @@ class MainWindow(MqttHubUi):
         self._setup_notifications()
         # self.show_fail_notification('', 5) #todo: to validate settings
         settings = self.plus_tab.get_settings()
+        if (error_msg := self.validate_settings(settings)) is not None:
+            self.show_common_notification(error_msg, 5)
+            return
+
         profile_manager.create_profile(**settings)
         # self.disconnect() #TODO uncomment after disconnect
         self.clear_tab()
@@ -103,7 +110,7 @@ class MainWindow(MqttHubUi):
             self.notification.setText(text)
         else:
             self.notification.setText('Success')
-        self._start_notification_animation(pos)
+        self._start_notification_animation(pos, 3000)
 
     def _setup_notifications(self):
         self.notification.setMouseTracking(True)
@@ -130,10 +137,14 @@ class MainWindow(MqttHubUi):
         self.opacity_fade.setEndValue(0)
         self.opacity_fade.start()
         QTimer.singleShot(250, self.notification.hide)
+        with suppress(AttributeError):
+            QTimer.singleShot(250, self.profile_name.show)
 
     def _start_notification_animation(self, pos: int = 10, duration=5000):
+        with suppress(AttributeError):
+            self.profile_name.hide()
         self.notification.show()
-        self.notification_opacity.setOpacity(1)
+        self.notification_opacity.setOpacity(0.70)
         self.rolling_animation = QPropertyAnimation(self.notification, b"geometry")
         self.rolling_animation.setDuration(100)
         self.rolling_animation.setStartValue(QRect(230, 0, 0, 0))
@@ -166,3 +177,7 @@ class MainWindow(MqttHubUi):
             button.setStyleSheet(
                 button.styleSheet() + 'QPushButton {background-color: rgb(30, 30, 30)}'
             )
+
+    def validate_settings(self, settings: dict):
+        if settings['self_signed'] and not all([settings['ca_file'], settings['crt_file'], settings['key_file']]):
+            return 'SSL/TLS: You need to fill in certificates'

@@ -73,7 +73,7 @@ class MQTTConnector:
     def publish(self, topic, message):
         result = self.client.publish(topic.address, message)
         if result.rc == MQTT_ERR_SUCCESS:
-            print(f"Message sent to {topic.address}: {message}")
+            print(f'Message sent to {topic.address}: {message}')
         else:
             return f'Failed to send message. Result Code: {result.rc}'
 
@@ -88,8 +88,9 @@ class MQTTConnector:
 
 class MQTTMixin(QObject, MQTTConnector):
     message_received = pyqtSignal(str, str)
-    notification_signal = pyqtSignal(str)
     connected_signal = pyqtSignal(bool)
+    success_signal = pyqtSignal(str)
+    fail_signal = pyqtSignal(str)
     common_signal = pyqtSignal(str)
 
     def __init__(self):
@@ -103,54 +104,28 @@ class MQTTMixin(QObject, MQTTConnector):
         print(formatted_message)
 
     def on_connect(self, _, __, ___, rc):
-        if rc == 0:
-            self.handle_connect(True)
-            for topic in self.topics:
-                self.subscribe(topic)
-        else:
-            self.notification_signal.emit(
-                f'MQTT Error. Return code: {rc}'
-            )  # todo: make red
+        if rc != 0:
+            self.fail_signal.emit(f'MQTT Error. Return code: {rc}')
+            return
+        self.handle_connect(True)
+        for topic in self.topics:
+            self.subscribe(topic)
 
     def on_disconnect(self, _, __, rc):
-        if rc == 0:
-            self.handle_connect(False)
-            print(f"Client disconnected. Return code: {rc}")
-        else:
-            self.notification_signal.emit(
-                f'MQTT Error. Return code: {rc}'
-            )  # todo: make red
+        if rc != 0:
+            self.fail_signal.emit(f'Disconnected with error. Return code: {rc}')
+            return
+        self.handle_connect(False)
 
     def handle_connect(self, conn: bool):
         self.is_connected = conn
         prefix = '' if self.is_connected else 'dis'
-        self.notification_signal.emit(f'Successfully {prefix}connected')
+        self.common_signal.emit(f'{prefix}connected'.capitalize())
         self.connected_signal.emit(self.is_connected)
 
     def start(self, profile: Profile):
-        if not profile.host:
-            self.notification_signal.emit(
-                'Error: Host is absent is settings'
-            )  # todo: make red
-            return
-        if not profile.port:
-            self.notification_signal.emit(
-                'Error: Port is absent is settings'
-            )  # todo: make red
-            return
-        if not profile.client_id and profile.mqtt_version != MQTTv5:
-            self.notification_signal.emit(
-                'Error: Client ID is absent is settings'
-            )  # todo: make red
-            return
-        if profile.self_signed and '' in (
-            profile.ca_file,
-            profile.crt_file,
-            profile.key_file,
-        ):
-            self.notification_signal.emit(
-                'Error: Some certificates are absent is settings'
-            )  # todo: make red
+        if (error_msg := validate_start(profile)) is not None:
+            self.fail_signal.emit(error_msg)
             return
         super().start(profile)
 
@@ -168,7 +143,7 @@ class MQTTMixin(QObject, MQTTConnector):
         res = super().publish(topic, message)
 
         if res is not None:
-            self.notification_signal.emit(res)
+            self.fail_signal.emit(res)
 
 
 def convert_to_format(payload):
@@ -183,3 +158,18 @@ def convert_to_format(payload):
         return formatted_payload
     except json.JSONDecodeError:
         return payload
+
+def validate_start(profile: Profile):
+    if not profile.host:
+        return 'Error: Host is absent is settings'
+    if not profile.port:
+        return 'Error: Port is absent is settings'
+    if not profile.client_id and profile.mqtt_version != MQTTv5:
+        return 'Error: Client ID is absent is settings'
+    if profile.self_signed and '' in (
+            profile.ca_file,
+            profile.crt_file,
+            profile.key_file,
+    ):
+        return 'Error: Some certificates are absent is settings'
+    return None

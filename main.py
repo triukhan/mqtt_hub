@@ -16,9 +16,11 @@ class MqttHub(QMainWindow, MainWindow):
         self.connector = MQTTMixin()
 
         self.connector.message_received.connect(self.update_list_widget)
-        self.connector.notification_signal.connect(self.show_positive_notification)
         self.connector.connected_signal.connect(self.change_connect_button)
+        self.connector.success_signal.connect(self.show_positive_notification)
+        self.connector.fail_signal.connect(self.show_fail_notification)
         self.connector.common_signal.connect(self.show_common_notification)
+
         self.disconnect = self.connector.stop
 
         self.main_tab.publish_button.clicked.connect(
@@ -57,9 +59,9 @@ class MqttHub(QMainWindow, MainWindow):
             self.show_fail_notification(f'Error: {e}')
 
     def update_list_widget(self, topic, payload):
-        item = QListWidgetItem(topic)
-        color = profile_manager.current_profile.find_topic_by_address(topic).color
-        item.setData(Qt.UserRole, [payload, color])
+        topic = profile_manager.current_profile.find_topic_by_address(topic)
+        item = QListWidgetItem(topic.alias or topic.address)
+        item.setData(Qt.UserRole, [payload, topic.color])
         self.main_tab.receiver_list.addItem(item)
         self.main_tab.receiver_list.scrollToItem(self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1)) # todo: here is autoscroll
         item.setSelected(True)
@@ -72,7 +74,7 @@ class MqttHub(QMainWindow, MainWindow):
 
     def delete_profile(self):
         profile_manager.delete_current_profile()
-        # self.disconnect() #TODO uncomment after disconnect
+        self.disconnect()
         self.clear_tab()
         self.show_positive_notification('Profile was successfully deleted')
 
