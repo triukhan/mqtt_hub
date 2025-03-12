@@ -39,9 +39,11 @@ class PlusTab(PlusTabUI):
     def __init__(self):
         super().__init__()
         self.keep_alive_field.setText('60')
-        self.ca_folder_button.clicked.connect(
-            lambda: self.open_file_dialog(self.ca_field)
-        )
+        self.ca_signed_radio.setChecked(True)
+        self.set_read_only_certs(True)
+        self.auto_recon_checkbox.setChecked(True)
+        self.recon_period_field.setText('120')
+        self.clean_start_checkbox.setChecked(True)
 
     def open_file_dialog(self, field):
         options = QFileDialog.Options()
@@ -120,7 +122,7 @@ class EditTab(PlusTabUI):
         self.current_profile = profile_manager.current_profile
 
     def setup_connections(self):
-        self.client_cert_button.clicked.connect(self.on_button_click)
+        self.set_read_only_certs(not self.self_signed_radio.isChecked())
 
     def on_button_click(self):
         QMessageBox.information(self, "Info", "Button clicked in Plus Tab!")
@@ -154,6 +156,7 @@ class EditTab(PlusTabUI):
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)
         self.receive_max_field.setText(self.current_profile.receive_maximum)
         self.max_packet_field.setText(self.current_profile.maximum_packet_size)
+        self.set_read_only_certs(not self.self_signed_radio.isChecked())
 
     def save_settings(self):  # TODO: make dict and set by dict
         self._update_current_profile()

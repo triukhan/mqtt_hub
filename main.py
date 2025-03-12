@@ -14,7 +14,6 @@ class MqttHub(QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
         self.connector = MQTTMixin()
-
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.connected_signal.connect(self.change_connect_button)
         self.connector.success_signal.connect(self.show_positive_notification)
@@ -53,10 +52,10 @@ class MqttHub(QMainWindow, MainWindow):
             self.show_fail_notification('You need to create a profile first')
             return
 
-        # try:
-        self.connector.start(profile_manager.current_profile)
-        # except Exception as e:
-        #     self.show_fail_notification(f'Error: {e}')
+        try:
+            self.connector.start(profile_manager.current_profile)
+        except Exception as e:
+            self.show_fail_notification(f'Error: {e}')
 
     def update_list_widget(self, topic, payload):
         topic = profile_manager.current_profile.find_topic_by_address(topic)

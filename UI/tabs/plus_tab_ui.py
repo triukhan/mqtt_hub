@@ -254,6 +254,52 @@ class PlusTabUI(QWidget):
         self.client_key_button.clicked.connect(
             lambda: self.open_file_dialog(self.client_key_field)
         )
+        self.self_signed_radio.clicked.connect(lambda: self.set_read_only_certs(False))
+        self.ca_signed_radio.clicked.connect(lambda: self.set_read_only_certs(True))
+        self.auto_recon_checkbox.stateChanged.connect(self.set_recon_read_only)
+        self.clean_start_checkbox.stateChanged.connect(
+            lambda state: self.set_session_expiry_read_only(
+                all((state, self.mqtt_ver_field.text() == '5.0'))
+            )
+        )
+
+    def set_read_only_certs(self, state: bool):
+        for field in (self.ca_field, self.client_cert_field, self.client_key_field):
+            self.set_field_read_only(
+                field, 'Only for self signed connection', state, contr=True
+            )
+
+        for button in (
+            self.ca_folder_button,
+            self.client_cert_button,
+            self.client_key_button,
+        ):
+            button.setEnabled(not state)
+
+    def set_recon_read_only(self, state):
+        tip = 'Only if Auto Reconnect is enabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    def set_session_expiry_read_only(self, state):
+        tip = 'Only if MQTT version is 5.0 and clean start is disabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    @staticmethod
+    def set_field_read_only(field, tooltip, state, contr=False):
+        if contr:
+            state = not state
+        field.setReadOnly(not state)
+
+        if state:
+            field.setToolTip('')
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(186, 186, 186)}'
+            )
+        else:
+            field.setToolTip(tooltip)
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'
+            )
 
     def open_file_dialog(self, field):
         options = QFileDialog.Options()

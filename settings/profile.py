@@ -51,7 +51,7 @@ class Profile:
     _convertor: str | None = 'JSON'
 
     def __post_init__(self):
-        self.profile_ini = f'{PROFILES_PATH}{self._id}.ini'
+        self.profile_ini = get_path(f'{PROFILES_PATH}{self._id}.ini')
         self.settings = Settings(self.profile_ini)
 
         if not isinstance(self._topics, list):
