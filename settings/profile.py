@@ -51,7 +51,7 @@ class Profile:
     _is_default: bool | None = None
     clipboard: dict = defaultdict
     is_created: bool = False
-    convertor: str | None = 'JSON'
+    _convertor: str | None = 'JSON'
 
     def __post_init__(self):
         self.profile_ini = f'{PROFILES_PATH}{self._id}.ini'
@@ -314,6 +314,14 @@ class Profile:
     @bool_param
     def request_problem_info(self, value: bool):
         self._set_field('request_problem_info', value)
+
+    @property
+    def convertor(self):
+        return self._convertor
+
+    @convertor.setter
+    def convertor(self, value: str):
+        self._set_field('convertor', value)
 
     @property
     def topics(self):

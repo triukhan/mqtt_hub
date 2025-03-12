@@ -79,6 +79,13 @@ class MainWindow(MqttHubUi):
         self.info_button.clicked.connect(self.open_info_tab)
         self.exit_button.clicked.connect(self.close)
 
+    def show_common_notification(self, text=None, pos=10):
+        self.notification.setStyleSheet(
+            "QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}"
+        )
+        self.notification.setText(text or 'Fail')
+        self._start_notification_animation(pos, 3000)
+
     def show_fail_notification(self, text=None, pos=10):
         self.notification.setStyleSheet(
             "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
@@ -124,7 +131,7 @@ class MainWindow(MqttHubUi):
         self.opacity_fade.start()
         QTimer.singleShot(250, self.notification.hide)
 
-    def _start_notification_animation(self, pos: int = 10):
+    def _start_notification_animation(self, pos: int = 10, duration=5000):
         self.notification.show()
         self.notification_opacity.setOpacity(1)
         self.rolling_animation = QPropertyAnimation(self.notification, b"geometry")
@@ -132,7 +139,7 @@ class MainWindow(MqttHubUi):
         self.rolling_animation.setStartValue(QRect(230, 0, 0, 0))
         self.rolling_animation.setEndValue(QRect(230, pos, 100, 50))
         self.rolling_animation.start()
-        self.timer.start(5000)
+        self.timer.start(duration)
 
     def eventFilter(self, source, event):
         if event.type() == QEvent.Enter and source == self.notification:

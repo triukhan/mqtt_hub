@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import QListWidgetItem, QAction
+from PyQt5.QtWidgets import QAction, QListWidgetItem
 
 from connections.clipboard_dialog_connections import ClipboardDialog
 from connections.topic_dialog_connections import TopicDialog
@@ -33,14 +33,14 @@ class MainTab(MainTabUI):
         self.show_fail_message = None
         self.connector = None
 
-        for convert_format in ('JSON', 'NotJSON'):
+        for convert_format in ('JSON', 'Plaintext', 'Hex', 'Base64'):
             font_metrics = QFontMetrics(self.convertor_button.font())
             elided_text = font_metrics.elidedText(
                 convert_format, Qt.ElideRight, 110
             )  # todo what is this
 
             action = QAction(elided_text, self.convertor_button)
-            action.triggered.connect(lambda _, f=convert_format: self.set_convertor(convert_format))
+            action.triggered.connect(lambda _, f=convert_format: self.set_convertor(f))
             self.convert_menu.addAction(action)
 
         self.convertor_button.clicked.connect(self.show_convert_menu)

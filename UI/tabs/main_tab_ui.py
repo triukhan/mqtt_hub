@@ -82,7 +82,7 @@ class MainTabUI(QWidget):
 
         self.convertor_button, self.convert_menu, self.show_convert_menu = (
             create_expand_button(
-                'JSON',
+                profile_manager.current_profile.convertor,
                 self.filter_frame,
                 min_size=[100, 25],
                 max_size=[100, 25],

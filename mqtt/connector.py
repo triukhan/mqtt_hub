@@ -71,15 +71,11 @@ class MQTTConnector:
             print('Client not connected')
 
     def publish(self, topic, message):
-        if not topic:
-            print('No topic to publish')
-            return None
-
         result = self.client.publish(topic.address, message)
         if result.rc == MQTT_ERR_SUCCESS:
             print(f"Message sent to {topic.address}: {message}")
         else:
-            print("Failed to send message.")
+            return f'Failed to send message. Result Code: {result.rc}'
 
     def subscribe(self, topic):
         self.client.subscribe(topic.address)
@@ -94,13 +90,13 @@ class MQTTMixin(QObject, MQTTConnector):
     message_received = pyqtSignal(str, str)
     notification_signal = pyqtSignal(str)
     connected_signal = pyqtSignal(bool)
+    common_signal = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
 
     def on_message(self, _, __, msg):
-        convertor = convert_to_json if profile_manager.current_profile.convertor == 'JSON' else None
-        received_payload = convertor(msg.payload.decode())
+        received_payload = convert_to_format(msg.payload.decode())
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)
@@ -158,8 +154,29 @@ class MQTTMixin(QObject, MQTTConnector):
             return
         super().start(profile)
 
+    def publish(self, topic, message):
+        if not self.is_connected:
+            self.common_signal.emit(
+                'Client is not connected. You need to start connection at first.'
+            )
+            return None
 
-def convert_to_json(payload):
+        if not topic:
+            self.common_signal.emit('No topic to publish. Select topic by click on it.')
+            return None
+
+        res = super().publish(topic, message)
+
+        if res is not None:
+            self.notification_signal.emit(res)
+
+
+def convert_to_format(payload):
+    f = profile_manager.current_profile.convertor
+
+    if f == 'Plaintext':
+        return payload
+
     try:
         json_obj = json.loads(payload)
         formatted_payload = json.dumps(json_obj, indent=4)

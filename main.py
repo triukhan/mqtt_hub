@@ -3,13 +3,11 @@ from contextlib import suppress
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPen, QColor
-from PyQt5.QtWidgets import QStyledItemDelegate
 
-from UI.interface_utils import BorderDelegate
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
+from UI.interface_utils import BorderDelegate
 
 
 class MqttHub(QtWidgets.QMainWindow, MainWindow):
@@ -20,6 +18,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.notification_signal.connect(self.show_positive_notification)
         self.connector.connected_signal.connect(self.change_connect_button)
+        self.connector.common_signal.connect(self.show_common_notification)
         self.disconnect = self.connector.stop
 
         self.main_tab.publish_button.clicked.connect(
@@ -31,7 +30,9 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
         self.main_tab.connector = self.connector
 
         self.edit_tab.delete_button.clicked.connect(self.delete_profile)
-        self.main_tab.receiver_list.setItemDelegate(BorderDelegate(self.main_tab.receiver_list))
+        self.main_tab.receiver_list.setItemDelegate(
+            BorderDelegate(self.main_tab.receiver_list)
+        )
 
     def setup_main_header(self):
         super().setup_main_header()
