@@ -1,8 +1,8 @@
 import sys
 from contextlib import suppress
 
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QApplication
 
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
@@ -10,7 +10,7 @@ from settings.profile_manager import profile_manager
 from UI.interface_utils import BorderDelegate
 
 
-class MqttHub(QtWidgets.QMainWindow, MainWindow):
+class MqttHub(QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
         self.connector = MQTTMixin()
@@ -57,10 +57,11 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
             self.show_fail_notification(f'Error: {e}')
 
     def update_list_widget(self, topic, payload):
-        item = QtWidgets.QListWidgetItem(topic)
+        item = QListWidgetItem(topic)
         color = profile_manager.current_profile.find_topic_by_address(topic).color
         item.setData(Qt.UserRole, [payload, color])
         self.main_tab.receiver_list.addItem(item)
+        self.main_tab.receiver_list.scrollToItem(self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1)) # todo: here is autoscroll
         item.setSelected(True)
         self.main_tab.receiver_text_edit.setPlainText(payload)
 
@@ -77,7 +78,7 @@ class MqttHub(QtWidgets.QMainWindow, MainWindow):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     window = MqttHub()
     window.show()
     sys.exit(app.exec_())

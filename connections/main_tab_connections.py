@@ -62,7 +62,8 @@ class MainTab(MainTabUI):
 
     def display_message_from_receiver_list(self, item):
         payload = item.data(Qt.UserRole)[0]
-        self.receiver_text_edit.setPlainText(payload)
+        if payload:
+            self.receiver_text_edit.setPlainText(payload)
 
     def set_clipboard_messages(self, *, new: bool = False):
         clipboard_messages = {} if new else profile_manager.current_profile.clipboard

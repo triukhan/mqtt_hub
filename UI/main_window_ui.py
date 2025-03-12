@@ -1,12 +1,10 @@
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QTabWidget
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
 from settings.profile_manager import profile_manager
-from UI import styles
 from UI.icons.icons import (
     CONNECT_ICON,
     EDIT_ICON,
@@ -26,7 +24,8 @@ from UI.interface_utils import (
     create_spacer,
     set_button_text,
 )
-from UI.styles import FRAME_COLOR, HEADER_FRAME, sidebar_button
+from UI.styles import FRAME_COLOR, HEADER_FRAME, sidebar_button, EXIT_BUTTON, EXIT_BUTTON_HOVER, header_button, \
+    MAIN_BUTTON
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -42,7 +41,7 @@ class MqttHubUi(QWidget):
         self.edit_tab = EditTab()
 
     def _setup_ui(self):
-        self.main_window = QtWidgets.QWidget(self)
+        self.main_window = QWidget(self)
         self.main_window.setStyleSheet('QWidget {background-color: rgb(30, 30, 30);}')
 
         self.horizontalLayout_2 = create_layout(
@@ -52,7 +51,7 @@ class MqttHubUi(QWidget):
         self.main_w = create_layout(QGridLayout, spacing=0)
 
         self.tab_layout = create_layout(QGridLayout, spacing=0)
-        self.all_tabs = QtWidgets.QTabWidget(self.main_window)
+        self.all_tabs = QTabWidget(self.main_window)
         self.all_tabs.setStyleSheet('QTabWidget::pane {border: 0;}')
         self.all_tabs.tabBar().hide()
         for tab in [
@@ -80,7 +79,7 @@ class MqttHubUi(QWidget):
             12,
             12,
             self.exit_layout,
-            style=styles.EXIT_BUTTON,
+            style=EXIT_BUTTON,
         )
         self.exit_button.installEventFilter(self)
         self.collapse_button = create_button(
@@ -89,7 +88,7 @@ class MqttHubUi(QWidget):
             12,
             12,
             self.exit_layout,
-            style=styles.EXIT_BUTTON,
+            style=EXIT_BUTTON,
         )
         self.collapse_button.installEventFilter(self)
         self.expand_button = create_button(
@@ -98,7 +97,7 @@ class MqttHubUi(QWidget):
             12,
             12,
             self.exit_layout,
-            style=styles.EXIT_BUTTON,
+            style=EXIT_BUTTON,
         )
         self.expand_button.installEventFilter(self)
         self.sidebar_vertical_layout.addLayout(self.exit_layout)
@@ -111,7 +110,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.logo_button.setStyleSheet(styles.sidebar_button(LOGO_ICON))
+        self.logo_button.setStyleSheet(sidebar_button(LOGO_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.main_button = create_button(
             '',
@@ -120,7 +119,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.main_button.setStyleSheet(styles.sidebar_button(MAIN_ICON))
+        self.main_button.setStyleSheet(sidebar_button(MAIN_ICON))
         self.plus_button = create_button(
             '',
             self.sidebar_frame,
@@ -138,7 +137,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.settings_button.setStyleSheet(styles.sidebar_button(SETTINGS_ICON))
+        self.settings_button.setStyleSheet(sidebar_button(SETTINGS_ICON))
         self.info_button = create_button(
             '',
             self.sidebar_frame,
@@ -146,7 +145,7 @@ class MqttHubUi(QWidget):
             50,
             self.sidebar_layout,
         )
-        self.info_button.setStyleSheet(styles.sidebar_button(INFO_ICON))
+        self.info_button.setStyleSheet(sidebar_button(INFO_ICON))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
         self.buttons = [self.exit_button, self.collapse_button, self.expand_button]
@@ -164,7 +163,7 @@ class MqttHubUi(QWidget):
         return super().eventFilter(obj, event)
 
     def set_hover(self, hover):
-        style = styles.EXIT_BUTTON_HOVER if hover else styles.EXIT_BUTTON
+        style = EXIT_BUTTON_HOVER if hover else EXIT_BUTTON
         for button in self.buttons:
             button.setStyleSheet(style)
 
@@ -182,7 +181,7 @@ class MqttHubUi(QWidget):
             30,
             self.header_horizontal_layout,
         )
-        self.edit_button.setStyleSheet(styles.header_button(EDIT_ICON))
+        self.edit_button.setStyleSheet(header_button(EDIT_ICON))
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.notification = create_button(
@@ -209,19 +208,19 @@ class MqttHubUi(QWidget):
             self.header_layout,
             [0, 3, 1, 1],
         )
-        self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
+        self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 
     def _setup_plus_header(self):
-        self.header_layout = QtWidgets.QGridLayout()
+        self.header_layout = QGridLayout()
 
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
         self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
-        self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
+        self.header_horizontal_layout = QHBoxLayout(self.header_frame)
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
         self.header_horizontal_layout.setSpacing(15)
 
@@ -246,7 +245,7 @@ class MqttHubUi(QWidget):
         self.create_button = create_button(
             'Create',
             self.header_frame,
-            style=styles.MAIN_BUTTON,
+            style=MAIN_BUTTON,
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 3, 1, 1],
@@ -254,7 +253,7 @@ class MqttHubUi(QWidget):
         self.connect_plus_button = create_button(
             'Connect',
             self.header_frame,
-            style=styles.MAIN_BUTTON,
+            style=MAIN_BUTTON,
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 4, 1, 1],
@@ -269,7 +268,7 @@ class MqttHubUi(QWidget):
     def _setup_edit_header(self):
         self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
-        self.header_horizontal_layout = QtWidgets.QHBoxLayout(self.header_frame)
+        self.header_horizontal_layout = QHBoxLayout(self.header_frame)
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
@@ -281,19 +280,19 @@ class MqttHubUi(QWidget):
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        self.buttons_layout = QtWidgets.QHBoxLayout()
+        self.buttons_layout = QHBoxLayout()
         self.buttons_layout.setSpacing(10)
 
         self.save_edit_button = create_button(
             'Save',
             self.header_frame,
-            style=styles.MAIN_BUTTON + 'QPushButton {margin-right: 5px}',
+            style=MAIN_BUTTON + 'QPushButton {margin-right: 5px}',
             min_size=[0, 30],
         )
         self.connect_button = create_button(
             'Connect',
             self.header_frame,
-            style=styles.MAIN_BUTTON,
+            style=MAIN_BUTTON,
             min_size=[0, 30],
         )
 
@@ -370,7 +369,7 @@ class MqttHubUi(QWidget):
     def change_connect_button(self, connect):
         if connect:
             pass
-            # self.connect_button.setStyleSheet(styles.header_button(PLUS_ICON))
+            # self.connect_button.setStyleSheet(header_button(PLUS_ICON))
         else:
             pass
-            # self.connect_button.setStyleSheet(styles.header_button(CONNECT_ICON))
+            # self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
