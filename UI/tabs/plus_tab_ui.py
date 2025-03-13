@@ -1,4 +1,7 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
+    QAction,
     QFileDialog,
     QGridLayout,
     QHBoxLayout,
@@ -9,6 +12,7 @@ from PyQt5.QtWidgets import (
 
 from UI.interface_utils import (
     Spacer,
+    create_expand_button,
     create_field,
     create_folder_field,
     create_frame,
@@ -19,7 +23,7 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import BLANK_SCROLLBAR
+from UI.styles import BLANK_SCROLLBAR, PICKER_BUTTON
 
 
 class PlusTabUI(QWidget):
@@ -218,9 +222,28 @@ class PlusTabUI(QWidget):
         self.con_timeout_field = create_field(
             self.advanced_frame, self.advanced_layout, [1, 2, 1, 1]
         )
-        self.mqtt_ver_field = create_field(
-            self.advanced_frame, self.advanced_layout, [0, 2, 1, 1]
+        self.mqtt_ver_field, self.mqtt_ver_menu, self.show_mqtt_ver_menu = (
+            create_expand_button(
+                '3.1.1',
+                self.advanced_frame,
+                min_size=[100, 25],
+                max_size=[100, 25],
+                style=PICKER_BUTTON,
+                add_layout=self.advanced_layout,
+                add_params=[0, 2, 1, 1],
+            )
         )
+
+        for version in ('3.1.1', '3.1', '5.0'):
+            font_metrics = QFontMetrics(self.mqtt_ver_field.font())
+            elided_text = font_metrics.elidedText(version, Qt.ElideRight, 110)
+
+            action = QAction(elided_text, self.mqtt_ver_field)
+            action.triggered.connect(lambda _, ver=version: self.set_mqtt_ver(ver))
+            self.mqtt_ver_menu.addAction(action)
+
+        self.mqtt_ver_field.clicked.connect(self.show_mqtt_ver_menu)
+
         self.keep_alive_field = create_field(
             self.advanced_frame, self.advanced_layout, [2, 2, 1, 1]
         )
@@ -262,6 +285,17 @@ class PlusTabUI(QWidget):
                 all((state, self.mqtt_ver_field.text() == '5.0'))
             )
         )
+
+    def set_mqtt_ver(self, ver):
+        self.mqtt_ver_field.setText(ver)
+        if ver != '5.0':
+            tip = 'Only for MQTT 5.0'
+            self.set_field_read_only(self.max_packet_field, tip, False)
+        else:
+            self.set_field_read_only(self.max_packet_field, '', True)
+
+            if not self.clean_start_checkbox.isChecked():
+                self.set_session_expiry_read_only(True)
 
     def set_read_only_certs(self, state: bool):
         for field in (self.ca_field, self.client_cert_field, self.client_key_field):
