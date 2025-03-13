@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox
 
 from settings.profile_manager import profile_manager
 from UI.interface_utils import create_button
@@ -35,7 +37,99 @@ def parse_mqtt_ver(ver: int):
         return '5.0'
 
 
-class PlusTab(PlusTabUI):
+class PlusTabCommon(PlusTabUI):
+    def __init__(self):
+        super().__init__()
+        self._setup_common_connections()
+
+    def _setup_common_connections(self):
+        self.ca_folder_button.clicked.connect(
+            lambda: self.open_file_dialog(self.ca_field)
+        )
+        self.client_cert_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_cert_field)
+        )
+        self.client_key_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_key_field)
+        )
+        self.self_signed_radio.clicked.connect(lambda: self.set_read_only_certs(False))
+        self.ca_signed_radio.clicked.connect(lambda: self.set_read_only_certs(True))
+        self.auto_recon_checkbox.stateChanged.connect(self.set_recon_read_only)
+        self.clean_start_checkbox.stateChanged.connect(
+            lambda state: self.set_session_expiry_read_only(
+                all((state, self.mqtt_ver_field.text() == '5.0'))
+            )
+        )
+
+        for version in ('3.1.1', '3.1', '5.0'):
+            font_metrics = QFontMetrics(self.mqtt_ver_field.font())
+            elided_text = font_metrics.elidedText(version, Qt.ElideRight, 110)
+
+            action = QAction(elided_text, self.mqtt_ver_field)
+            action.triggered.connect(lambda _, ver=version: self.set_mqtt_ver(ver))
+            self.mqtt_ver_menu.addAction(action)
+
+        self.mqtt_ver_field.clicked.connect(self.show_mqtt_ver_menu)
+
+    def set_mqtt_ver(self, ver):
+        self.mqtt_ver_field.setText(ver)
+        if ver != '5.0':
+            tip = 'Only for MQTT 5.0'
+            self.set_field_read_only(self.max_packet_field, tip, False)
+        else:
+            self.set_field_read_only(self.max_packet_field, '', True)
+
+            if not self.clean_start_checkbox.isChecked():
+                self.set_session_expiry_read_only(True)
+
+    def set_read_only_certs(self, state: bool):
+        for field in (self.ca_field, self.client_cert_field, self.client_key_field):
+            self.set_field_read_only(
+                field, 'Only for self signed connection', state, contr=True
+            )
+
+        for button in (
+            self.ca_folder_button,
+            self.client_cert_button,
+            self.client_key_button,
+        ):
+            button.setEnabled(not state)
+
+    def set_recon_read_only(self, state):
+        tip = 'Only if Auto Reconnect is enabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    def set_session_expiry_read_only(self, state):
+        tip = 'Only if MQTT version is 5.0 and clean start is disabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    @staticmethod
+    def set_field_read_only(field, tooltip, state, contr=False):
+        if contr:
+            state = not state
+        field.setReadOnly(not state)
+
+        if state:
+            field.setToolTip('')
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(186, 186, 186)}'
+            )
+        else:
+            field.setToolTip(tooltip)
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'
+            )
+
+    def open_file_dialog(self, field):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, 'Choose File', '', 'All Files (*)', options=options
+        )
+        if file_name:
+            field.setText(file_name)
+
+
+class PlusTab(PlusTabCommon):
     def __init__(self):
         super().__init__()
         self.keep_alive_field.setText('60')
@@ -105,7 +199,7 @@ class PlusTab(PlusTabUI):
         self.setFocus()
 
 
-class EditTab(PlusTabUI):
+class EditTab(PlusTabCommon):
     def __init__(self):
         super().__init__()
         self.delete_button = create_button(

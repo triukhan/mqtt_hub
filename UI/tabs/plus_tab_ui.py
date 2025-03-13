@@ -1,14 +1,4 @@
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import (
-    QAction,
-    QFileDialog,
-    QGridLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QScrollArea, QVBoxLayout, QWidget
 
 from UI.interface_utils import (
     Spacer,
@@ -29,13 +19,11 @@ from UI.styles import BLANK_SCROLLBAR, PICKER_BUTTON
 class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
-        self.plus_layout = QGridLayout(self)
+        self.plus_layout = create_layout(QGridLayout, out_layout=self)
         self.plus_layout.setContentsMargins(0, 0, 0, 0)
         self.plus_scroll = QScrollArea(self)
         create_scroll_bar(self, self.plus_scroll, BLANK_SCROLLBAR)
-
-        self.plus_scroll.setStyleSheet("QScrollArea {border: 0px}")
-
+        self.plus_scroll.setStyleSheet('QScrollArea {border: 0px}')
         self.plus_scroll_layout = QWidget()
         self.plus_scroll_box = QVBoxLayout(self.plus_scroll_layout)
 
@@ -237,16 +225,6 @@ class PlusTabUI(QWidget):
         self.mqtt_ver_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.advanced_layout.addLayout(self.mqtt_ver_layout, 0, 2, 1, 1)
 
-        for version in ('3.1.1', '3.1', '5.0'):
-            font_metrics = QFontMetrics(self.mqtt_ver_field.font())
-            elided_text = font_metrics.elidedText(version, Qt.ElideRight, 110)
-
-            action = QAction(elided_text, self.mqtt_ver_field)
-            action.triggered.connect(lambda _, ver=version: self.set_mqtt_ver(ver))
-            self.mqtt_ver_menu.addAction(action)
-
-        self.mqtt_ver_field.clicked.connect(self.show_mqtt_ver_menu)
-
         self.keep_alive_field = create_field(
             self.advanced_frame, self.advanced_layout, [2, 2, 1, 1]
         )
@@ -270,78 +248,3 @@ class PlusTabUI(QWidget):
         self.plus_scroll_box.addWidget(self.advanced_frame)
         self.plus_scroll.setWidget(self.plus_scroll_layout)
         self.plus_layout.addWidget(self.plus_scroll, 0, 1, 1, 1)
-
-        self.ca_folder_button.clicked.connect(
-            lambda: self.open_file_dialog(self.ca_field)
-        )
-        self.client_cert_button.clicked.connect(
-            lambda: self.open_file_dialog(self.client_cert_field)
-        )
-        self.client_key_button.clicked.connect(
-            lambda: self.open_file_dialog(self.client_key_field)
-        )
-        self.self_signed_radio.clicked.connect(lambda: self.set_read_only_certs(False))
-        self.ca_signed_radio.clicked.connect(lambda: self.set_read_only_certs(True))
-        self.auto_recon_checkbox.stateChanged.connect(self.set_recon_read_only)
-        self.clean_start_checkbox.stateChanged.connect(
-            lambda state: self.set_session_expiry_read_only(
-                all((state, self.mqtt_ver_field.text() == '5.0'))
-            )
-        )
-
-    def set_mqtt_ver(self, ver):
-        self.mqtt_ver_field.setText(ver)
-        if ver != '5.0':
-            tip = 'Only for MQTT 5.0'
-            self.set_field_read_only(self.max_packet_field, tip, False)
-        else:
-            self.set_field_read_only(self.max_packet_field, '', True)
-
-            if not self.clean_start_checkbox.isChecked():
-                self.set_session_expiry_read_only(True)
-
-    def set_read_only_certs(self, state: bool):
-        for field in (self.ca_field, self.client_cert_field, self.client_key_field):
-            self.set_field_read_only(
-                field, 'Only for self signed connection', state, contr=True
-            )
-
-        for button in (
-            self.ca_folder_button,
-            self.client_cert_button,
-            self.client_key_button,
-        ):
-            button.setEnabled(not state)
-
-    def set_recon_read_only(self, state):
-        tip = 'Only if Auto Reconnect is enabled'
-        self.set_field_read_only(self.session_expiry_field, tip, state)
-
-    def set_session_expiry_read_only(self, state):
-        tip = 'Only if MQTT version is 5.0 and clean start is disabled'
-        self.set_field_read_only(self.session_expiry_field, tip, state)
-
-    @staticmethod
-    def set_field_read_only(field, tooltip, state, contr=False):
-        if contr:
-            state = not state
-        field.setReadOnly(not state)
-
-        if state:
-            field.setToolTip('')
-            field.setStyleSheet(
-                field.styleSheet() + 'QLineEdit {color: rgb(186, 186, 186)}'
-            )
-        else:
-            field.setToolTip(tooltip)
-            field.setStyleSheet(
-                field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'
-            )
-
-    def open_file_dialog(self, field):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, 'Choose File', '', 'All Files (*)', options=options
-        )
-        if file_name:
-            field.setText(file_name)
