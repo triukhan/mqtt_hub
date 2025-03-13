@@ -222,6 +222,8 @@ class PlusTabUI(QWidget):
         self.con_timeout_field = create_field(
             self.advanced_frame, self.advanced_layout, [1, 2, 1, 1]
         )
+
+        self.mqtt_ver_layout = create_layout(QHBoxLayout)
         self.mqtt_ver_field, self.mqtt_ver_menu, self.show_mqtt_ver_menu = (
             create_expand_button(
                 '3.1.1',
@@ -229,10 +231,11 @@ class PlusTabUI(QWidget):
                 min_size=[100, 25],
                 max_size=[100, 25],
                 style=PICKER_BUTTON,
-                add_layout=self.advanced_layout,
-                add_params=[0, 2, 1, 1],
+                add_layout=self.mqtt_ver_layout,
             )
         )
+        self.mqtt_ver_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+        self.advanced_layout.addLayout(self.mqtt_ver_layout, 0, 2, 1, 1)
 
         for version in ('3.1.1', '3.1', '5.0'):
             font_metrics = QFontMetrics(self.mqtt_ver_field.font())
