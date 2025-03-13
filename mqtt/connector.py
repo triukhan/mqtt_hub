@@ -44,6 +44,7 @@ class MQTTConnector:
             else:
                 self.client.tls_set()
 
+    def make_mqtt_kwargs(self):
         kwargs = {'keepalive': int(self.profile.keep_alive)}
         clean_session = {}
 
@@ -80,11 +81,13 @@ class MQTTConnector:
     def start(self, profile: Profile):
         self.profile = profile
         self.topics = profile.topics
-        kwargs, clean_session = self.setup_mqtt_settings()
+        kwargs, clean_session = self.make_mqtt_kwargs()
 
         self.client = Client(
             self.profile.client_id, protocol=self.profile.mqtt_version, **clean_session
         )
+
+        self.setup_mqtt_settings()
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message

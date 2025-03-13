@@ -17,6 +17,11 @@ APP_BUTTON = (
     " border: 1px solid rgb(50, 50, 50); border-radius: 5; padding: 5px;} "
     "QPushButton:hover {border: 1px solid rgb(70, 70, 70);}"
 )
+CLEAR_BUTTON = (
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding-left: 5px; padding-right: 5px;'
+    'border: 1px solid rgb(50, 50, 50); border-radius: 5;}'
+    'QPushButton:hover {border: 1px solid rgb(70, 70, 70);}'
+)
 PICKER_BUTTON = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid rgb(50, 50, 50);'
     'border-radius: 5px; padding: 0px 10px, 5px, 0px; text-align: left} QPushButton:hover {border: 1px solid rgb(70, 70, 70)}'

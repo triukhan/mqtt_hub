@@ -49,6 +49,7 @@ class Profile:
     clipboard: dict = defaultdict
     is_created: bool = False
     _convertor: str | None = 'JSON'
+    _autoscroll: bool | None = False
 
     def __post_init__(self):
         self.profile_ini = get_path(f'{PROFILES_PATH}{self._id}.ini')
@@ -293,6 +294,15 @@ class Profile:
     @convertor.setter
     def convertor(self, value: str):
         self._set_field('convertor', value)
+
+    @property
+    def autoscroll(self):
+        return self._autoscroll
+
+    @autoscroll.setter
+    @bool_param
+    def autoscroll(self, value: str):
+        self._set_field('autoscroll', value)
 
     @property
     def topics(self):

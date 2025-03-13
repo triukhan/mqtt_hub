@@ -36,6 +36,10 @@ class Spacer(Enum):
     VERTICAL = 1
 
 
+FONT = QFont()
+FONT.setPointSize(10)
+
+
 def create_label(
     text: str,
     main_layout,
@@ -165,10 +169,14 @@ def create_button(
     add_params=None,
     style: str = styles.APP_BUTTON,
     font: QFont = None,
-):  # TODO: font
+):
     button = QPushButton(layout)
     button.setText(text)
     button.setStyleSheet(style)
+
+    if font is not None:
+        button.setFont(font)
+
     if min_size:
         if isinstance(min_size, int):
             button.setMinimumSize(QtCore.QSize(min_size, min_size))

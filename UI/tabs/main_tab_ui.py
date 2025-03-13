@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QRect, QSize
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QFrame,
@@ -26,16 +26,19 @@ from UI.interface_utils import (
     create_button,
     create_expand_button,
     create_frame,
+    create_label,
     create_layout,
     create_list,
     create_scroll_bar,
     create_spacer,
+    create_toggle,
     deselect_tag,
     select_tag,
     set_topic_color,
 )
 from UI.styles import (
     ADD_TAG,
+    CLEAR_BUTTON,
     CLIPBOARD_LIST,
     COMMAND_FIELD,
     DELETE_BUTTON,
@@ -59,11 +62,23 @@ class MainTabUI(QWidget):
             add_layout=self.main_right_layout,
         )
         self.clear_layout = create_layout(
-            QHBoxLayout, [-1, 15, 10, 19], 0, out_layout=self.clear_frame
+            QHBoxLayout, [-1, 15, 10, 19], 10, out_layout=self.clear_frame
+        )
+
+        self.autoscroll_toggle = create_toggle(self.clear_layout)
+        self.autoscroll_label = create_label(
+            'Autoscroll', self.clear_frame, self.clear_layout
         )
         self.clear_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+        font = QFont()
+        font.setPointSize(10)
         self.clear_button = create_button(
-            'clear', self.clear_frame, max_size=[50, 21], add_layout=self.clear_layout
+            'clear',
+            self.clear_frame,
+            max_size=[50, 18],
+            add_layout=self.clear_layout,
+            style=CLEAR_BUTTON,
+            font=font,
         )
 
         self.receiver_list = create_list(
@@ -93,49 +108,15 @@ class MainTabUI(QWidget):
 
         self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        self.all_button = create_button(
-            'All',
+        self.select_label = create_label(
+            'Select Message  ',
             self.filter_frame,
-            min_size=[40, 23],
-            max_size=[80, 23],
-            style=styles.FILTER_BUTTON_2,
-            add_layout=self.message_formating,
-        )
-        self.divider_1 = create_button(
-            '',
-            self.filter_frame,
-            min_size=[1, 17],
-            max_size=[1, 17],
-            style=styles.DIVIDER,
+            min_size=[110, 23],
+            max_size=[110, 23],
             add_layout=self.message_formating,
         )
 
-        self.received_button = create_button(
-            'Received',
-            self.filter_frame,
-            min_size=[80, 23],
-            max_size=[80, 23],
-            style=styles.FILTER_BUTTON_2,
-            add_layout=self.message_formating,
-        )
-
-        self.divider_2 = create_button(
-            '',
-            self.filter_frame,
-            min_size=[1, 17],
-            max_size=[1, 17],
-            style=styles.DIVIDER,
-            add_layout=self.message_formating,
-        )
-
-        self.published_button = create_button(
-            'Published',
-            self.filter_frame,
-            min_size=[80, 23],
-            max_size=[85, 23],
-            style=styles.FILTER_BUTTON_1,
-            add_layout=self.message_formating,
-        )
+        self.select_toggle = create_toggle(self.message_formating)
 
         self.receiver_text_edit = QTextEdit(self)
         self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
