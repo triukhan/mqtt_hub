@@ -2,7 +2,7 @@ import sys
 from contextlib import suppress
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QApplication
+from PyQt5.QtWidgets import QApplication, QListWidgetItem, QMainWindow
 
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
@@ -14,7 +14,6 @@ class MqttHub(QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
         self.connector = MQTTMixin()
-
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.connected_signal.connect(self.change_connect_button)
         self.connector.success_signal.connect(self.show_positive_notification)
@@ -35,6 +34,11 @@ class MqttHub(QMainWindow, MainWindow):
         self.main_tab.receiver_list.setItemDelegate(
             BorderDelegate(self.main_tab.receiver_list)
         )
+        self.select_message = False
+        self.main_tab.select_toggle.stateChanged.connect(self.set_select_flag)
+
+    def set_select_flag(self, state):
+        self.select_message = state
 
     def setup_main_header(self):
         super().setup_main_header()
@@ -63,10 +67,15 @@ class MqttHub(QMainWindow, MainWindow):
         item = QListWidgetItem(topic.alias or topic.address)
         item.setData(Qt.UserRole, [payload, topic.color])
         self.main_tab.receiver_list.addItem(item)
-        self.main_tab.receiver_list.scrollToItem(
-            self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1))
-        item.setSelected(True)
-        self.main_tab.receiver_text_edit.setPlainText(payload)
+        if profile_manager.current_profile.autoscroll:
+            self.main_tab.receiver_list.scrollToItem(
+                self.main_tab.receiver_list.item(
+                    self.main_tab.receiver_list.count() - 1
+                )
+            )
+        if not self.select_message:
+            item.setSelected(True)
+            self.main_tab.receiver_text_edit.setPlainText(payload)
 
         self.highlighter = JsonHighlighter(self.main_tab.receiver_text_edit.document())
 

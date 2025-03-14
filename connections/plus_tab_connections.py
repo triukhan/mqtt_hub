@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox
 
 from settings.profile_manager import profile_manager
 from UI.interface_utils import create_button
@@ -35,13 +37,107 @@ def parse_mqtt_ver(ver: int):
         return '5.0'
 
 
-class PlusTab(PlusTabUI):
+class PlusTabCommon(PlusTabUI):
     def __init__(self):
         super().__init__()
-        self.keep_alive_field.setText('60')
+        self._setup_common_connections()
+
+    def _setup_common_connections(self):
         self.ca_folder_button.clicked.connect(
             lambda: self.open_file_dialog(self.ca_field)
         )
+        self.client_cert_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_cert_field)
+        )
+        self.client_key_button.clicked.connect(
+            lambda: self.open_file_dialog(self.client_key_field)
+        )
+        self.self_signed_radio.clicked.connect(lambda: self.set_read_only_certs(False))
+        self.ca_signed_radio.clicked.connect(lambda: self.set_read_only_certs(True))
+        self.auto_recon_checkbox.stateChanged.connect(self.set_recon_read_only)
+        self.clean_start_checkbox.stateChanged.connect(
+            lambda state: self.set_session_expiry_read_only(
+                all((state, self.mqtt_ver_field.text() == '5.0'))
+            )
+        )
+
+        for version in ('3.1.1', '3.1', '5.0'):
+            font_metrics = QFontMetrics(self.mqtt_ver_field.font())
+            elided_text = font_metrics.elidedText(version, Qt.ElideRight, 110)
+
+            action = QAction(elided_text, self.mqtt_ver_field)
+            action.triggered.connect(lambda _, ver=version: self.set_mqtt_ver(ver))
+            self.mqtt_ver_menu.addAction(action)
+
+        self.mqtt_ver_field.clicked.connect(self.show_mqtt_ver_menu)
+
+    def set_mqtt_ver(self, ver):
+        self.mqtt_ver_field.setText(ver)
+        if ver != '5.0':
+            tip = 'Only for MQTT 5.0'
+            self.set_field_read_only(self.max_packet_field, tip, False)
+        else:
+            self.set_field_read_only(self.max_packet_field, '', True)
+
+            if not self.clean_start_checkbox.isChecked():
+                self.set_session_expiry_read_only(True)
+
+    def set_read_only_certs(self, state: bool):
+        for field in (self.ca_field, self.client_cert_field, self.client_key_field):
+            self.set_field_read_only(
+                field, 'Only for self signed connection', state, contr=True
+            )
+
+        for button in (
+            self.ca_folder_button,
+            self.client_cert_button,
+            self.client_key_button,
+        ):
+            button.setEnabled(not state)
+
+    def set_recon_read_only(self, state):
+        tip = 'Only if Auto Reconnect is enabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    def set_session_expiry_read_only(self, state):
+        tip = 'Only if MQTT version is 5.0 and clean start is disabled'
+        self.set_field_read_only(self.session_expiry_field, tip, state)
+
+    @staticmethod
+    def set_field_read_only(field, tooltip, state, contr=False):
+        if contr:
+            state = not state
+        field.setReadOnly(not state)
+
+        if state:
+            field.setToolTip('')
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(186, 186, 186)}'
+            )
+        else:
+            field.setToolTip(tooltip)
+            field.setStyleSheet(
+                field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'
+            )
+
+    def open_file_dialog(self, field):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, 'Choose File', '', 'All Files (*)', options=options
+        )
+        if file_name:
+            field.setText(file_name)
+
+
+class PlusTab(PlusTabCommon):
+    def __init__(self):
+        super().__init__()
+        self.keep_alive_field.setText('60')
+        self.ca_signed_radio.setChecked(True)
+        self.set_read_only_certs(True)
+        self.auto_recon_checkbox.setChecked(True)
+        self.recon_period_field.setText('120')
+        self.clean_start_checkbox.setChecked(True)
 
     def open_file_dialog(self, field):
         options = QFileDialog.Options()
@@ -73,9 +169,6 @@ class PlusTab(PlusTabUI):
             'session_expiry_interval': self.session_expiry_field.text(),
             'receive_maximum': self.receive_max_field.text(),
             'maximum_packet_size': self.max_packet_field.text(),
-            'topic_alias_maximum': self.topic_alias_field.text(),
-            'request_response': self.request_resp_checkbox.isChecked(),
-            'request_problem_info': self.request_problem_checkbox.isChecked(),
             'ca_signed': self.ca_signed_radio.isChecked(),
             'self_signed': self.self_signed_radio.isChecked(),
         }
@@ -103,13 +196,10 @@ class PlusTab(PlusTabUI):
         self.session_expiry_field.clear()
         self.receive_max_field.clear()
         self.max_packet_field.clear()
-        self.topic_alias_field.clear()
-        self.request_resp_checkbox.setChecked(False)
-        self.request_problem_checkbox.setChecked(False)
         self.setFocus()
 
 
-class EditTab(PlusTabUI):
+class EditTab(PlusTabCommon):
     def __init__(self):
         super().__init__()
         self.delete_button = create_button(
@@ -126,7 +216,7 @@ class EditTab(PlusTabUI):
         self.current_profile = profile_manager.current_profile
 
     def setup_connections(self):
-        self.client_cert_button.clicked.connect(self.on_button_click)
+        self.set_read_only_certs(not self.self_signed_radio.isChecked())
 
     def on_button_click(self):
         QMessageBox.information(self, "Info", "Button clicked in Plus Tab!")
@@ -160,11 +250,7 @@ class EditTab(PlusTabUI):
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)
         self.receive_max_field.setText(self.current_profile.receive_maximum)
         self.max_packet_field.setText(self.current_profile.maximum_packet_size)
-        self.topic_alias_field.setText(self.current_profile.topic_alias_maximum)
-        self.request_resp_checkbox.setChecked(self.current_profile.request_response)
-        self.request_problem_checkbox.setChecked(
-            self.current_profile.request_problem_info
-        )
+        self.set_read_only_certs(not self.self_signed_radio.isChecked())
 
     def save_settings(self):  # TODO: make dict and set by dict
         self._update_current_profile()
@@ -190,8 +276,3 @@ class EditTab(PlusTabUI):
         self.current_profile.session_expiry_interval = self.session_expiry_field.text()
         self.current_profile.receive_maximum = self.receive_max_field.text()
         self.current_profile.maximum_packet_size = self.max_packet_field.text()
-        self.current_profile.topic_alias_maximum = self.topic_alias_field.text()
-        self.current_profile.request_response = self.request_resp_checkbox.isChecked()
-        self.current_profile.request_problem_info = (
-            self.request_problem_checkbox.isChecked()
-        )

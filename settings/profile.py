@@ -1,6 +1,6 @@
-import os
 from collections import defaultdict
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import paho.mqtt.client as mqtt
 
@@ -44,17 +44,15 @@ class Profile:
     _session_expiry_interval: int | None = None
     _receive_maximum: int | None = None
     _maximum_packet_size: int | None = None
-    _topic_alias_maximum: int | None = None
-    _request_response: bool | None = None
-    _request_problem_info: bool | None = None
     _topics: list | None = field(default_factory=list)
     _is_default: bool | None = None
     clipboard: dict = defaultdict
     is_created: bool = False
     _convertor: str | None = 'JSON'
+    _autoscroll: bool | None = False
 
     def __post_init__(self):
-        self.profile_ini = f'{PROFILES_PATH}{self._id}.ini'
+        self.profile_ini = get_path(f'{PROFILES_PATH}{self._id}.ini')
         self.settings = Settings(self.profile_ini)
 
         if not isinstance(self._topics, list):
@@ -94,7 +92,7 @@ class Profile:
                 )
 
     def delete(self):
-        os.remove(get_path(self.profile_ini))
+        Path(get_path(self.profile_ini)).unlink()
 
     @property
     def id(self):
@@ -290,38 +288,21 @@ class Profile:
         self._set_field('maximum_packet_size', value)
 
     @property
-    def topic_alias_maximum(self):
-        return self._topic_alias_maximum
-
-    @topic_alias_maximum.setter
-    def topic_alias_maximum(self, value: int):
-        self._set_field('topic_alias_maximum', value)
-
-    @property
-    def request_response(self):
-        return self._request_response
-
-    @request_response.setter
-    @bool_param
-    def request_response(self, value: bool):
-        self._set_field('request_response', value)
-
-    @property
-    def request_problem_info(self):
-        return self._request_problem_info
-
-    @request_problem_info.setter
-    @bool_param
-    def request_problem_info(self, value: bool):
-        self._set_field('request_problem_info', value)
-
-    @property
     def convertor(self):
         return self._convertor
 
     @convertor.setter
     def convertor(self, value: str):
         self._set_field('convertor', value)
+
+    @property
+    def autoscroll(self):
+        return self._autoscroll
+
+    @autoscroll.setter
+    @bool_param
+    def autoscroll(self, value: str):
+        self._set_field('autoscroll', value)
 
     @property
     def topics(self):

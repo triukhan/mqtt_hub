@@ -3,6 +3,8 @@ from datetime import datetime
 
 from PyQt5.QtWidgets import QPlainTextEdit
 from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
+from paho.mqtt.packettypes import PacketTypes
+from paho.mqtt.properties import Properties
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from UI.interface_utils import JsonHighlighter
@@ -26,6 +28,10 @@ class MQTTConnector:
             self.client._connect_timeout = int(self.profile.connect_timeout)
         if not self.profile.auto_reconnect:
             self.client.reconnect_delay_set(min_delay=0, max_delay=0)
+        if self.profile.auto_reconnect:
+            self.client.reconnect_delay_set(
+                min_delay=1, max_delay=self.profile.reconnect_period or '120'
+            )
         if self.profile.ssl_tls:
             if self.profile.ssl:
                 if self.profile.self_signed:
@@ -36,33 +42,65 @@ class MQTTConnector:
                         tls_version=ssl.PROTOCOL_TLS,
                     )
                 else:
-                    self.client.tls_set()  # todo: resolve it
+                    self.client.tls_set()
             else:
                 self.client.tls_set()
 
+    def make_mqtt_kwargs(self):
+        kwargs = {'keepalive': int(self.profile.keep_alive)}
+        clean_session = {}
+
+        if self.profile.mqtt_version == MQTTv5:
+            properties = Properties(PacketTypes.CONNECT)
+            prop = False
+
+            if self.profile.receive_maximum:
+                properties.ReceiveMaximum = int(self.profile.receive_maximum)
+                prop = True
+            if self.profile.maximum_packet_size:
+                properties.MaximumPacketSize = int(self.profile.maximum_packet_size)
+                prop = True
+            if not self.profile.clean_start:
+                kwargs['clean_start'] = False
+                if self.profile.session_expiry_interval:
+                    properties.SessionExpiryInterval = int(
+                        self.profile.session_expiry_interval
+                    )
+                    prop = True
+            if prop:
+                kwargs['properties'] = properties
+        else:
+            clean_session['clean_session'] = self.profile.clean_start
+
+        return kwargs, clean_session
+
     def on_message(self, client, userdata, msg): ...
 
-    def on_connect(self, _, __, ___, rc): ...
+    def on_connect(self, _, __, ___, rc, ____=None): ...
 
-    def on_disconnect(self, _, __, rc): ...
+    def on_disconnect(self, _, __, rc, ___=None): ...
 
     def start(self, profile: Profile):
         self.profile = profile
         self.topics = profile.topics
-        self.client = Client(self.profile.client_id, protocol=self.profile.mqtt_version)
+        kwargs, clean_session = self.make_mqtt_kwargs()
+
+        self.client = Client(
+            self.profile.client_id, protocol=self.profile.mqtt_version, **clean_session
+        )
+
+        self.setup_mqtt_settings()
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
 
-        self.setup_mqtt_settings()
         self.client.connect(
             self.profile.host,
             int(self.profile.port),
-            keepalive=int(self.profile.keep_alive),
+            **kwargs,
         )
         self.client.loop_start()
-        print('MQTT connection started in the background.')
 
     def stop(self):
         if self.is_connected:
@@ -105,7 +143,7 @@ class MQTTMixin(QObject, MQTTConnector):
         self.message_received.emit(msg.topic, formatted_message)
         print(formatted_message)
 
-    def on_connect(self, _, __, ___, rc):
+    def on_connect(self, _, __, ___, rc, ____=None):
         if rc != 0:
             self.fail_signal.emit(f'MQTT Error. Return code: {rc}')
             return
@@ -113,7 +151,7 @@ class MQTTMixin(QObject, MQTTConnector):
         for topic in self.topics:
             self.subscribe(topic)
 
-    def on_disconnect(self, _, __, rc):
+    def on_disconnect(self, _, __, rc, ___=None):
         if rc != 0:
             self.fail_signal.emit(f'Disconnected with error. Return code: {rc}')
             return
@@ -160,6 +198,7 @@ def convert_to_format(payload):
     except json.JSONDecodeError:
         return payload
 
+
 def validate_start(profile: Profile):
     if not profile.host:
         return 'Error: Host is absent is settings'
@@ -168,9 +207,9 @@ def validate_start(profile: Profile):
     if not profile.client_id and profile.mqtt_version != MQTTv5:
         return 'Error: Client ID is absent is settings'
     if profile.self_signed and '' in (
-            profile.ca_file,
-            profile.crt_file,
-            profile.key_file,
+        profile.ca_file,
+        profile.crt_file,
+        profile.key_file,
     ):
         return 'Error: Some certificates are absent is settings'
     return None

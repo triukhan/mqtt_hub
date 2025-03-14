@@ -1,14 +1,8 @@
-from PyQt5.QtWidgets import (
-    QFileDialog,
-    QGridLayout,
-    QHBoxLayout,
-    QScrollArea,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QScrollArea, QVBoxLayout, QWidget
 
 from UI.interface_utils import (
     Spacer,
+    create_expand_button,
     create_field,
     create_folder_field,
     create_frame,
@@ -19,19 +13,17 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import BLANK_SCROLLBAR
+from UI.styles import BLANK_SCROLLBAR, PICKER_BUTTON
 
 
 class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
-        self.plus_layout = QGridLayout(self)
+        self.plus_layout = create_layout(QGridLayout, out_layout=self)
         self.plus_layout.setContentsMargins(0, 0, 0, 0)
         self.plus_scroll = QScrollArea(self)
         create_scroll_bar(self, self.plus_scroll, BLANK_SCROLLBAR)
-
-        self.plus_scroll.setStyleSheet("QScrollArea {border: 0px}")
-
+        self.plus_scroll.setStyleSheet('QScrollArea {border: 0px}')
         self.plus_scroll_layout = QWidget()
         self.plus_scroll_box = QVBoxLayout(self.plus_scroll_layout)
 
@@ -202,21 +194,6 @@ class PlusTabUI(QWidget):
             self.advanced_layout,
             [8, 0, 1, 1],
         )
-        self.topic_alias_label = create_label(
-            'Topic Alias Maximum',
-            self.advanced_frame,
-            self.advanced_layout,
-            [9, 0, 1, 1],
-        )
-        self.request_resp_label = create_label(
-            'Request Response', self.advanced_frame, self.advanced_layout, [10, 0, 1, 1]
-        )
-        self.request_problem_label = create_label(
-            'Request Problem Info',
-            self.advanced_frame,
-            self.advanced_layout,
-            [11, 0, 1, 1],
-        )
         self.ct_sec_label = create_label(
             'sec', self.advanced_frame, self.advanced_layout, [1, 4, 1, 1]
         )
@@ -233,9 +210,21 @@ class PlusTabUI(QWidget):
         self.con_timeout_field = create_field(
             self.advanced_frame, self.advanced_layout, [1, 2, 1, 1]
         )
-        self.mqtt_ver_field = create_field(
-            self.advanced_frame, self.advanced_layout, [0, 2, 1, 1]
+
+        self.mqtt_ver_layout = create_layout(QHBoxLayout)
+        self.mqtt_ver_field, self.mqtt_ver_menu, self.show_mqtt_ver_menu = (
+            create_expand_button(
+                '3.1.1',
+                self.advanced_frame,
+                min_size=[100, 25],
+                max_size=[100, 25],
+                style=PICKER_BUTTON,
+                add_layout=self.mqtt_ver_layout,
+            )
         )
+        self.mqtt_ver_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+        self.advanced_layout.addLayout(self.mqtt_ver_layout, 0, 2, 1, 1)
+
         self.keep_alive_field = create_field(
             self.advanced_frame, self.advanced_layout, [2, 2, 1, 1]
         )
@@ -251,36 +240,11 @@ class PlusTabUI(QWidget):
         self.max_packet_field = create_field(
             self.advanced_frame, self.advanced_layout, [8, 2, 1, 1]
         )
-        self.topic_alias_field = create_field(
-            self.advanced_frame, self.advanced_layout, [9, 2, 1, 1]
-        )
 
         self.auto_recon_checkbox = create_toggle(self.advanced_layout, [3, 2, 1, 1])
         self.clean_start_checkbox = create_toggle(self.advanced_layout, [5, 2, 1, 1])
-        self.request_resp_checkbox = create_toggle(self.advanced_layout, [10, 2, 1, 1])
-        self.request_problem_checkbox = create_toggle(
-            self.advanced_layout, [11, 2, 1, 1]
-        )
 
         self.plus_scroll.setWidgetResizable(True)
         self.plus_scroll_box.addWidget(self.advanced_frame)
         self.plus_scroll.setWidget(self.plus_scroll_layout)
         self.plus_layout.addWidget(self.plus_scroll, 0, 1, 1, 1)
-
-        self.ca_folder_button.clicked.connect(
-            lambda: self.open_file_dialog(self.ca_field)
-        )
-        self.client_cert_button.clicked.connect(
-            lambda: self.open_file_dialog(self.client_cert_field)
-        )
-        self.client_key_button.clicked.connect(
-            lambda: self.open_file_dialog(self.client_key_field)
-        )
-
-    def open_file_dialog(self, field):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, 'Choose File', '', 'All Files (*)', options=options
-        )
-        if file_name:
-            field.setText(file_name)

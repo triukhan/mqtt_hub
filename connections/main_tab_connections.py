@@ -35,15 +35,17 @@ class MainTab(MainTabUI):
 
         for convert_format in ('JSON', 'Plaintext', 'Hex', 'Base64'):
             font_metrics = QFontMetrics(self.convertor_button.font())
-            elided_text = font_metrics.elidedText(
-                convert_format, Qt.ElideRight, 110
-            )  # todo what is this
-
+            elided_text = font_metrics.elidedText(convert_format, Qt.ElideRight, 110)
             action = QAction(elided_text, self.convertor_button)
             action.triggered.connect(lambda _, f=convert_format: self.set_convertor(f))
             self.convert_menu.addAction(action)
 
         self.convertor_button.clicked.connect(self.show_convert_menu)
+        self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
+
+    @staticmethod
+    def set_autoscroll(autoscroll: bool):
+        profile_manager.current_profile.autoscroll = autoscroll
 
     def set_convertor(self, convert_format):
         self.convertor_button.setText(convert_format)
