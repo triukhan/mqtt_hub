@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow, QListWidgetItem, QApplication
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
-from UI.interface_utils import BorderDelegate
+from UI.interface_utils import BorderDelegate, JsonHighlighter
 
 
 class MqttHub(QMainWindow, MainWindow):
@@ -63,9 +63,12 @@ class MqttHub(QMainWindow, MainWindow):
         item = QListWidgetItem(topic.alias or topic.address)
         item.setData(Qt.UserRole, [payload, topic.color])
         self.main_tab.receiver_list.addItem(item)
-        self.main_tab.receiver_list.scrollToItem(self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1)) # todo: here is autoscroll
+        self.main_tab.receiver_list.scrollToItem(
+            self.main_tab.receiver_list.item(self.main_tab.receiver_list.count() - 1))
         item.setSelected(True)
         self.main_tab.receiver_text_edit.setPlainText(payload)
+
+        self.highlighter = JsonHighlighter(self.main_tab.receiver_text_edit.document())
 
     def save_profile_and_connect(self):
         self.save_new_profile()

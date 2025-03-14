@@ -1,9 +1,11 @@
 import json
 from datetime import datetime
 
+from PyQt5.QtWidgets import QPlainTextEdit
 from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
 from PyQt5.QtCore import QObject, pyqtSignal
 
+from UI.interface_utils import JsonHighlighter
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -154,8 +156,7 @@ def convert_to_format(payload):
 
     try:
         json_obj = json.loads(payload)
-        formatted_payload = json.dumps(json_obj, indent=4)
-        return formatted_payload
+        return json.dumps(json_obj, indent=4)
     except json.JSONDecodeError:
         return payload
 

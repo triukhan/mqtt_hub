@@ -1,8 +1,8 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap
+from PyQt5.QtCore import QPoint, QSize, Qt, QRegExp
+from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap, QTextCharFormat, QSyntaxHighlighter
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -305,3 +305,50 @@ class BorderDelegate(QStyledItemDelegate):
         if color := index.data(Qt.UserRole)[1]:
             painter.setPen(QPen(QColor(color), 4))
             painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
+
+class JsonHighlighter(QSyntaxHighlighter):
+    def __init__(self, document):
+        super().__init__(document)
+
+        self.font = QFont('Monospace', 8)
+        self.font.setStyleHint(QFont.TypeWriter)
+
+        self.int_format = QTextCharFormat()
+        self.int_format.setForeground(QColor('#838a5a'))
+        self.int_format.setFont(self.font)
+
+        self.key_format = QTextCharFormat()
+        self.key_format.setForeground(QColor('#852c2f'))
+        self.key_format.setFont(self.font)
+
+        self.string_format = QTextCharFormat()
+        self.string_format.setForeground(QColor('#3f9e5c'))
+        self.string_format.setFont(self.font)
+
+        self.bool_format = QTextCharFormat()
+        self.bool_format.setForeground(QColor('#576291'))
+        self.bool_format.setFont(self.font)
+
+        self.bracket_format = QTextCharFormat()
+        self.bracket_format.setForeground(QColor('#ffffff'))
+        self.bracket_format.setFont(self.font)
+
+
+        self.rules = [
+            (QRegExp(r'"([^"]+)":'), self.key_format),
+            (QRegExp(r'\b(true|false)\b'), self.bool_format),
+            (QRegExp(r':\s*(\d+)\b(?!")'), self.int_format),
+            (QRegExp(r'[\[\]{}]'), self.bracket_format),
+            (QRegExp(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'), self.bracket_format),
+        ]
+
+
+    def highlightBlock(self, text):
+        self.setFormat(0, len(text), self.string_format)
+
+        for pattern, fmt in self.rules:
+            index = pattern.indexIn(text)
+            while index >= 0:
+                length = pattern.matchedLength()
+                self.setFormat(index, length, fmt)
+                index = pattern.indexIn(text, index + length)

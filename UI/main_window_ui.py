@@ -1,6 +1,7 @@
-from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QTabWidget
+from PyQt5.QtCore import QEvent, Qt, QPoint, QRect
+from PyQt5.QtGui import QFontMetrics, QMouseEvent, QCursor
+from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QTabWidget, QApplication, \
+    QSizeGrip, QMainWindow
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
