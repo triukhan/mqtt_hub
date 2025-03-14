@@ -1,8 +1,8 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QSize, Qt, QRegExp
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap, QTextCharFormat, QSyntaxHighlighter
+from PyQt5.QtCore import QPoint, QSize, Qt, QRegExp, QAbstractAnimation, QVariantAnimation
+from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap, QTextCharFormat, QSyntaxHighlighter, QCursor
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -38,6 +38,39 @@ class Spacer(Enum):
 
 FONT = QFont()
 FONT.setPointSize(10)
+
+class PushButton(QPushButton):
+    def __init__(self, parent=None, style=None):
+        super().__init__(parent)
+        self.base_style = style or ''
+        self._animation = QVariantAnimation(
+            startValue=QColor('#323232'),
+            endValue=QColor("#464646"),
+            valueChanged=self._on_value_changed,
+            duration=400,
+        )
+        self._update_stylesheet(QColor("#444444"))
+        self.setCursor(QCursor(Qt.PointingHandCursor))
+
+    def _on_value_changed(self, border_color):
+        self._update_stylesheet(border_color)
+
+    def _update_stylesheet(self, border_color):
+        updated_style = self.base_style.replace(
+            "border: 1px solid rgb(50, 50, 50);",
+            f"border: 1px solid {border_color.name()};"
+        )
+        self.setStyleSheet(updated_style)
+
+    def enterEvent(self, event):
+        self._animation.setDirection(QAbstractAnimation.Forward)
+        self._animation.start()
+        super().enterEvent(event)
+
+    def leaveEvent(self, event):
+        self._animation.setDirection(QAbstractAnimation.Backward)
+        self._animation.start()
+        super().leaveEvent(event)
 
 
 def create_label(
@@ -169,8 +202,9 @@ def create_button(
     add_params=None,
     style: str = styles.APP_BUTTON,
     font: QFont = None,
+    border = True,
 ):
-    button = QPushButton(layout)
+    button = PushButton(layout, style) if border else QPushButton(layout)
     button.setText(text)
     button.setStyleSheet(style)
 
@@ -289,6 +323,7 @@ def create_expand_button(
         max_size=max_size,
         add_layout=add_layout,
         add_params=add_params,
+        style=style,
     )
 
     button.setIcon(QIcon(EXPAND_ICON))

@@ -81,6 +81,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
+            border=False,
         )
         self.exit_button.installEventFilter(self)
         self.collapse_button = create_button(
@@ -90,6 +91,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
+            border=False,
         )
         self.collapse_button.installEventFilter(self)
         self.expand_button = create_button(
@@ -99,6 +101,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
+            border=False,
         )
         self.expand_button.installEventFilter(self)
         self.sidebar_vertical_layout.addLayout(self.exit_layout)
@@ -110,6 +113,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
+            border=False,
         )
         self.logo_button.setStyleSheet(sidebar_button(LOGO_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
@@ -119,6 +123,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
+            border=False,
         )
         self.main_button.setStyleSheet(sidebar_button(MAIN_ICON))
         self.plus_button = create_button(
@@ -127,6 +132,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
+            border=False,
         )
         self.plus_button.setStyleSheet(sidebar_button(PLUS_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
@@ -137,6 +143,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
+            border=False,
         )
         self.settings_button.setStyleSheet(sidebar_button(SETTINGS_ICON))
         self.info_button = create_button(
@@ -145,6 +152,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
+            border=False,
         )
         self.info_button.setStyleSheet(sidebar_button(INFO_ICON))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
@@ -181,6 +189,7 @@ class MqttHubUi(QWidget):
             30,
             30,
             self.header_horizontal_layout,
+            border=False,
         )
         self.edit_button.setStyleSheet(header_button(EDIT_ICON))
 
@@ -191,6 +200,7 @@ class MqttHubUi(QWidget):
             [400, 30],
             30,
             self.header_horizontal_layout,
+            border=False,
         )
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
@@ -208,6 +218,7 @@ class MqttHubUi(QWidget):
             30,
             self.header_layout,
             [0, 3, 1, 1],
+            border=False,
         )
         self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
 
@@ -238,6 +249,7 @@ class MqttHubUi(QWidget):
             30,
             self.header_layout,
             [0, 1, 1, 1],
+            border=False,
         )
         self.notification.hide()
 
@@ -250,6 +262,7 @@ class MqttHubUi(QWidget):
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 3, 1, 1],
+            border=False,
         )
         self.connect_plus_button = create_button(
             'Connect',
@@ -258,6 +271,7 @@ class MqttHubUi(QWidget):
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 4, 1, 1],
+            border=False,
         )
 
         self.header_horizontal_layout.addLayout(self.header_layout)
@@ -289,12 +303,14 @@ class MqttHubUi(QWidget):
             self.header_frame,
             style=MAIN_BUTTON + 'QPushButton {margin-right: 5px}',
             min_size=[0, 30],
+            border=False,
         )
         self.connect_button = create_button(
             'Connect',
             self.header_frame,
             style=MAIN_BUTTON,
             min_size=[0, 30],
+            border=False,
         )
 
         self.buttons_layout.addWidget(self.save_edit_button)

@@ -66,7 +66,7 @@ class SettingsTabUi(QWidget):
         )
 
         self.logger_folder_button = create_button(
-            '', self.logger_frame, add_layout=self.logger_path_layout
+            '', self.logger_frame, add_layout=self.logger_path_layout, border=False,
         )
         self.logger_folder_button.setStyleSheet(
             'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid '
