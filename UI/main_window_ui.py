@@ -1,7 +1,13 @@
-from PyQt5.QtCore import QEvent, Qt, QPoint, QRect
-from PyQt5.QtGui import QFontMetrics, QMouseEvent, QCursor
-from PyQt5.QtWidgets import QAction, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QTabWidget, QApplication, \
-    QSizeGrip, QMainWindow
+from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtWidgets import (
+    QAction,
+    QGridLayout,
+    QHBoxLayout,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
@@ -25,8 +31,15 @@ from UI.interface_utils import (
     create_spacer,
     set_button_text,
 )
-from UI.styles import FRAME_COLOR, HEADER_FRAME, sidebar_button, EXIT_BUTTON, EXIT_BUTTON_HOVER, header_button, \
-    MAIN_BUTTON
+from UI.styles import (
+    EXIT_BUTTON,
+    EXIT_BUTTON_HOVER,
+    FRAME_COLOR,
+    HEADER_FRAME,
+    MAIN_BUTTON,
+    header_button,
+    sidebar_button,
+)
 from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
@@ -343,6 +356,8 @@ class MqttHubUi(QWidget):
             min_size=[0, 30],
             add_layout=add_layout,
             add_params=add_params,
+            style=MAIN_BUTTON,
+            border=False,
         )
 
         profiles = profile_manager.profiles

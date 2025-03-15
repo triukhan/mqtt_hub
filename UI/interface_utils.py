@@ -1,8 +1,25 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QSize, Qt, QRegExp, QAbstractAnimation, QVariantAnimation
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap, QTextCharFormat, QSyntaxHighlighter, QCursor
+from PyQt5.QtCore import (
+    QAbstractAnimation,
+    QPoint,
+    QRegExp,
+    QSize,
+    Qt,
+    QVariantAnimation,
+)
+from PyQt5.QtGui import (
+    QColor,
+    QCursor,
+    QFont,
+    QFontMetrics,
+    QIcon,
+    QPen,
+    QPixmap,
+    QSyntaxHighlighter,
+    QTextCharFormat,
+)
 from PyQt5.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -39,6 +56,7 @@ class Spacer(Enum):
 FONT = QFont()
 FONT.setPointSize(10)
 
+
 class PushButton(QPushButton):
     def __init__(self, parent=None, style=None):
         super().__init__(parent)
@@ -58,7 +76,7 @@ class PushButton(QPushButton):
     def _update_stylesheet(self, border_color):
         updated_style = self.base_style.replace(
             "border: 1px solid rgb(50, 50, 50);",
-            f"border: 1px solid {border_color.name()};"
+            f"border: 1px solid {border_color.name()};",
         )
         self.setStyleSheet(updated_style)
 
@@ -202,7 +220,7 @@ def create_button(
     add_params=None,
     style: str = styles.APP_BUTTON,
     font: QFont = None,
-    border = True,
+    border=True,
 ):
     button = PushButton(layout, style) if border else QPushButton(layout)
     button.setText(text)
@@ -315,6 +333,7 @@ def create_expand_button(
     min_size=None,
     max_size=None,
     style=EXPAND_BUTTON,
+    border=True,
 ):
     button = create_button(
         text,
@@ -324,6 +343,7 @@ def create_expand_button(
         add_layout=add_layout,
         add_params=add_params,
         style=style,
+        border=border,
     )
 
     button.setIcon(QIcon(EXPAND_ICON))
@@ -348,6 +368,7 @@ class BorderDelegate(QStyledItemDelegate):
         if color := index.data(Qt.UserRole)[1]:
             painter.setPen(QPen(QColor(color), 4))
             painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
+
 
 class JsonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
@@ -376,7 +397,6 @@ class JsonHighlighter(QSyntaxHighlighter):
         self.common_format.setForeground(QColor('#c0c0c0'))
         self.common_format.setFont(self.font)
 
-
         self.rules = [
             (QRegExp(r'"([^"]+)":'), self.key_format),
             (QRegExp(r'\b(true|false)\b'), self.bool_format),
@@ -385,7 +405,6 @@ class JsonHighlighter(QSyntaxHighlighter):
             (QRegExp(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'), self.common_format),
             (QRegExp(r',\s*$'), self.common_format),
         ]
-
 
     def highlightBlock(self, text):
         self.setFormat(0, len(text), self.string_format)
