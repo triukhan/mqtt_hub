@@ -5,18 +5,11 @@ from pathlib import Path
 import paho.mqtt.client as mqtt
 
 from settings.settings import Settings, get_path
+from settings.settings_utils import bool_param
 from settings.topic import Topic
 
 DEFAULT_NAME = 'default_mqtt_user'
 PROFILES_PATH = 'settings/profiles/'
-
-
-def bool_param(func):
-    def wrapper(instance, value):
-        value = (value == 'True') if isinstance(value, str) else value
-        return func(instance, value)
-
-    return wrapper
 
 
 @dataclass

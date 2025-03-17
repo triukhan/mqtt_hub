@@ -1,13 +1,11 @@
 import json
 from datetime import datetime
 
-from PyQt5.QtWidgets import QPlainTextEdit
-from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, ssl
+from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, SubscribeOptions, ssl
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from UI.interface_utils import JsonHighlighter
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -118,8 +116,10 @@ class MQTTConnector:
             return f'Failed to send message. Result Code: {result.rc}'
 
     def subscribe(self, topic):
-        self.client.subscribe(topic.address)
-        print('Subscribe successful:', topic.address)
+        settings = topic.get_options_dict()
+        options = SubscribeOptions(**settings)
+        self.client.subscribe(topic.address, options=options)
+        print('Subscribe successful: ', topic.address, '. Settings: ', settings)
 
     def unsubscribe(self, topic):
         self.client.unsubscribe(topic.address)

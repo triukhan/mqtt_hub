@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtGui import QCursor, QFontMetrics
 from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox
 
 from settings.profile_manager import profile_manager
@@ -118,6 +118,7 @@ class PlusTabCommon(PlusTabUI):
                 field.styleSheet() + 'QLineEdit {color: rgb(186, 186, 186)}'
             )
         else:
+            field.setCursor(QCursor(Qt.ForbiddenCursor))
             field.setToolTip(tooltip)
             field.setStyleSheet(
                 field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'

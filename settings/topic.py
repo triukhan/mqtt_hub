@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from settings.settings import Settings
+from settings.settings_utils import bool_param
 
 
 @dataclass
@@ -8,11 +9,11 @@ class Topic:
     _profile_ini: str
     _address: str
     _alias: str | None = None
-    _qos: int = 1
+    _qos: int = 0
     _color: str | None = None
     _no_local: bool = False
     _retain_as_published: bool = False
-    _retain_handling: str | None = None
+    _retain_handling: str | None = 0
 
     def __post_init__(self):
         self._settings = Settings(self._profile_ini)
@@ -55,7 +56,9 @@ class Topic:
 
     @qos.setter
     def qos(self, value: int) -> None:
-        self._qos = value
+        if not value:
+            value = 0
+        self._qos = int(value)  # noqa: FURB123
         self._settings.set_with_save(self._address, 'qos', value)
 
     @property
@@ -72,6 +75,7 @@ class Topic:
         return self._no_local
 
     @no_local.setter
+    @bool_param
     def no_local(self, value: bool) -> None:
         self._no_local = value
         self._settings.set_with_save(self._address, 'no_local', value)
@@ -81,6 +85,7 @@ class Topic:
         return self._retain_as_published
 
     @retain_as_published.setter
+    @bool_param
     def retain_as_published(self, value: bool) -> None:
         self._retain_as_published = value
         self._settings.set_with_save(self._address, 'retain_as_published', value)
@@ -91,7 +96,9 @@ class Topic:
 
     @retain_handling.setter
     def retain_handling(self, value: str) -> None:
-        self._retain_handling = value
+        if not value:
+            value = 0
+        self._retain_handling = int(value)
         self._settings.set_with_save(self._address, 'retain_handling', value)
 
     def set_fields_from_dict(self, data: dict) -> None:
@@ -99,3 +106,11 @@ class Topic:
             key = key.removeprefix('_')
             if hasattr(self, key):
                 setattr(self, key, value)
+
+    def get_options_dict(self) -> dict:
+        return {
+            'qos': self.qos,
+            'noLocal': self.no_local,
+            'retainAsPublished': self.retain_as_published,
+            'retainHandling': self.retain_handling,
+        }

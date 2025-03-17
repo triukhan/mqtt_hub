@@ -46,10 +46,9 @@ class ProfileManager:
 
                     if section == 'topics':
                         for _, topic_address in profile_file[section].items():
-                            topic_settings = {}
+                            topic = Topic(filepath, topic_address)
                             for key, value in profile_file[topic_address].items():
-                                topic_settings['_' + key] = value
-                            topic = Topic(filepath, **topic_settings)
+                                setattr(topic, key, value)
                             topics.append(topic)
 
                 profile.clipboard = clipboard
