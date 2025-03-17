@@ -309,6 +309,10 @@ class Profile:
         self.clipboard[message_name] = message_text
         self.settings.set_with_save('clipboard', message_name, message_text)
 
+    def delete_clipboard(self, message_name: str):
+        del self.clipboard[message_name]
+        self.settings.remove_option('clipboard', message_name)
+
     def add_topic(self, topic_settings: dict):
         if topic_address := topic_settings.get('_address') in self._topics:
             raise AttributeError(f'{topic_address} already exists')
