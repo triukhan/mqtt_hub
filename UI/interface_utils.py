@@ -195,7 +195,7 @@ def create_frame(main_layout, style: str | bool = styles.FRAME_PART, add_layout=
 
 
 def create_layout(
-    layout_type, margins: list | int | None = None, spacing: int = 0, out_layout=None
+    layout_type, margins: list | int | None = None, spacing: int = 0, out_layout=None, align=None,
 ):
     if out_layout is not None:
         layout = layout_type(out_layout)
@@ -204,6 +204,9 @@ def create_layout(
 
     if isinstance(margins, int):
         margins = [margins for _ in range(4)]
+
+    if align is not None:
+        layout.setAlignment(align)
 
     if margins is not None:
         layout.setContentsMargins(*margins)

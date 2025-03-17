@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout
 
 from UI.interface_utils import (
@@ -9,7 +10,7 @@ from UI.interface_utils import (
     create_frame,
     create_label,
     create_layout,
-    create_spacer,
+    create_spacer, create_toggle,
 )
 from UI.styles import HEADER_FRAME, WIDGET, DELETE_BUTTON
 
@@ -98,19 +99,19 @@ class TopicDialogUI:
         self.color_field.setMaximumSize(QtCore.QSize(200, 30))
         self.body_layout.addLayout(self.qos_color_layout)
 
-        self.no_local_layout = create_layout(QHBoxLayout, [20, 15, 20, 15])
+        self.no_local_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft)
         self.no_local_label = create_label(
-            'No Local Flag', self.main_frame, self.no_local_layout, align='left'
+            'No Local Flag', self.main_frame, self.no_local_layout, max_size=[190, 30], min_size=[190, 30], align='left'
         )
-        self.no_local_checkbox = create_checkbox(self.main_frame, self.no_local_layout)
+        self.no_local_checkbox = create_toggle(self.no_local_layout)
         self.body_layout.addLayout(self.no_local_layout)
 
-        self.retain_published_layout = create_layout(QHBoxLayout, [20, 15, 20, 15])
+        self.retain_published_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft)
         self.retain_published_label = create_label(
-            'Retain as Published Flag', self.main_frame, self.retain_published_layout, align='left'
+            'Retain as Published Flag', self.main_frame, self.retain_published_layout, max_size=[190, 30], min_size=[190, 30], align='left'
         )
-        self.retain_published_checkbox = create_checkbox(
-            self.main_frame, self.retain_published_layout
+        self.retain_published_checkbox = create_toggle(
+            self.retain_published_layout
         )
         self.body_layout.addLayout(self.retain_published_layout)
 
