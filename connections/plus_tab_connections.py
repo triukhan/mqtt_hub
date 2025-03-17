@@ -55,9 +55,12 @@ class PlusTabCommon(PlusTabUI):
         self.self_signed_radio.clicked.connect(lambda: self.set_read_only_certs(False))
         self.ca_signed_radio.clicked.connect(lambda: self.set_read_only_certs(True))
         self.auto_recon_checkbox.stateChanged.connect(self.set_recon_read_only)
+        self.auto_recon_checkbox.setChecked(
+            profile_manager.current_profile.auto_reconnect
+        )
         self.clean_start_checkbox.stateChanged.connect(
             lambda state: self.set_session_expiry_read_only(
-                all((state, self.mqtt_ver_field.text() == '5.0'))
+                (self.mqtt_ver_field.text() != '5.0') or (state == 2)
             )
         )
 
@@ -76,11 +79,10 @@ class PlusTabCommon(PlusTabUI):
         if ver != '5.0':
             tip = 'Only for MQTT 5.0'
             self.set_field_read_only(self.max_packet_field, tip, False)
+            self.set_session_expiry_read_only(True)
         else:
             self.set_field_read_only(self.max_packet_field, '', True)
-
-            if not self.clean_start_checkbox.isChecked():
-                self.set_session_expiry_read_only(True)
+            self.set_session_expiry_read_only(self.clean_start_checkbox.isChecked())
 
     def set_read_only_certs(self, state: bool):
         for field in (self.ca_field, self.client_cert_field, self.client_key_field):
@@ -97,11 +99,12 @@ class PlusTabCommon(PlusTabUI):
 
     def set_recon_read_only(self, state):
         tip = 'Only if Auto Reconnect is enabled'
-        self.set_field_read_only(self.session_expiry_field, tip, state)
+        self.set_field_read_only(self.recon_period_field, tip, state)
 
-    def set_session_expiry_read_only(self, state):
+    def set_session_expiry_read_only(self, state, debug=None):
         tip = 'Only if MQTT version is 5.0 and clean start is disabled'
-        self.set_field_read_only(self.session_expiry_field, tip, state)
+        self.set_field_read_only(self.session_expiry_field, tip, state, contr=True)
+        return None
 
     @staticmethod
     def set_field_read_only(field, tooltip, state, contr=False):
@@ -239,12 +242,12 @@ class EditTab(PlusTabCommon):
         self.ca_field.setText(self.current_profile.ca_file)
         self.client_cert_field.setText(self.current_profile.crt_file)
         self.client_key_field.setText(self.current_profile.key_file)
-        self.mqtt_ver_field.setText(
-            mqtt_versions.get(self.current_profile.mqtt_version)
-        )
+        self.set_mqtt_ver(mqtt_versions.get(self.current_profile.mqtt_version))
         self.con_timeout_field.setText(self.current_profile.connect_timeout)
         self.keep_alive_field.setText(self.current_profile.keep_alive)
         self.auto_recon_checkbox.setChecked(self.current_profile.auto_reconnect)
+        self.set_recon_read_only(self.auto_recon_checkbox.isChecked())
+        # self.set_session_expiry_read_only(not all((self.mqtt_ver_field.text() == '5.0', self.clean_start_checkbox.isChecked())))
         self.recon_period_field.setText(self.current_profile.reconnect_period)
         self.clean_start_checkbox.setChecked(self.current_profile.clean_start)
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)
