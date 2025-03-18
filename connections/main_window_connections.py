@@ -31,7 +31,7 @@ class MainWindow(MqttHubUi):
         self.overlay.setStyleSheet('background-color: rgba(0, 0, 0, 100);')
         self.overlay.hide()
 
-    def save_new_profile(self):
+    def save_new_profile(self, with_notify: bool = True):
         self._setup_notifications()
         settings = self.plus_tab.get_settings()
         if (error_msg := self.validate_settings(settings)) is not None:
@@ -41,7 +41,8 @@ class MainWindow(MqttHubUi):
         profile_manager.create_profile(**settings)
         self.disconnect()
         self.clear_tab()
-        self.show_positive_notification('Profile was successfully created')
+        if with_notify:
+            self.show_positive_notification('Profile was successfully created')
 
     def clear_tab(self):
         self.open_main_tab()
@@ -67,13 +68,17 @@ class MainWindow(MqttHubUi):
         self.all_tabs.setCurrentIndex(2)
         self._setup_edit_header()
         self.save_edit_button.clicked.connect(self.save_edit_profile)
+        self.connect_edit_button.clicked.connect(
+            self.save_settings_edit_tab_and_connect
+        )
         self.edit_tab.load_current_profile_settings()
 
-    def save_edit_profile(self):
+    def save_edit_profile(self, with_notify: bool = True):
         self.clear_sidebar_selections()
         self.edit_tab.save_settings()
         self.open_main_tab()
-        self.show_positive_notification('Settings were successfully saved')
+        if with_notify:
+            self.show_positive_notification('Settings were successfully saved')
 
     def open_settings_tab(self):
         self.clear_sidebar_selections()

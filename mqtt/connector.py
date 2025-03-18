@@ -160,7 +160,7 @@ class MQTTMixin(QObject, MQTTConnector):
     def handle_connect(self, conn: bool):
         self.is_connected = conn
         prefix = '' if self.is_connected else 'dis'
-        self.common_signal.emit(f'{prefix}connected'.capitalize())
+        self.success_signal.emit(f'{prefix}connected'.capitalize())
         self.connected_signal.emit(self.is_connected)
 
     def start(self, profile: Profile):

@@ -248,7 +248,6 @@ class EditTab(PlusTabCommon):
         self.keep_alive_field.setText(self.current_profile.keep_alive)
         self.auto_recon_checkbox.setChecked(self.current_profile.auto_reconnect)
         self.set_recon_read_only(self.auto_recon_checkbox.isChecked())
-        # self.set_session_expiry_read_only(not all((self.mqtt_ver_field.text() == '5.0', self.clean_start_checkbox.isChecked())))
         self.recon_period_field.setText(self.current_profile.reconnect_period)
         self.clean_start_checkbox.setChecked(self.current_profile.clean_start)
         self.session_expiry_field.setText(self.current_profile.session_expiry_interval)

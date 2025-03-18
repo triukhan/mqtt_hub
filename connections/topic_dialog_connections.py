@@ -59,11 +59,11 @@ class TopicDialog(QDialog, TopicDialogUI):
         return {
             '_address': self.topic_field.text(),
             '_alias': self.alias_field.text(),
-            '_qos': self.qos_field.text(),
+            '_qos': int(self.qos_field.text()),
             '_color': self.color_field.text(),
             '_no_local': self.no_local_checkbox.isChecked(),
             '_retain_as_published': self.retain_published_checkbox.isChecked(),
-            '_retain_handling': self.retain_handling_field.text(),
+            '_retain_handling': int(self.retain_handling_field.text()),
         }, self._tag
 
     def _set_topic_settings(self):

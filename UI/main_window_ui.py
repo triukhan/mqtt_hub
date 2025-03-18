@@ -318,7 +318,7 @@ class MqttHubUi(QWidget):
             min_size=[0, 30],
             border=False,
         )
-        self.connect_button = create_button(
+        self.connect_edit_button = create_button(
             'Connect',
             self.header_frame,
             style=MAIN_BUTTON,
@@ -327,7 +327,7 @@ class MqttHubUi(QWidget):
         )
 
         self.buttons_layout.addWidget(self.save_edit_button)
-        self.buttons_layout.addWidget(self.connect_button)
+        self.buttons_layout.addWidget(self.connect_edit_button)
 
         self.header_horizontal_layout.addLayout(self.buttons_layout)
 
@@ -389,7 +389,7 @@ class MqttHubUi(QWidget):
         self.main_tab.set_clipboard_messages()
         self.update_profile_button()
         self.clear_topics()
-        self.setup_topics()
+        self._setup_topics()
 
     def _setup_topics(self):
         for topic in profile_manager.current_profile.topics:

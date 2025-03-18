@@ -148,8 +148,8 @@ class MainTabUI(QWidget):
             min_size=[0, 25],
             max_size=[100, 25],
             add_layout=self.horizontalLayout_5,
+            style=DELETE_BUTTON,
         )
-        self.delete_button.setStyleSheet(DELETE_BUTTON)
 
         self.add_clipboard_button = create_button(
             'Add to Clipboard',

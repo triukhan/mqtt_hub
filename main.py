@@ -29,7 +29,6 @@ class MqttHub(QMainWindow, MainWindow):
         )
         self.main_tab.unsubscribe_topic = self.connector.unsubscribe
         self.main_tab.connector = self.connector
-
         self.main_tab.receiver_list.setItemDelegate(
             BorderDelegate(self.main_tab.receiver_list)
         )
@@ -44,6 +43,14 @@ class MqttHub(QMainWindow, MainWindow):
         with suppress(AttributeError):
             self.change_connect_button(self.connector.is_connected)
         self.connect_button.clicked.connect(self.handle_connect_click)
+
+    # def setup_plus_header(self):
+    #     super().setup_plus_header()
+    #     self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
+
+    def setup_edit_header(self):
+        super()._setup_edit_header()
+        self.connect_button.clicked.connect(self.save_profile_and_connect)
 
     def handle_connect_click(self):
         if self.connector.is_connected:
@@ -79,9 +86,13 @@ class MqttHub(QMainWindow, MainWindow):
         self.highlighter = JsonHighlighter(self.main_tab.receiver_text_edit.document())
 
     def save_profile_and_connect(self):
-        self.save_new_profile()
+        self.save_new_profile(with_notify=False)
         self.main_tab.tags_widget.clear_tags()
-        self.connector.start(profile_manager.current_profile)
+        self.start_connection()
+
+    def save_settings_edit_tab_and_connect(self):
+        self.save_edit_profile(with_notify=False)
+        self.start_connection()
 
     def delete_profile(self):
         profile_manager.delete_current_profile()
