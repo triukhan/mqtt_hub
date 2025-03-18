@@ -28,7 +28,6 @@ class MainTab(MainTabUI):
         self.clipboard_list.currentItemChanged.connect(
             self.display_message_in_command_field
         )
-        self.delete_button.clicked.connect(self.delete_message)
         self.add_button.clicked.connect(self.create_topic)
         self.clear_button.clicked.connect(self.clear_list_and_message)
         self.show_fail_message = None
@@ -125,12 +124,10 @@ class MainTab(MainTabUI):
         self.receiver_text_edit.clear()
         self.receiver_list.clear()
 
-    def delete_message(self):
-        item = self.clipboard_list.currentItem()
-        if item:
-            print('are u sure?')  # todo: window
-            row = self.clipboard_list.row(item)
-            self.clipboard_list.takeItem(row)
-            profile_manager.current_profile.delete_clipboard(item.text())
-        else:
-            print('u are not selected any message')  # todo: notification
+    def get_selected_item(self):
+        return self.clipboard_list.currentItem()
+
+    def delete_clipboard_message(self, item):
+        row = self.clipboard_list.row(item)
+        self.clipboard_list.takeItem(row)
+        profile_manager.current_profile.delete_clipboard(item.text())

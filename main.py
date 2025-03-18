@@ -30,7 +30,6 @@ class MqttHub(QMainWindow, MainWindow):
         self.main_tab.unsubscribe_topic = self.connector.unsubscribe
         self.main_tab.connector = self.connector
 
-        self.edit_tab.delete_button.clicked.connect(self.delete_profile)
         self.main_tab.receiver_list.setItemDelegate(
             BorderDelegate(self.main_tab.receiver_list)
         )

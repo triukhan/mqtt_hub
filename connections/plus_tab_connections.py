@@ -191,7 +191,7 @@ class PlusTab(PlusTabCommon):
         self.ca_field.clear()
         self.client_cert_field.clear()
         self.client_key_field.clear()
-        self.mqtt_ver_field.clear()
+        self.mqtt_ver_field.setText('3.1.1')
         self.con_timeout_field.clear()
         self.keep_alive_field.setText('60')
         self.auto_recon_checkbox.setChecked(False)

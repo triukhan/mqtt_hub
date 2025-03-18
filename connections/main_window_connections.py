@@ -1,10 +1,10 @@
-import time
 from contextlib import suppress
 
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QPushButton
+from PyQt5.QtWidgets import QGraphicsOpacityEffect, QPushButton, QWidget
 
 from settings.profile_manager import profile_manager
+from UI.dialogs.confirmation_dialog import ConfirmationDialogUI
 from UI.main_window_ui import MqttHubUi
 
 
@@ -13,27 +13,33 @@ class MainWindow(MqttHubUi):
         super().__init__()
         self._setup_ui()
         self.open_main_tab()
-
-        self.connect_sidebar()
-        self.setup_topics()
-        self.update_profile_button()
-        self._setup_notifications()
         self.disconnect = None
 
-    @property
-    def current_profile(self):
-        return profile_manager.current_profile
+        self.connect_sidebar()
+        self._setup_topics()
+        self.update_profile_button()
+        self._setup_overlay()
+
+        self.edit_tab.delete_button.clicked.connect(
+            lambda: self.open_delete_dialog(self.delete_profile)
+        )
+        self.main_tab.delete_button.clicked.connect(self.handle_delete_message)
+
+    def _setup_overlay(self):
+        self.overlay = QWidget(self)
+        self.overlay.setGeometry(0, 0, self.width(), self.height())
+        self.overlay.setStyleSheet('background-color: rgba(0, 0, 0, 100);')
+        self.overlay.hide()
 
     def save_new_profile(self):
         self._setup_notifications()
-        # self.show_fail_notification('', 5) #todo: to validate settings
         settings = self.plus_tab.get_settings()
         if (error_msg := self.validate_settings(settings)) is not None:
             self.show_common_notification(error_msg, 5)
             return
 
         profile_manager.create_profile(**settings)
-        # self.disconnect() #TODO uncomment after disconnect
+        self.disconnect()
         self.clear_tab()
         self.show_positive_notification('Profile was successfully created')
 
@@ -88,7 +94,7 @@ class MainWindow(MqttHubUi):
 
     def show_common_notification(self, text=None, pos=10):
         self.notification.setStyleSheet(
-            "QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}"
+            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}'
         )
         self.notification.setText(text or 'Fail')
         self._start_notification_animation(pos, 3000)
@@ -179,5 +185,23 @@ class MainWindow(MqttHubUi):
             )
 
     def validate_settings(self, settings: dict):
-        if settings['self_signed'] and not all([settings['ca_file'], settings['crt_file'], settings['key_file']]):
+        if settings['self_signed'] and not all(
+            [settings['ca_file'], settings['crt_file'], settings['key_file']]
+        ):
             return 'SSL/TLS: You need to fill in certificates'
+
+    def open_delete_dialog(self, method):
+        self.overlay.show()
+        ConfirmationDialogUI(
+            self, 'Are you sure you want to delete this message?', method
+        ).exec_()
+        self.overlay.hide()
+
+    def handle_delete_message(self):
+        if (item := self.main_tab.get_selected_item()) is not None:
+            self.open_delete_dialog(
+                lambda: self.main_tab.delete_clipboard_message(item)
+            )
+            self.show_common_notification('Message is deleted')
+        else:
+            self.show_common_notification('You are not selected any message')

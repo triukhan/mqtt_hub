@@ -11,7 +11,6 @@ from PyQt5.QtCore import (
 )
 from PyQt5.QtGui import (
     QColor,
-    QCursor,
     QFont,
     QFontMetrics,
     QIcon,
@@ -89,6 +88,7 @@ class AnimatedPushButton(QPushButton):
         self._animation.start()
         super().leaveEvent(event)
 
+
 class AnimatedLineEdit(QLineEdit):
     def __init__(self, parent=None, style=None):
         super().__init__(parent)
@@ -155,6 +155,8 @@ def create_label(
         label.setAlignment(LABEL_LEFT_ALIGNMENT)
     elif align == 'right':
         label.setAlignment(LABEL_RIGHT_ALIGNMENT)
+    elif align == 'center':
+        label.setAlignment(Qt.AlignCenter)
 
     if add_layout is not None:
         if add_params is not None:
@@ -240,7 +242,11 @@ def create_frame(main_layout, style: str | bool = styles.FRAME_PART, add_layout=
 
 
 def create_layout(
-    layout_type, margins: list | int | None = None, spacing: int = 0, out_layout=None, align=None,
+    layout_type,
+    margins: list | int | None = None,
+    spacing: int = 0,
+    out_layout=None,
+    align=None,
 ):
     if out_layout is not None:
         layout = layout_type(out_layout)

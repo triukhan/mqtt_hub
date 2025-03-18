@@ -391,7 +391,7 @@ class MqttHubUi(QWidget):
         self.clear_topics()
         self.setup_topics()
 
-    def setup_topics(self):
+    def _setup_topics(self):
         for topic in profile_manager.current_profile.topics:
             self.main_tab.tags_widget.add_tag(topic)
 
