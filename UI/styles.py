@@ -4,6 +4,11 @@ MAIN_BUTTON = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
     'padding-left: 10px; padding-right: 10px;} QPushButton:hover {background-color: rgb(45, 45, 45);}'
 )
+MAIN_WINDOW = 'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px;}'
+MAIN_BUTTON_WITHOUT_HOVER = (
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
+    'padding-left: 10px; padding-right: 10px;}'
+)
 FILTER_BUTTON_1 = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);'
     'border: 1px solid rgb(35, 35, 35); padding-left: 5px;}'
@@ -64,11 +69,11 @@ FILTER_BUTTON_2 = (
 
 EXIT_BUTTON = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
-    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;}'
+    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;}'
 )
 EXIT_BUTTON_HOVER = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
-    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6; padding: 10px;'
+    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;'
     f'border-image: url({INFO_ICON}) 0 0 0 0 stretch stretch;}}'
 )
 SCROLLBAR = """
@@ -143,8 +148,7 @@ def sidebar_button(icon_path):
     return (
         f'QPushButton {{color: rgb(186, 189, 182); background-color: rgb(30, 30, 30); border-top-left-radius: 5;'
         f'border-bottom-left-radius: 5; border-top-right-radius: 5; border-bottom-right-radius: 5; padding: 10px;'
-        f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}} QPushButton:hover {{background-color:'
-        f' rgb(40, 40, 40);}}'
+        f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}}'
     )
 
 

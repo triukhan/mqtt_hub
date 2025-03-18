@@ -37,6 +37,8 @@ from UI.styles import (
     FRAME_COLOR,
     HEADER_FRAME,
     MAIN_BUTTON,
+    MAIN_BUTTON_WITHOUT_HOVER,
+    MAIN_WINDOW,
     header_button,
     sidebar_button,
 )
@@ -57,6 +59,7 @@ class MqttHubUi(QWidget):
     def _setup_ui(self):
         self.main_window = QWidget(self)
         self.main_window.setStyleSheet('QWidget {background-color: rgb(30, 30, 30);}')
+        self.setStyleSheet(MAIN_WINDOW)
 
         self.horizontalLayout_2 = create_layout(
             QHBoxLayout, 0, out_layout=self.main_window
@@ -86,7 +89,10 @@ class MqttHubUi(QWidget):
         self.sidebar_vertical_layout = create_layout(
             QVBoxLayout, [0, 10, 0, 0], 0, self.sidebar_frame
         )
-        self.exit_layout = create_layout(QHBoxLayout, spacing=10)
+        self.exit_layout = create_layout(QHBoxLayout, spacing=0)
+        spacer = create_spacer(Spacer.HORIZONTAL)
+        spacer.changeSize(7, 0)
+        self.exit_layout.addItem(spacer)
         self.exit_button = create_button(
             '',
             self.sidebar_frame,
@@ -116,10 +122,13 @@ class MqttHubUi(QWidget):
             style=EXIT_BUTTON,
             border=False,
         )
+        spacer = create_spacer(Spacer.HORIZONTAL)
+        spacer.changeSize(7, 0)
+        self.exit_layout.addItem(spacer)
         self.expand_button.installEventFilter(self)
         self.sidebar_vertical_layout.addLayout(self.exit_layout)
 
-        self.sidebar_layout = create_layout(QVBoxLayout, [20, 30, 20, 30], 20)
+        self.sidebar_layout = create_layout(QVBoxLayout, [20, 30, 20, 30], 10)
         self.logo_button = create_button(
             '',
             self.sidebar_frame,
@@ -136,18 +145,18 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
-            border=False,
+            body=True,
+            style=sidebar_button(MAIN_ICON),
         )
-        self.main_button.setStyleSheet(sidebar_button(MAIN_ICON))
         self.plus_button = create_button(
             '',
             self.sidebar_frame,
             50,
             50,
             self.sidebar_layout,
-            border=False,
+            style=sidebar_button(PLUS_ICON),
+            body=True,
         )
-        self.plus_button.setStyleSheet(sidebar_button(PLUS_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.settings_button = create_button(
@@ -156,18 +165,18 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
-            border=False,
+            body=True,
+            style=sidebar_button(SETTINGS_ICON),
         )
-        self.settings_button.setStyleSheet(sidebar_button(SETTINGS_ICON))
         self.info_button = create_button(
             '',
             self.sidebar_frame,
             50,
             50,
             self.sidebar_layout,
-            border=False,
+            body=True,
+            style=sidebar_button(INFO_ICON),
         )
-        self.info_button.setStyleSheet(sidebar_button(INFO_ICON))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
         self.buttons = [self.exit_button, self.collapse_button, self.expand_button]
@@ -194,7 +203,7 @@ class MqttHubUi(QWidget):
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
         )
         self.header_horizontal_layout = create_layout(
-            QHBoxLayout, [20, 5, 10, 5], 100, out_layout=self.header_frame
+            QHBoxLayout, [20, 5, 10, 5], 0, out_layout=self.header_frame
         )
         self.edit_button = create_button(
             '',
@@ -211,13 +220,13 @@ class MqttHubUi(QWidget):
             '',
             self.header_frame,
             [400, 30],
-            30,
+            [400, 30],
             self.header_horizontal_layout,
             border=False,
         )
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        self.header_layout = create_layout(QGridLayout, spacing=12)
+        self.header_layout = create_layout(QGridLayout, spacing=6)
         self.profile_button = self.create_profile_button(
             'No Profile',
             self.header_frame,
@@ -347,17 +356,18 @@ class MqttHubUi(QWidget):
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
 
-    def create_profile_button(
-        self, text, layout, add_layout, add_params: list
-    ):  # todo: replace to utils somehow
+    def create_profile_button(self, text, layout, add_layout, add_params: list):
         button, menu, show_menu = create_expand_button(
             text,
             layout,
             min_size=[0, 30],
+            max_size=[200, 30],
             add_layout=add_layout,
             add_params=add_params,
-            style=MAIN_BUTTON,
-            border=False,
+            style=MAIN_BUTTON_WITHOUT_HOVER,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
 
         profiles = profile_manager.profiles
@@ -400,8 +410,6 @@ class MqttHubUi(QWidget):
 
     def change_connect_button(self, connect):
         if connect:
-            pass
-            # self.connect_button.setStyleSheet(header_button(PLUS_ICON))
+            self.connect_button.setStyleSheet(header_button(PLUS_ICON))
         else:
-            pass
-            # self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
+            self.connect_button.setStyleSheet(header_button(CONNECT_ICON))

@@ -14,6 +14,7 @@ class MainTab(MainTabUI):
         super().__init__()
 
         self.unsubscribe_topic = None
+        self.autoscroll_toggle.setChecked(profile_manager.current_profile.autoscroll)
         self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
         self.add_button = self.tags_widget.add_button
         self.verticalLayout_3.addWidget(self.tags_widget)
@@ -45,7 +46,7 @@ class MainTab(MainTabUI):
 
     @staticmethod
     def set_autoscroll(autoscroll: bool):
-        profile_manager.current_profile.autoscroll = autoscroll
+        profile_manager.current_profile.autoscroll = bool(autoscroll)
 
     def set_convertor(self, convert_format):
         self.convertor_button.setText(convert_format)

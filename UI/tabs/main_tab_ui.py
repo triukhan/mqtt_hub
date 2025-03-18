@@ -59,7 +59,7 @@ class MainTabUI(QWidget):
             add_layout=self.main_right_layout,
         )
         self.clear_layout = create_layout(
-            QHBoxLayout, [10, 12, 10, 10], 0, out_layout=self.clear_frame
+            QHBoxLayout, [10, 12, 10, 10], 10, out_layout=self.clear_frame
         )
 
         self.autoscroll_toggle = create_toggle(self.clear_layout)

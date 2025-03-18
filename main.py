@@ -44,10 +44,6 @@ class MqttHub(QMainWindow, MainWindow):
             self.change_connect_button(self.connector.is_connected)
         self.connect_button.clicked.connect(self.handle_connect_click)
 
-    # def setup_plus_header(self):
-    #     super().setup_plus_header()
-    #     self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
-
     def setup_edit_header(self):
         super()._setup_edit_header()
         self.connect_button.clicked.connect(self.save_profile_and_connect)

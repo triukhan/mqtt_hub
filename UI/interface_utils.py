@@ -242,9 +242,16 @@ def create_button(
     add_params=None,
     style: str = styles.APP_BUTTON,
     font: QFont = None,
-    border=True,
+    border: bool = True,
+    body: bool = False,
+    start_value: None = None,
+    end_value: None = None,
 ):
-    button = AnimatedPushButton(layout, style) if border else QPushButton(layout)
+    button = (
+        AnimatedPushButton(layout, style, body, start_value, end_value)
+        if border
+        else QPushButton(layout)
+    )
     button.setText(text)
     button.setStyleSheet(style)
 
@@ -355,7 +362,9 @@ def create_expand_button(
     min_size=None,
     max_size=None,
     style=EXPAND_BUTTON,
-    border=True,
+    body=True,
+    start_value=None,
+    end_value=None,
 ):
     button = create_button(
         text,
@@ -365,7 +374,9 @@ def create_expand_button(
         add_layout=add_layout,
         add_params=add_params,
         style=style,
-        border=border,
+        body=body,
+        start_value=start_value,
+        end_value=end_value,
     )
 
     button.setIcon(QIcon(EXPAND_ICON))

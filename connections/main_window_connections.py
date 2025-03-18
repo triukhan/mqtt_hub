@@ -1,7 +1,7 @@
 from contextlib import suppress
 
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QPushButton, QWidget
+from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
 
 from settings.profile_manager import profile_manager
 from UI.dialogs.confirmation_dialog import ConfirmationDialogUI
@@ -55,13 +55,13 @@ class MainWindow(MqttHubUi):
         self.all_tabs.setCurrentIndex(0)
         self.setup_main_header()
         self.update_profile_button()
-        self.select_button(self.main_button)
+        self.main_button.select()
 
     def open_plus_tab(self):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(1)
         self._setup_plus_header()
-        self.select_button(self.plus_button)
+        self.plus_button.select()
 
     def open_edit_tab(self):
         self.clear_sidebar_selections()
@@ -83,12 +83,12 @@ class MainWindow(MqttHubUi):
     def open_settings_tab(self):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(3)
-        self.select_button(self.settings_button)
+        self.settings_button.select()
 
     def open_info_tab(self):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(4)
-        self.select_button(self.info_button)
+        self.info_button.select()
 
     def connect_sidebar(self):
         self.main_button.clicked.connect(self.open_main_tab)
@@ -172,12 +172,6 @@ class MainWindow(MqttHubUi):
             self.notification_opacity.setOpacity(0.7)
         return super().eventFilter(source, event)
 
-    @staticmethod
-    def select_button(button: QPushButton):
-        button.setStyleSheet(
-            button.styleSheet() + 'QPushButton {background-color: rgb(40, 40, 40);}'
-        )
-
     def clear_sidebar_selections(self):
         for button in (
             self.main_button,
@@ -185,9 +179,7 @@ class MainWindow(MqttHubUi):
             self.settings_button,
             self.info_button,
         ):
-            button.setStyleSheet(
-                button.styleSheet() + 'QPushButton {background-color: rgb(30, 30, 30)}'
-            )
+            button.deselect()
 
     def validate_settings(self, settings: dict):
         if settings['self_signed'] and not all(
