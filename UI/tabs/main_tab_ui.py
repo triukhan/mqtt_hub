@@ -1,14 +1,11 @@
-from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QRect, QSize
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import (
-    QAbstractItemView,
     QFrame,
     QGridLayout,
     QHBoxLayout,
     QLabel,
     QLayout,
-    QListWidget,
     QPushButton,
     QSizePolicy,
     QTextEdit,
@@ -20,7 +17,8 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
-from UI.icons.icons import EDIT_ICON, INFO_ICON
+from UI.custom_widgets.clipboard_list import ClipboardListWidget
+from UI.icons.icons import EDIT_ICON
 from UI.interface_utils import (
     Spacer,
     create_button,
@@ -34,12 +32,11 @@ from UI.interface_utils import (
     create_toggle,
     deselect_tag,
     select_tag,
-    set_topic_color, RightButtonDelegate, ClipboardListWidget,
+    set_topic_color,
 )
 from UI.styles import (
     ADD_TAG,
     CLEAR_BUTTON,
-    CLIPBOARD_LIST,
     COMMAND_FIELD,
     DELETE_BUTTON,
     EDIT_TAG,
@@ -121,7 +118,7 @@ class MainTabUI(QWidget):
 
         self.select_toggle = create_toggle(self.message_formating)
 
-        self.receiver_text_edit = QTextEdit(self) #todo
+        self.receiver_text_edit = QTextEdit(self)  # todo
         self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
         self.receiver_text_edit.setReadOnly(True)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
