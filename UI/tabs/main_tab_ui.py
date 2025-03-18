@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
-from UI.icons.icons import EDIT_ICON
+from UI.icons.icons import EDIT_ICON, INFO_ICON
 from UI.interface_utils import (
     Spacer,
     create_button,
@@ -34,7 +34,7 @@ from UI.interface_utils import (
     create_toggle,
     deselect_tag,
     select_tag,
-    set_topic_color,
+    set_topic_color, RightButtonDelegate, ClipboardListWidget,
 )
 from UI.styles import (
     ADD_TAG,
@@ -121,10 +121,12 @@ class MainTabUI(QWidget):
 
         self.select_toggle = create_toggle(self.message_formating)
 
-        self.receiver_text_edit = QTextEdit(self)
+        self.receiver_text_edit = QTextEdit(self) #todo
         self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
         self.receiver_text_edit.setReadOnly(True)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
+        create_scroll_bar(self, self.receiver_text_edit)
+
         self.main_right_layout.addWidget(self.receiver_text_edit)
 
         self.gridLayout_2.addLayout(self.main_right_layout, 0, 1, 1, 1)
@@ -172,22 +174,9 @@ class MainTabUI(QWidget):
         self.verticalLayout_3.addWidget(self.publisher_head_frame)
         self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
 
-        self.clipboard_list = QListWidget(self.main_left_layout)  # todo: refactor
-        self.clipboard_list.setDragEnabled(True)
-        self.clipboard_list.setAcceptDrops(True)
-        self.clipboard_list.setDragDropMode(QAbstractItemView.InternalMove)
-        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.clipboard_list.sizePolicy().hasHeightForWidth()
-        )
-        self.clipboard_list.setSizePolicy(sizePolicy)
-        self.clipboard_list.setMinimumSize(QtCore.QSize(220, 0))
-        self.clipboard_list.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.clipboard_list.setStyleSheet(CLIPBOARD_LIST)
-        self.clipboard_list.setFrameShape(QFrame.NoFrame)
+        self.clipboard_list = ClipboardListWidget(self.main_left_layout)
         self.clipboard_layout.addWidget(self.clipboard_list)
+
         self.command_field = QTextEdit(self.main_left_layout)
         self.command_field.setStyleSheet(COMMAND_FIELD)
         self.command_field.setFrameShape(QFrame.NoFrame)
@@ -290,7 +279,7 @@ class TagsWidget(QFrame):
 
         tag_label = QLabel(topic.get_name(), tag)  # todo: create_label
         tag_label.setFixedWidth(90)
-        tag_label.setStyleSheet("QLabel {color: rgb(186, 189, 182); border: none}")
+        tag_label.setStyleSheet('QLabel {color: rgb(186, 189, 182); border: none}')
         tag_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )

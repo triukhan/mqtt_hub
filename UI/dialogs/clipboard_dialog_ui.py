@@ -10,14 +10,14 @@ class ClipboardDialogUI:
         clipboard_dialog.resize(365, 190)
         clipboard_dialog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
         clipboard_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        clipboard_dialog.setStyleSheet("background-color: rgba(35, 35, 35, 230);")
+        clipboard_dialog.setStyleSheet('background-color: rgba(35, 35, 35, 230);')
 
         self.main_layout = create_layout(QGridLayout, 0, 0, clipboard_dialog)
 
         self.main_frame = create_frame(clipboard_dialog)
         self.main_vertical_layout = create_layout(QVBoxLayout, 0, 0, self.main_frame)
         self.header_frame = create_frame(self.main_frame)
-        self.header_frame.setStyleSheet("QFrame {border: none;}")
+        self.header_frame.setStyleSheet('QFrame {border: none;}')
 
         self.header_layout = create_layout(QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame)
 

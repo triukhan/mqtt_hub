@@ -20,7 +20,7 @@ class InfoTab(QWidget):
         self.info_layout = QVBoxLayout()
         self.info_frame = QFrame(self)
         self.info_frame.setStyleSheet(
-            "QFrame{background-color: rgb(35, 35, 35); border-radius: 5; border: 1px solid rgb(50, 50, 50);}"
+            'QFrame{background-color: rgb(35, 35, 35); border-radius: 5; border: 1px solid rgb(50, 50, 50);}'
         )
 
         self.version_label = QLabel(self.info_frame)

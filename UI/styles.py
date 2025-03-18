@@ -1,20 +1,20 @@
 from UI.icons.icons import INFO_ICON, PLUS_ICON
 
 MAIN_BUTTON = (
-    "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; "
-    "padding-left: 10px; padding-right: 10px;} QPushButton:hover {background-color: rgb(45, 45, 45);}"
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
+    'padding-left: 10px; padding-right: 10px;} QPushButton:hover {background-color: rgb(45, 45, 45);}'
 )
 FILTER_BUTTON_1 = (
-    "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);"
-    "border: 1px solid rgb(35, 35, 35); padding-left: 5px;}"
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);'
+    'border: 1px solid rgb(35, 35, 35); padding-left: 5px;}'
 )
 DIVIDER = (
-    "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); "
-    "border: 1px solid rgb(35, 35, 35); border-left: 1px solid rgb(50, 50, 50); padding: 5px;}"
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); '
+    'border: 1px solid rgb(35, 35, 35); border-left: 1px solid rgb(50, 50, 50); padding: 5px;}'
 )
 APP_BUTTON = (
-    "QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);"
-    " border: 1px solid rgb(50, 50, 50); border-radius: 5; padding: 5px;} "
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35);'
+    ' border: 1px solid rgb(50, 50, 50); border-radius: 5; padding: 5px;} '
 )
 CLEAR_BUTTON = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding-left: 5px; padding-right: 5px;'

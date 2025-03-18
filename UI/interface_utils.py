@@ -7,7 +7,7 @@ from PyQt5.QtCore import (
     QRegExp,
     QSize,
     Qt,
-    QVariantAnimation,
+    QVariantAnimation, QRect, QTimer, QEasingCurve,
 )
 from PyQt5.QtGui import (
     QColor,
@@ -17,7 +17,7 @@ from PyQt5.QtGui import (
     QPen,
     QPixmap,
     QSyntaxHighlighter,
-    QTextCharFormat,
+    QTextCharFormat, QPainter,
 )
 from PyQt5.QtWidgets import (
     QCheckBox,
@@ -32,14 +32,14 @@ from PyQt5.QtWidgets import (
     QScrollBar,
     QSizePolicy,
     QSpacerItem,
-    QStyledItemDelegate,
+    QStyledItemDelegate, QStyleOptionViewItem, QStyle, QAbstractItemView,
 )
 from qtwidgets import AnimatedToggle
 
 from settings.topic import Topic
 from UI import styles
-from UI.icons.icons import EXPAND_ICON
-from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR
+from UI.icons.icons import EXPAND_ICON, EDIT_ICON
+from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, CLIPBOARD_LIST
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -62,7 +62,7 @@ class AnimatedPushButton(QPushButton):
         self.base_style = style or ''
         self._animation = QVariantAnimation(
             startValue=QColor('#323232'),
-            endValue=QColor("#464646"),
+            endValue=QColor('#464646'),
             valueChanged=self._on_value_changed,
             duration=400,
         )
@@ -73,8 +73,8 @@ class AnimatedPushButton(QPushButton):
 
     def _update_stylesheet(self, border_color):
         updated_style = self.base_style.replace(
-            "border: 1px solid rgb(50, 50, 50);",
-            f"border: 1px solid {border_color.name()};",
+            'border: 1px solid rgb(50, 50, 50);',
+            f'border: 1px solid {border_color.name()};',
         )
         self.setStyleSheet(updated_style)
 
@@ -96,11 +96,11 @@ class AnimatedLineEdit(QLineEdit):
         self.focused = False
         self._animation = QVariantAnimation(
             startValue=QColor('#323232'),
-            endValue=QColor("#444444"),
+            endValue=QColor('#444444'),
             valueChanged=self._on_value_changed,
             duration=400,
         )
-        self._update_stylesheet(QColor("#323232"))
+        self._update_stylesheet(QColor('#323232'))
 
     def _on_value_changed(self, border_color):
         self._update_stylesheet(border_color)
@@ -469,3 +469,108 @@ class JsonHighlighter(QSyntaxHighlighter):
                 length = pattern.matchedLength()
                 self.setFormat(index, length, fmt)
                 index = pattern.indexIn(text, index + length)
+
+class RightButtonDelegate(QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.parent = parent
+        self.icon = QPixmap(EDIT_ICON).scaled(
+            24, 24, Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
+        self.button_rects = {}
+        self.hovered_row = -1
+        self.opacity_values = {}
+        self.animations = {}
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.parent.viewport().update)
+
+    def paint(self, painter: QPainter, option, index):
+        text = index.data(Qt.DisplayRole)
+        rect = option.rect
+        padding = 5
+        icon_size = self.icon.size()
+
+        if option.state & QStyle.State_Selected:
+            painter.fillRect(rect, QColor(40, 40, 40))
+        else:
+            painter.fillRect(rect, QColor(45, 45, 45))
+
+        painter.setPen(QColor(186, 189, 182))
+        text_rect = rect.adjusted(5, 0, -icon_size.width() - padding, 0)
+        painter.drawText(text_rect, Qt.AlignVCenter, text)
+
+        row = index.row()
+        opacity = self.opacity_values.get(row, 0.0)
+
+        if opacity > 0:
+            icon_x = rect.right() - icon_size.width() - padding
+            icon_y = rect.center().y() - icon_size.height() // 2
+            button_rect = QRect(icon_x, icon_y, icon_size.width(), icon_size.height())
+
+            self.button_rects[row] = button_rect
+            painter.setOpacity(opacity)
+            painter.drawPixmap(button_rect, self.icon)
+            painter.setOpacity(1)
+
+    def setHoveredRow(self, row):
+        if self.hovered_row != row:
+            previous_row = self.hovered_row
+            self.hovered_row = row
+
+            if row != -1:
+                self.startOpacityAnimation(row, 1.0)
+            if previous_row != -1 and previous_row != row:
+                self.startOpacityAnimation(previous_row, 0.0)
+
+    def startOpacityAnimation(self, row, target_opacity):
+        start_opacity = self.opacity_values.get(row, 0.0)
+
+        if row in self.animations:
+            self.animations[row].stop()
+
+        animation = QVariantAnimation()
+        animation.setDuration(300)
+        animation.setStartValue(start_opacity)
+        animation.setEndValue(target_opacity)
+        animation.valueChanged.connect(lambda value: self.updateOpacity(row, value))
+
+        self.animations[row] = animation
+        animation.start()
+
+    def updateOpacity(self, row, value):
+        self.opacity_values[row] = value
+        self.parent.viewport().update()
+
+    def editorEvent(self, event, model, option, index):
+        if event.type() == event.MouseButtonPress:
+            row = index.row()
+            if row in self.button_rects and self.button_rects[row].contains(event.pos()):
+                print(f'Clicked row {row}!')
+                return True
+        return False
+
+
+class ClipboardListWidget(QListWidget):
+    def __init__(self, layout):
+        super().__init__(layout)
+        self.setMouseTracking(True)
+        self.delegate = RightButtonDelegate( self)
+        self.setItemDelegate(self.delegate)
+        self.setStyleSheet(CLIPBOARD_LIST)
+        self.setDragEnabled(True)
+        self.setAcceptDrops(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setMinimumSize(220, 0)
+        self.setMaximumSize(16777215, 16777215)
+        self.setFrameShape(QFrame.NoFrame)
+
+    def mouseMoveEvent(self, event):
+        index = self.indexAt(event.pos())
+        if index.isValid():
+            self.delegate.setHoveredRow(index.row())
+        else:
+            self.delegate.setHoveredRow(-1)
+
+    def leaveEvent(self, event):
+        self.delegate.setHoveredRow(-1)
