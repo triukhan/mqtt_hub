@@ -335,25 +335,6 @@ def set_topic_color(topic: Topic, tag: QFrame):
             )
 
 
-def select_tag(tag: QFrame):
-    border = '2px solid rgb(70, 70, 70);'
-    style = (
-        f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
-        if 'border-left' in tag.styleSheet()
-        else f'QFrame {{border: {border}}}'
-    )
-    tag.setStyleSheet(tag.styleSheet() + style)
-
-
-def deselect_tag(tag: QFrame):
-    style = (
-        'QFrame {border-right: none; border-top: none; border-bottom: none;}'
-        if 'border-left' in tag.styleSheet()
-        else 'QFrame {border: none;}'
-    )
-    tag.setStyleSheet(tag.styleSheet() + style)
-
-
 def create_expand_button(
     text,
     layout,
