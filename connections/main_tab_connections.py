@@ -6,7 +6,8 @@ from connections.clipboard_dialog_connections import ClipboardDialog
 from connections.topic_dialog_connections import TopicDialog
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
-from UI.tabs.main_tab_ui import MainTabUI, TagsWidget
+from UI.custom_widgets.tags_widget import TagsWidget
+from UI.tabs.main_tab_ui import MainTabUI
 
 
 class MainTab(MainTabUI):

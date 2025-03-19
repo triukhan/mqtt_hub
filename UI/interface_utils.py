@@ -362,7 +362,7 @@ def create_expand_button(
     min_size=None,
     max_size=None,
     style=EXPAND_BUTTON,
-    body=True,
+    body=False,
     start_value=None,
     end_value=None,
 ):
