@@ -383,12 +383,12 @@ class MqttHubUi(QWidget):
 
         profiles = profile_manager.profiles
         for _, profile in profiles.items():
-            if profile.is_default == 'True':
+            if profile.is_default != 'None':
                 continue
             font_metrics = QFontMetrics(button.font())
             elided_text = font_metrics.elidedText(
                 profile.name, Qt.ElideRight, 110
-            )  # todo what is this
+            )
 
             action = QAction(elided_text, button)
             action.triggered.connect(lambda _, p=profile: self.set_profile(p))

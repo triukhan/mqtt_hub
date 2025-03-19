@@ -1,4 +1,5 @@
 from contextlib import suppress
+from profile import Profile
 
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
@@ -202,3 +203,7 @@ class MainWindow(MqttHubUi):
             self.show_common_notification('Message is deleted')
         else:
             self.show_common_notification('You are not selected any message')
+
+    def set_profile(self, profile):
+        super().set_profile(profile)
+        self.disconnect()

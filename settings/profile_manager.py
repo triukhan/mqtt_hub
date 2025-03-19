@@ -37,6 +37,7 @@ class ProfileManager:
                     if section == 'mqtt_settings':
                         for key, value in profile_file[section].items():
                             if key == 'is_default':
+                                setattr(profile, '_' + key, value)
                                 continue
                             setattr(profile, key, value)
 
