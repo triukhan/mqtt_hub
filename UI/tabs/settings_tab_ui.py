@@ -2,13 +2,14 @@ from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QSpinBox, QVBoxLayout, QWi
 
 from UI import styles
 from UI.interface_utils import (
+    Spacer,
     create_button,
     create_checkbox,
     create_field,
     create_frame,
     create_label,
     create_layout,
-    create_spacer, Spacer,
+    create_spacer,
 )
 
 
@@ -66,7 +67,10 @@ class SettingsTabUi(QWidget):
         )
 
         self.logger_folder_button = create_button(
-            '', self.logger_frame, add_layout=self.logger_path_layout, border=False,
+            '',
+            self.logger_frame,
+            add_layout=self.logger_path_layout,
+            anim=False,
         )
         self.logger_folder_button.setStyleSheet(
             'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid '

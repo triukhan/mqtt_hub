@@ -263,7 +263,14 @@ class TagsWidget(QFrame):
         self.setLayout(self.tags_layout)
 
         self.add_button = create_button(
-            '', self, style=ADD_TAG, min_size=30, max_size=30, border=False
+            '',
+            self,
+            style=ADD_TAG,
+            min_size=30,
+            max_size=30,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
         self.add_button.setProperty('add_button', True)
         self.tags_layout.addWidget(self.add_button)

@@ -128,7 +128,6 @@ TAG = (
 ADD_TAG = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5; '
     f'border-image: url({PLUS_ICON}) 0 0 0 0 stretch stretch;}}'
-    'QPushButton:hover {background-color: rgb(45, 45, 45)}'
 )
 FRAME_COLOR = 'QFrame {background: rgb(35, 35, 35); border: none;}'
 COMMAND_FIELD = 'QTextEdit {background-color: rgb(26, 26, 27); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'

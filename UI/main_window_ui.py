@@ -36,7 +36,6 @@ from UI.styles import (
     EXIT_BUTTON_HOVER,
     FRAME_COLOR,
     HEADER_FRAME,
-    MAIN_BUTTON,
     MAIN_BUTTON_WITHOUT_HOVER,
     MAIN_WINDOW,
     header_button,
@@ -100,7 +99,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
-            border=False,
+            anim=False,
         )
         self.exit_button.installEventFilter(self)
         self.collapse_button = create_button(
@@ -110,7 +109,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
-            border=False,
+            anim=False,
         )
         self.collapse_button.installEventFilter(self)
         self.expand_button = create_button(
@@ -120,7 +119,7 @@ class MqttHubUi(QWidget):
             12,
             self.exit_layout,
             style=EXIT_BUTTON,
-            border=False,
+            anim=False,
         )
         spacer = create_spacer(Spacer.HORIZONTAL)
         spacer.changeSize(7, 0)
@@ -135,7 +134,7 @@ class MqttHubUi(QWidget):
             50,
             50,
             self.sidebar_layout,
-            border=False,
+            anim=False,
         )
         self.logo_button.setStyleSheet(sidebar_button(LOGO_ICON))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
@@ -211,9 +210,11 @@ class MqttHubUi(QWidget):
             30,
             30,
             self.header_horizontal_layout,
-            border=False,
+            style=header_button(EDIT_ICON),
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
-        self.edit_button.setStyleSheet(header_button(EDIT_ICON))
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.notification = create_button(
@@ -222,7 +223,7 @@ class MqttHubUi(QWidget):
             [400, 30],
             [400, 30],
             self.header_horizontal_layout,
-            border=False,
+            anim=False,
         )
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
@@ -240,9 +241,11 @@ class MqttHubUi(QWidget):
             30,
             self.header_layout,
             [0, 3, 1, 1],
-            border=False,
+            style=header_button(CONNECT_ICON),
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
-        self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
@@ -271,7 +274,7 @@ class MqttHubUi(QWidget):
             30,
             self.header_layout,
             [0, 1, 1, 1],
-            border=False,
+            anim=False,
         )
         self.notification.hide()
 
@@ -280,20 +283,24 @@ class MqttHubUi(QWidget):
         self.create_button = create_button(
             'Create',
             self.header_frame,
-            style=MAIN_BUTTON,
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 3, 1, 1],
-            border=False,
+            style=MAIN_BUTTON_WITHOUT_HOVER,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
         self.connect_plus_button = create_button(
             'Connect',
             self.header_frame,
-            style=MAIN_BUTTON,
             min_size=[0, 30],
             add_layout=self.header_layout,
             add_params=[0, 4, 1, 1],
-            border=False,
+            style=MAIN_BUTTON_WITHOUT_HOVER,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
 
         self.header_horizontal_layout.addLayout(self.header_layout)
@@ -323,16 +330,20 @@ class MqttHubUi(QWidget):
         self.save_edit_button = create_button(
             'Save',
             self.header_frame,
-            style=MAIN_BUTTON + 'QPushButton {margin-right: 5px}',
+            style=MAIN_BUTTON_WITHOUT_HOVER + 'QPushButton {margin-right: 5px}',
             min_size=[0, 30],
-            border=False,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
         self.connect_edit_button = create_button(
             'Connect',
             self.header_frame,
-            style=MAIN_BUTTON,
+            style=MAIN_BUTTON_WITHOUT_HOVER,
             min_size=[0, 30],
-            border=False,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
         )
 
         self.buttons_layout.addWidget(self.save_edit_button)

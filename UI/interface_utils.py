@@ -242,14 +242,14 @@ def create_button(
     add_params=None,
     style: str = styles.APP_BUTTON,
     font: QFont = None,
-    border: bool = True,
+    anim: bool = True,
     body: bool = False,
-    start_value: None = None,
-    end_value: None = None,
+    start_value: tuple | None = None,
+    end_value: tuple | None = None,
 ):
     button = (
         AnimatedPushButton(layout, style, body, start_value, end_value)
-        if border
+        if anim
         else QPushButton(layout)
     )
     button.setText(text)
