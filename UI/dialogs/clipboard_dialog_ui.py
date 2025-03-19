@@ -1,14 +1,29 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QTextEdit, QHBoxLayout, QVBoxLayout, QGridLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import (
+    QGridLayout,
+    QHBoxLayout,
+    QSizePolicy,
+    QSpacerItem,
+    QTextEdit,
+    QVBoxLayout,
+)
 
-from UI.interface_utils import create_button, create_label, create_field, create_layout, create_frame
+from UI.interface_utils import (
+    create_button,
+    create_field,
+    create_frame,
+    create_label,
+    create_layout,
+)
 from UI.styles import X_BUTTON
 
 
 class ClipboardDialogUI:
     def _setup_ui(self, clipboard_dialog):
         clipboard_dialog.resize(365, 190)
-        clipboard_dialog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
+        clipboard_dialog.setWindowFlags(
+            QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint
+        )
         clipboard_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
         clipboard_dialog.setStyleSheet('background-color: rgba(35, 35, 35, 230);')
 
@@ -19,28 +34,54 @@ class ClipboardDialogUI:
         self.header_frame = create_frame(self.main_frame)
         self.header_frame.setStyleSheet('QFrame {border: none;}')
 
-        self.header_layout = create_layout(QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame)
+        self.header_layout = create_layout(
+            QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame
+        )
 
         left_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.header_layout.addItem(left_spacer)
-        self.clipboard_label = create_label('Add to Clipboard', self.header_frame, self.header_layout, min_size=(30, 30), max_size=(200, 30))
-
-        spacerItem = QSpacerItem(
-            40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum
+        self.clipboard_label = create_label(
+            'Add to Clipboard',
+            self.header_frame,
+            self.header_layout,
+            min_size=(30, 30),
+            max_size=(200, 30),
         )
+
+        spacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.header_layout.addItem(spacerItem)
 
-        self.exit_button = create_button('x', self.header_frame, 30, 30, self.header_layout, style=X_BUTTON, border=False)
+        self.exit_button = create_button(
+            'x',
+            self.header_frame,
+            30,
+            30,
+            self.header_layout,
+            style=X_BUTTON,
+            anim=False,
+        )
 
         self.main_vertical_layout.addWidget(self.header_frame)
 
         self.body_layout = create_layout(QVBoxLayout, spacing=0)
         self.clipboard_layout = create_layout(QVBoxLayout, [20, 10, 20, 10], 10)
-        self.name_label = create_label('Enter a name for the Clipboard Message', self.main_frame, self.clipboard_layout, min_size=(0, 30), max_size=(1000, 30))
+        self.name_label = create_label(
+            'Enter a name for the Clipboard Message',
+            self.main_frame,
+            self.clipboard_layout,
+            min_size=(0, 30),
+            max_size=(1000, 30),
+        )
         self.name_field = create_field(self.main_frame, self.clipboard_layout)
         self.body_layout.addLayout(self.clipboard_layout)
         self.text_layout = create_layout(QVBoxLayout, [20, 10, 20, 10], 10)
-        self.text_label = create_label('Text', self.main_frame, self.text_layout, min_size=[0, 30], max_size=[1000, 30])
+        self.text_label = create_label(
+            'Text',
+            self.main_frame,
+            self.text_layout,
+            min_size=[0, 30],
+            max_size=[1000, 30],
+        )
         self.text_field = QTextEdit(self.main_frame)
         self.text_field.setMinimumHeight(250)
         self.text_layout.addWidget(self.text_field)
@@ -48,15 +89,18 @@ class ClipboardDialogUI:
 
         self.save_layout = create_layout(QHBoxLayout, [-1, 15, 20, 15], 15)
         spacerItem1 = QSpacerItem(
-            40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum #todo
+            40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum  # todo
         )
         self.save_layout.addItem(spacerItem1)
-        self.cancel_button = create_button('Cancel', self.main_frame, add_layout=self.save_layout)
-        self.save_button = create_button('Save', self.main_frame, add_layout=self.save_layout)
+        self.cancel_button = create_button(
+            'Cancel', self.main_frame, add_layout=self.save_layout
+        )
+        self.save_button = create_button(
+            'Save', self.main_frame, add_layout=self.save_layout
+        )
 
         self.body_layout.addLayout(self.save_layout)
         self.main_vertical_layout.addLayout(self.body_layout)
         self.main_layout.addWidget(self.main_frame, 0, 0, 1, 1)
 
         QtCore.QMetaObject.connectSlotsByName(clipboard_dialog)
-

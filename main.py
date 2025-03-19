@@ -19,6 +19,7 @@ class MqttHub(QMainWindow, MainWindow):
         self.connector.success_signal.connect(self.show_positive_notification)
         self.connector.fail_signal.connect(self.show_fail_notification)
         self.connector.common_signal.connect(self.show_common_notification)
+        self.main_tab.success_signal.connect(self.show_positive_notification)
 
         self.disconnect = self.connector.stop
 
