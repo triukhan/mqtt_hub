@@ -1,4 +1,5 @@
 import json
+from contextlib import suppress
 from datetime import datetime
 
 from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, SubscribeOptions, ssl
@@ -123,7 +124,8 @@ class MQTTConnector:
         print('Subscribe successful: ', topic.address, '. Settings: ', settings)
 
     def unsubscribe(self, topic):
-        self.client.unsubscribe(topic.address)
+        with suppress(AttributeError):
+            self.client.unsubscribe(topic.address)
         print('Unsubscribe successful')
 
 

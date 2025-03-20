@@ -100,10 +100,6 @@ class MainWindow(MqttHubUi):
         self.exit_button.clicked.connect(self.close)
 
     def show_notification(self, text: str, res: Result, pos: int = 10):
-        self.notification.setStyleSheet(SUCCESS_NOTIFY)
-        self.notification.setStyleSheet(FAIL_NOTIFY)
-        self.notification.setStyleSheet(COMMON_NOTIFY)
-
         match res:
             case Result.SUCCESS:
                 self.notification.setStyleSheet(SUCCESS_NOTIFY)
@@ -182,6 +178,8 @@ class MainWindow(MqttHubUi):
             [settings['ca_file'], settings['crt_file'], settings['key_file']]
         ):
             return 'SSL/TLS: You need to fill in certificates'
+        if settings['port'] and not settings['port'].strip().isdigit():
+            return 'Port should be a number'
 
     def open_delete_dialog(self, method):
         self.overlay.show()
