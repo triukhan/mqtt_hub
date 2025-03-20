@@ -45,7 +45,6 @@ class TopicDialogUI:
             min_size=30,
             max_size=30,
             add_layout=self.header_layout,
-            border = False,
         )
         self.main_vertical_layout.addWidget(self.header_frame)
 

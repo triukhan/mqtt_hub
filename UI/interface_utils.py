@@ -398,9 +398,10 @@ def create_expand_button(
 class BorderDelegate(QStyledItemDelegate):
     def paint(self, painter, option, index):
         super().paint(painter, option, index)
-        if color := index.data(Qt.UserRole)[1]:
-            painter.setPen(QPen(QColor(color), 4))
-            painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
+        if (color := index.data(Qt.UserRole)[1]) is '':
+            color = '#2d2d2d'
+        painter.setPen(QPen(QColor(color), 4))
+        painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
 
 
 class JsonHighlighter(QSyntaxHighlighter):
