@@ -6,6 +6,7 @@ from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 from PyQt5.QtCore import QObject, pyqtSignal
 
+from connections.connection_utils import Result
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -129,9 +130,7 @@ class MQTTConnector:
 class MQTTMixin(QObject, MQTTConnector):
     message_received = pyqtSignal(str, str)
     connected_signal = pyqtSignal(bool)
-    success_signal = pyqtSignal(str)
-    fail_signal = pyqtSignal(str)
-    common_signal = pyqtSignal(str)
+    notification_signal = pyqtSignal(str, Result)
 
     def __init__(self):
         super().__init__()
@@ -153,37 +152,42 @@ class MQTTMixin(QObject, MQTTConnector):
 
     def on_disconnect(self, _, __, rc, ___=None):
         if rc != 0:
-            self.fail_signal.emit(f'Disconnected with error. Return code: {rc}')
+            self.notification_signal.emit(
+                f'Disconnected with error. Return code: {rc}', Result.FAILURE
+            )
             return
         self.handle_connect(False)
 
     def handle_connect(self, conn: bool):
         self.is_connected = conn
         prefix = '' if self.is_connected else 'dis'
-        self.success_signal.emit(f'{prefix}connected'.capitalize())
+        self.notification_signal.emit(f'{prefix}connected'.capitalize(), Result.SUCCESS)
         self.connected_signal.emit(self.is_connected)
 
     def start(self, profile: Profile):
         if (error_msg := validate_start(profile)) is not None:
-            self.fail_signal.emit(error_msg)
+            self.notification_signal.emit(error_msg, Result.FAILURE)
             return
         super().start(profile)
 
     def publish(self, topic, message):
         if not self.is_connected:
-            self.common_signal.emit(
-                'Client is not connected. You need to start connection at first.'
+            self.notification_signal.emit(
+                'Client is not connected. You need to start connection at first.',
+                Result.COMMON,
             )
             return None
 
         if not topic:
-            self.common_signal.emit('No topic to publish. Select topic by click on it.')
+            self.notification_signal.emit(
+                'No topic to publish. Select topic by click on it.', Result.COMMON
+            )
             return None
 
         res = super().publish(topic, message)
 
         if res is not None:
-            self.fail_signal.emit(res)
+            self.notification_signal.emit(res, Result.FAILURE)
 
 
 def convert_to_format(payload):

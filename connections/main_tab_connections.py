@@ -6,6 +6,7 @@ from connections.clipboard_dialog_connections import (
     ClipboardDialog,
     ClipboardEditDialog,
 )
+from connections.connection_utils import Result
 from connections.topic_dialog_connections import TopicDialog
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
@@ -14,7 +15,7 @@ from UI.tabs.main_tab_ui import MainTabUI
 
 
 class MainTab(MainTabUI):
-    success_signal = pyqtSignal(str)
+    notification_signal = pyqtSignal(str, str)
 
     def __init__(self):
         super().__init__()
@@ -37,7 +38,6 @@ class MainTab(MainTabUI):
         )
         self.add_button.clicked.connect(self.create_topic)
         self.clear_button.clicked.connect(self.clear_list_and_message)
-        self.show_fail_message = None
         self.connector = None
 
         for convert_format in ('JSON', 'Plaintext', 'Hex', 'Base64'):
@@ -60,8 +60,9 @@ class MainTab(MainTabUI):
 
     def create_topic(self):
         if profile_manager.current_profile.is_default == 'True':
-            self.show_fail_message(
-                'You can\'t add a topic. You need to create or switch the profile'
+            self.notification_signal.emit(
+                'You can\'t add a topic. You need to create or switch the profile',
+                Result.FAILURE,
             )
             return None
         self.show_create_topic_dialog()
