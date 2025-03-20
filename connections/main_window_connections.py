@@ -1,12 +1,13 @@
 from contextlib import suppress
-from profile import Profile
 
 from PyQt5.QtCore import QEvent, QPropertyAnimation, QRect, QTimer
 from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
 
+from connections.connection_utils import Result
 from settings.profile_manager import profile_manager
 from UI.dialogs.confirmation_dialog import ConfirmationDialogUI
 from UI.main_window_ui import MqttHubUi
+from UI.styles import COMMON_NOTIFY, FAIL_NOTIFY, SUCCESS_NOTIFY
 
 
 class MainWindow(MqttHubUi):
@@ -36,14 +37,14 @@ class MainWindow(MqttHubUi):
         self._setup_notifications()
         settings = self.plus_tab.get_settings()
         if (error_msg := self.validate_settings(settings)) is not None:
-            self.show_common_notification(error_msg, 5)
+            self.show_notification(error_msg, Result.COMMON, 5)
             return
 
         profile_manager.create_profile(**settings)
         self.disconnect()
         self.clear_tab()
         if with_notify:
-            self.show_positive_notification('Profile was successfully created')
+            self.show_notification('Profile was successfully created', Result.SUCCESS)
 
     def clear_tab(self):
         self.open_main_tab()
@@ -79,7 +80,7 @@ class MainWindow(MqttHubUi):
         self.edit_tab.save_settings()
         self.open_main_tab()
         if with_notify:
-            self.show_positive_notification('Settings were successfully saved')
+            self.show_notification('Settings were successfully saved', Result.SUCCESS)
 
     def open_settings_tab(self):
         self.clear_sidebar_selections()
@@ -98,30 +99,24 @@ class MainWindow(MqttHubUi):
         self.info_button.clicked.connect(self.open_info_tab)
         self.exit_button.clicked.connect(self.close)
 
-    def show_common_notification(self, text=None, pos=10):
-        self.notification.setStyleSheet(
-            'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}'
-        )
-        self.notification.setText(text or 'Fail')
-        self._start_notification_animation(pos, 3000)
+    def show_notification(self, text: str, res: Result, pos: int = 10):
+        self.notification.setStyleSheet(SUCCESS_NOTIFY)
+        self.notification.setStyleSheet(FAIL_NOTIFY)
+        self.notification.setStyleSheet(COMMON_NOTIFY)
 
-    def show_fail_notification(self, text=None, pos=10):
-        self.notification.setStyleSheet(
-            "QPushButton {color: rgb(186, 189, 182); background-color: rgb(120, 45, 20); border: 1px solid "
-            "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
-        )
-        self.notification.setText(text or 'Fail')
-        self._start_notification_animation(pos)
+        match res:
+            case Result.SUCCESS:
+                self.notification.setStyleSheet(SUCCESS_NOTIFY)
+            case Result.FAILURE:
+                self.notification.setStyleSheet(FAIL_NOTIFY)
+            case Result.COMMON:
+                self.notification.setStyleSheet(COMMON_NOTIFY)
 
-    def show_positive_notification(self, text='Success', pos=10):
-        self.notification.setStyleSheet(
-            "QPushButton {color: rgb(255, 250, 250); background-color: rgb(103, 159, 95); border: 1px solid "
-            "rgb(10, 40, 10); border-radius: 5; padding: 5px;}"
-        )
         if isinstance(text, str):
             self.notification.setText(text)
         else:
-            self.notification.setText('Success')
+            raise TypeError('You need to pass str to the notification')
+
         self._start_notification_animation(pos, 3000)
 
     def _setup_notifications(self):
@@ -133,7 +128,7 @@ class MainWindow(MqttHubUi):
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.fade_notification)
-        self.main_tab.show_fail_message = self.show_fail_notification
+        self.main_tab.notification_displayer = self.show_notification
 
     def setup_main_header(self):
         super()._setup_main_header()
@@ -200,9 +195,9 @@ class MainWindow(MqttHubUi):
             self.open_delete_dialog(
                 lambda: self.main_tab.delete_clipboard_message(item)
             )
-            self.show_common_notification('Message is deleted')
+            self.show_notification('Message is deleted', Result.COMMON)
         else:
-            self.show_common_notification('You are not selected any message')
+            self.show_notification('You are not selected any message', Result.COMMON)
 
     def set_profile(self, profile):
         super().set_profile(profile)

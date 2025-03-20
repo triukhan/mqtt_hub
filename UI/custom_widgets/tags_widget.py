@@ -1,53 +1,22 @@
 import re
 
 from PyQt5.QtCore import QAbstractAnimation, QPoint, QRect, QSize, QVariantAnimation
-from PyQt5.QtGui import QColor, QFont, QIcon
+from PyQt5.QtGui import QColor, QIcon
 from PyQt5.QtWidgets import (
     QFrame,
-    QGridLayout,
     QHBoxLayout,
     QLabel,
     QLayout,
     QPushButton,
     QSizePolicy,
-    QStyleFactory,
-    QTextEdit,
     QToolButton,
-    QVBoxLayout,
-    QWidget,
 )
 
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
-from UI import styles
-from UI.custom_widgets.clipboard_list import ClipboardListWidget
 from UI.icons.icons import EDIT_ICON
-from UI.interface_utils import (
-    Spacer,
-    create_button,
-    create_expand_button,
-    create_frame,
-    create_label,
-    create_layout,
-    create_list,
-    create_scroll_bar,
-    create_spacer,
-    create_toggle,
-    deselect_tag,
-    select_tag,
-    set_topic_color,
-)
-from UI.styles import (
-    ADD_TAG,
-    CLEAR_BUTTON,
-    COMMAND_FIELD,
-    DELETE_BUTTON,
-    EDIT_TAG,
-    FILTER_FRAME,
-    FRAME_COLOR,
-    RECEIVER_TEXT,
-    TAG,
-)
+from UI.interface_utils import create_button, create_layout, set_topic_color
+from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG
 
 
 class FlowLayout(QLayout):
@@ -171,10 +140,10 @@ class TagsWidget(QFrame):
 
     def select_tag(self, tag, topic):
         if self.selected_tag:
-            deselect_tag(self.selected_tag)
+            self.selected_tag.deselect()
 
         self.selected_tag = tag
-        select_tag(self.selected_tag)
+        self.selected_tag.select()
         profile_manager.topic_to_publish = topic
 
     def remove_tag(self, tag):
@@ -251,8 +220,19 @@ class AnimatedTagFrame(QFrame):
 
     def select(self):
         self.selected = True
-        self.setStyleSheet('border: 1px solid rgb(80, 80, 80); border-radius: 6px;')
+        border = '2px solid rgb(70, 70, 70);'
+        style = (
+            f'QFrame {{border-right: {border} border-top: {border} border-bottom: {border}}}'
+            if 'border-left' in self.styleSheet()
+            else f'QFrame {{border: {border}}}'
+        )
+        self.setStyleSheet(self.styleSheet() + style)
 
     def deselect(self):
         self.selected = False
-        self.setStyleSheet(self._initial_style)
+        style = (
+            'QFrame {border-right: none; border-top: none; border-bottom: none;}'
+            if 'border-left' in self.styleSheet()
+            else 'QFrame {border: none;}'
+        )
+        self.setStyleSheet(self.styleSheet() + style)

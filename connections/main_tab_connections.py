@@ -1,8 +1,12 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import QAction, QListWidgetItem
 
-from connections.clipboard_dialog_connections import ClipboardDialog
+from connections.clipboard_dialog_connections import (
+    ClipboardDialog,
+    ClipboardEditDialog,
+)
+from connections.connection_utils import Result
 from connections.topic_dialog_connections import TopicDialog
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
@@ -11,10 +15,12 @@ from UI.tabs.main_tab_ui import MainTabUI
 
 
 class MainTab(MainTabUI):
+    notification_signal = pyqtSignal(str, str)
+
     def __init__(self):
         super().__init__()
-
         self.unsubscribe_topic = None
+        self.clipboard_list.set_method(self.show_clipboard_dialog_with_settings)
         self.autoscroll_toggle.setChecked(profile_manager.current_profile.autoscroll)
         self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
         self.add_button = self.tags_widget.add_button
@@ -32,7 +38,6 @@ class MainTab(MainTabUI):
         )
         self.add_button.clicked.connect(self.create_topic)
         self.clear_button.clicked.connect(self.clear_list_and_message)
-        self.show_fail_message = None
         self.connector = None
 
         for convert_format in ('JSON', 'Plaintext', 'Hex', 'Base64'):
@@ -46,7 +51,7 @@ class MainTab(MainTabUI):
         self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
 
     @staticmethod
-    def set_autoscroll(autoscroll: bool):
+    def set_autoscroll(autoscroll):
         profile_manager.current_profile.autoscroll = bool(autoscroll)
 
     def set_convertor(self, convert_format):
@@ -55,8 +60,9 @@ class MainTab(MainTabUI):
 
     def create_topic(self):
         if profile_manager.current_profile.is_default == 'True':
-            self.show_fail_message(
-                'You can\'t add a topic. You need to create or switch the profile'
+            self.notification_signal.emit(
+                'You can\'t add a topic. You need to create or switch the profile',
+                Result.FAILURE,
             )
             return None
         self.show_create_topic_dialog()
@@ -76,30 +82,61 @@ class MainTab(MainTabUI):
         self.clipboard_list.clear()
 
         for message_name, message_text in clipboard_messages.items():
+            name_index = message_name.find('_id_starts_here_')
             item = QListWidgetItem()
-            item.setText(message_name)
-            item.setData(Qt.UserRole, message_text)
+            item.setText(message_name[:name_index])
+            item.setData(Qt.UserRole, [message_text, message_name])
             self.clipboard_list.addItem(item)
 
     def display_message_in_command_field(self, item):
         command = item.data(Qt.UserRole)
-        self.command_field.setPlainText(command)
+        self.command_field.setPlainText(command[0])
 
     def save_message_to_clipboard(self, message_name: str, message_text: str):
-        profile_manager.current_profile.add_clipboard(message_name, message_text)
+        msg_id = profile_manager.current_profile.add_clipboard(
+            message_name, message_text
+        )
         item = QListWidgetItem()
         item.setText(message_name)
-        item.setData(Qt.UserRole, message_text)
+        item.setData(Qt.UserRole, [message_text, msg_id])
         self.clipboard_list.addItem(item)
+        self.clipboard_list.setCurrentItem(item)
+
+    def find_item_by_id(self, msg_id: str):
+        for i in range(self.clipboard_list.count()):
+            item = self.clipboard_list.item(i)
+            item_data = item.data(Qt.UserRole)
+            if item_data:
+                if msg_id == item_data[1]:
+                    return item
+        return None
+
+    def save_editing_message(
+        self, start_data: list, msg_id, message_name: str, message_text: str
+    ):
+        new_data = profile_manager.current_profile.edit_clipboard(
+            start_data, msg_id, message_name, message_text
+        )
+        item = self.find_item_by_id(msg_id)
+        item.setText(new_data[1][0])
+        item.setData(Qt.UserRole, [new_data[0], new_data[1][1]])
+        self.clipboard_list.setCurrentItem(item)
+        self.success_signal.emit('Saved')
 
     def show_clipboard_dialog(self):
-        ClipboardDialog(self.save_message_to_clipboard, self).exec_()
+        return ClipboardDialog(self.save_message_to_clipboard, self).exec_()
+
+    def show_clipboard_dialog_with_settings(self, name, message):
+        ClipboardEditDialog(self.save_editing_message, [name, message], self).exec_()
 
     def save_and_subscribe_topic(self, _, topic_settings: dict, __):
         topic = profile_manager.current_profile.add_topic(topic_settings)
         self.tags_widget.add_tag(topic)
         if self.connector.is_connected:
             self.connector.subscribe(topic)
+            self.success_signal.emit('Created and subscribed successfully!')
+        else:
+            self.success_signal.emit('Created successfully!')
 
     @staticmethod
     def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):

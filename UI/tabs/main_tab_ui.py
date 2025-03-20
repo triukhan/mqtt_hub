@@ -1,24 +1,16 @@
-from PyQt5.QtCore import QPoint, QRect, QSize
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QHBoxLayout,
-    QLabel,
-    QLayout,
-    QPushButton,
-    QSizePolicy,
     QTextEdit,
-    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
 from settings.profile_manager import profile_manager
-from settings.topic import Topic
 from UI import styles
 from UI.custom_widgets.clipboard_list import ClipboardListWidget
-from UI.icons.icons import EDIT_ICON
 from UI.interface_utils import (
     Spacer,
     create_button,
@@ -30,20 +22,14 @@ from UI.interface_utils import (
     create_scroll_bar,
     create_spacer,
     create_toggle,
-    deselect_tag,
-    select_tag,
-    set_topic_color,
 )
 from UI.styles import (
-    ADD_TAG,
     CLEAR_BUTTON,
     COMMAND_FIELD,
     DELETE_BUTTON,
-    EDIT_TAG,
     FILTER_FRAME,
     FRAME_COLOR,
     RECEIVER_TEXT,
-    TAG,
 )
 
 

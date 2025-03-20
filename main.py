@@ -4,6 +4,7 @@ from contextlib import suppress
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QListWidgetItem, QMainWindow
 
+from connections.connection_utils import Result
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
@@ -16,9 +17,8 @@ class MqttHub(QMainWindow, MainWindow):
         self.connector = MQTTMixin()
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.connected_signal.connect(self.change_connect_button)
-        self.connector.success_signal.connect(self.show_positive_notification)
-        self.connector.fail_signal.connect(self.show_fail_notification)
-        self.connector.common_signal.connect(self.show_common_notification)
+        self.connector.notification_signal.connect(self.show_notification)
+        self.main_tab.notification_signal.connect(self.show_notification)
 
         self.disconnect = self.connector.stop
 
@@ -56,13 +56,13 @@ class MqttHub(QMainWindow, MainWindow):
 
     def start_connection(self):
         if profile_manager.current_profile.is_default == 'True':
-            self.show_fail_notification('You need to create a profile first')
+            self.show_notification('You need to create a profile first', Result.FAILURE)
             return
 
         try:
             self.connector.start(profile_manager.current_profile)
         except Exception as e:
-            self.show_fail_notification(f'Error: {e}')
+            self.show_notification(f'Error: {e}', Result.FAILURE)
 
     def update_list_widget(self, topic, payload):
         topic = profile_manager.current_profile.find_topic_by_address(topic)
@@ -94,7 +94,7 @@ class MqttHub(QMainWindow, MainWindow):
         profile_manager.delete_current_profile()
         self.disconnect()
         self.clear_tab()
-        self.show_positive_notification('Profile was successfully deleted')
+        self.show_notification('Profile was successfully deleted', Result.SUCCESS)
 
 
 if __name__ == "__main__":

@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout
 from UI.interface_utils import (
     Spacer,
     create_button,
-    create_checkbox,
     create_field,
     create_frame,
     create_label,
     create_layout,
-    create_spacer, create_toggle,
+    create_spacer,
+    create_toggle,
 )
-from UI.styles import HEADER_FRAME, WIDGET, DELETE_BUTTON
+from UI.styles import DELETE_BUTTON, HEADER_FRAME, WIDGET
 
 
 class TopicDialogUI:
@@ -45,6 +45,7 @@ class TopicDialogUI:
             min_size=30,
             max_size=30,
             add_layout=self.header_layout,
+            anim=False,
         )
         self.main_vertical_layout.addWidget(self.header_frame)
 
@@ -83,12 +84,22 @@ class TopicDialogUI:
         self.qos_field.setMinimumSize(QtCore.QSize(230, 30))
         self.qos_field.setMaximumSize(QtCore.QSize(200, 30))
         self.qos_label = create_label(
-            'Qos', self.main_frame, self.qos_color_layout, [0, 0, 1, 1], align='left',
+            'Qos',
+            self.main_frame,
+            self.qos_color_layout,
+            [0, 0, 1, 1],
+            align='left',
         )
         self.color_layout = create_layout(QHBoxLayout)
-        self.color_label = create_label('Color', self.main_frame, self.color_layout, align='left')
+        self.color_label = create_label(
+            'Color', self.main_frame, self.color_layout, align='left'
+        )
         self.color_button = create_button(
-            '■', self.main_frame, min_size=30, max_size=30, add_layout=self.color_layout,
+            '■',
+            self.main_frame,
+            min_size=30,
+            max_size=30,
+            add_layout=self.color_layout,
         )
         self.qos_color_layout.addLayout(self.color_layout, 0, 3, 1, 1)
         self.color_field = create_field(
@@ -98,25 +109,40 @@ class TopicDialogUI:
         self.color_field.setMaximumSize(QtCore.QSize(200, 30))
         self.body_layout.addLayout(self.qos_color_layout)
 
-        self.no_local_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft)
+        self.no_local_layout = create_layout(
+            QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft
+        )
         self.no_local_label = create_label(
-            'No Local Flag', self.main_frame, self.no_local_layout, max_size=[190, 30], min_size=[190, 30], align='left'
+            'No Local Flag',
+            self.main_frame,
+            self.no_local_layout,
+            max_size=[190, 30],
+            min_size=[190, 30],
+            align='left',
         )
         self.no_local_checkbox = create_toggle(self.no_local_layout)
         self.body_layout.addLayout(self.no_local_layout)
 
-        self.retain_published_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft)
+        self.retain_published_layout = create_layout(
+            QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft
+        )
         self.retain_published_label = create_label(
-            'Retain as Published Flag', self.main_frame, self.retain_published_layout, max_size=[190, 30], min_size=[190, 30], align='left'
+            'Retain as Published Flag',
+            self.main_frame,
+            self.retain_published_layout,
+            max_size=[190, 30],
+            min_size=[190, 30],
+            align='left',
         )
-        self.retain_published_checkbox = create_toggle(
-            self.retain_published_layout
-        )
+        self.retain_published_checkbox = create_toggle(self.retain_published_layout)
         self.body_layout.addLayout(self.retain_published_layout)
 
         self.retain_handling_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], 15)
         self.retain_handling_label = create_label(
-            'Retain Handling', self.main_frame, self.retain_handling_layout, align='left'
+            'Retain Handling',
+            self.main_frame,
+            self.retain_handling_layout,
+            align='left',
         )
         self.retain_handling_field = create_field(
             self.main_frame, self.retain_handling_layout

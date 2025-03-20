@@ -99,17 +99,23 @@ class RightButtonDelegate(QStyledItemDelegate):
             if row in self.button_rects and self.button_rects[row].contains(
                 event.pos()
             ):
-                self.method()
+                self.method(index.data(Qt.DisplayRole), index.data(Qt.UserRole))
                 return True
         return False
 
 
 class ClipboardListWidget(QListWidget):
-    def __init__(self, layout, method=None):
+    def __init__(self, layout):
         super().__init__(layout)
-        self.setMouseTracking(True)
-        self.delegate = RightButtonDelegate(self, self.print_temporary)
+        self._setup_preferences()
+        self.delegate = RightButtonDelegate(self, None)
         self.setItemDelegate(self.delegate)
+
+    def set_method(self, method):
+        self.delegate.method = method
+
+    def _setup_preferences(self):
+        self.setMouseTracking(True)
         self.setStyleSheet(CLIPBOARD_LIST)
         self.setDragEnabled(True)
         self.setAcceptDrops(True)

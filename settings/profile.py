@@ -306,8 +306,25 @@ class Profile:
         return self._is_default
 
     def add_clipboard(self, message_name: str, message_text: str):
-        self.clipboard[message_name] = message_text
-        self.settings.set_with_save('clipboard', message_name, message_text)
+        message_with_id = (
+            message_name + '_ID_STARTS_HERE_' + str(len(self.clipboard) + 1)
+        )
+        self.clipboard[message_with_id] = message_text
+        self.settings.set_with_save('clipboard', message_with_id, message_text)
+        return message_with_id
+
+    def edit_clipboard(
+        self, start_data, msg_id: str, message_name: str, message_text: str
+    ):
+        if start_data[0] != message_name:
+            del self.clipboard[msg_id]
+            self.settings.remove_option('clipboard', msg_id)
+            msg_id = message_name + '_ID_STARTS_HERE_' + str(len(self.clipboard) + 2)
+
+        self.clipboard[msg_id] = message_text
+        self.settings.set_with_save('clipboard', msg_id, message_text)
+
+        return [message_text, [message_name, msg_id]]
 
     def delete_clipboard(self, message_name: str):
         del self.clipboard[message_name]
