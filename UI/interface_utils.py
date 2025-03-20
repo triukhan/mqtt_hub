@@ -2,12 +2,10 @@ from enum import Enum
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import (
-    QAbstractAnimation,
     QPoint,
     QRegExp,
     QSize,
     Qt,
-    QVariantAnimation,
 )
 from PyQt5.QtGui import (
     QColor,
@@ -24,7 +22,6 @@ from PyQt5.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
     QListWidget,
     QMenu,
     QPushButton,
@@ -36,6 +33,7 @@ from PyQt5.QtWidgets import (
 )
 from qtwidgets import AnimatedToggle
 
+from UI.custom_widgets.animated_field import AnimatedLineEdit
 from settings.topic import Topic
 from UI import styles
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
@@ -55,53 +53,6 @@ class Spacer(Enum):
 
 FONT = QFont()
 FONT.setPointSize(10)
-
-
-class AnimatedLineEdit(QLineEdit):
-    def __init__(self, parent=None, style=None):
-        super().__init__(parent)
-        self.base_style = style or ''
-        self.focused = False
-        self._animation = QVariantAnimation(
-            startValue=QColor('#323232'),
-            endValue=QColor('#444444'),
-            valueChanged=self._on_value_changed,
-            duration=400,
-        )
-        self._update_stylesheet(QColor('#323232'))
-
-    def _on_value_changed(self, border_color):
-        self._update_stylesheet(border_color)
-
-    def _update_stylesheet(self, border_color):
-        updated_style = self.base_style.replace(
-            'border: 1px solid rgb(50, 50, 50);',
-            f'border: 1px solid {border_color.name()};',
-        )
-        self.setStyleSheet(updated_style)
-
-    def focusInEvent(self, event):
-        self.focused = True
-        self._update_stylesheet(QColor('#444444'))
-        super().focusInEvent(event)
-
-    def focusOutEvent(self, event):
-        self.focused = False
-        self._animation.setDirection(QAbstractAnimation.Backward)
-        self._animation.start()
-        super().focusOutEvent(event)
-
-    def enterEvent(self, event):
-        if not self.focused:
-            self._animation.setDirection(QAbstractAnimation.Forward)
-            self._animation.start()
-        super().enterEvent(event)
-
-    def leaveEvent(self, event):
-        if not self.focused:
-            self._animation.setDirection(QAbstractAnimation.Backward)
-            self._animation.start()
-        super().leaveEvent(event)
 
 
 def create_label(
@@ -145,8 +96,9 @@ def create_field(
     add_layout=None,
     add_params: list | None = None,
     style: str = styles.FIELD,
+    button=None,
 ):
-    field = AnimatedLineEdit(main_layout, style)
+    field = AnimatedLineEdit(main_layout, style, button)
     field.setStyleSheet(style)
 
     if add_layout is not None:
@@ -306,15 +258,17 @@ def create_scroll_bar(obj, layout, style=SCROLLBAR):
 
 def create_folder_field(frame, add_layout, add_params: list):
     layout = create_layout(QHBoxLayout, spacing=0)
-    field = create_field(frame, layout, style=styles.FOLDER_FIELD_LEFT)
     button = create_button(
-        '', frame, add_layout=layout, style=styles.FOLDER_FIELD_RIGHT
+        '', frame, style=styles.FOLDER_FIELD_RIGHT, max_size=[30, 29]
     )
+    field = create_field(frame, style=styles.FOLDER_FIELD_LEFT, button=button)
 
     icon_folder = QIcon()
     icon_folder.addPixmap(QPixmap('UI/icons/folder-icon.svg'), QIcon.Normal, QIcon.Off)
     button.setIcon(icon_folder)
 
+    layout.addWidget(field)
+    layout.addWidget(button)
     add_layout.addLayout(layout, *add_params)
 
     return field, button

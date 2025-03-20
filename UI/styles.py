@@ -41,10 +41,8 @@ FOLDER_FIELD_LEFT = (
     'border-bottom-left-radius: 5;}'
 )
 FOLDER_FIELD_RIGHT = (
-    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-right: 1px solid rgb(50, 50, 50);'
-    'border-bottom: 1px solid rgb(50, 50, 50); border-top: 1px solid rgb(50, 50, 50);'
-    'border-top-right-radius: 5; border-bottom-right-radius: 5;'
-    'padding: 6px;}'
+    'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border: 1px solid rgb(50, 50, 50);'
+    'padding: 6px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;}'
     'QPushButton::hover {background-color: rgb(40, 40, 40);}'
 )
 RADIO = (
@@ -161,6 +159,5 @@ def header_button(icon_path):
     return (
         f'QPushButton {{color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-top-left-radius: 5;'
         f'border-bottom-left-radius: 5; border-top-right-radius: 5; border-bottom-right-radius: 5; padding: 10px;'
-        f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}} QPushButton:hover {{background-color:'
-        f' rgb(45, 45, 45);}}'
+        f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}}'
     )

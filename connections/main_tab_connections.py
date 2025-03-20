@@ -15,7 +15,7 @@ from UI.tabs.main_tab_ui import MainTabUI
 
 
 class MainTab(MainTabUI):
-    notification_signal = pyqtSignal(str, str)
+    notification_signal = pyqtSignal(str, Result)
 
     def __init__(self):
         super().__init__()
@@ -121,7 +121,7 @@ class MainTab(MainTabUI):
         item.setText(new_data[1][0])
         item.setData(Qt.UserRole, [new_data[0], new_data[1][1]])
         self.clipboard_list.setCurrentItem(item)
-        self.success_signal.emit('Saved')
+        self.notification_signal.emit('Saved', Result.SUCCESS)
 
     def show_clipboard_dialog(self):
         return ClipboardDialog(self.save_message_to_clipboard, self).exec_()
@@ -134,9 +134,9 @@ class MainTab(MainTabUI):
         self.tags_widget.add_tag(topic)
         if self.connector.is_connected:
             self.connector.subscribe(topic)
-            self.success_signal.emit('Created and subscribed successfully!')
+            self.notification_signal.emit('Created and subscribed successfully!', Result.SUCCESS)
         else:
-            self.success_signal.emit('Created successfully!')
+            self.notification_signal.emit('Created successfully!', Result.SUCCESS)
 
     @staticmethod
     def save_topic(topic: Topic, new_settings: dict, tag_dict: dict):
