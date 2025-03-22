@@ -26,7 +26,6 @@ from UI.interface_utils import (
 from UI.styles import (
     CLEAR_BUTTON,
     COMMAND_FIELD,
-    DELETE_BUTTON,
     FILTER_FRAME,
     FRAME_COLOR,
     RECEIVER_TEXT,
@@ -128,13 +127,17 @@ class MainTabUI(QWidget):
             QHBoxLayout, 15, 20, out_layout=self.publisher_head_frame
         )
 
-        self.delete_button = create_button(
-            'Delete',
+        (
+            self.clipboard_convertor_button,
+            self.convert_clipboard_menu,
+            self.show_clipboard_convert_menu,
+        ) = create_expand_button(
+            profile_manager.current_profile.clipboard_convertor,
             self.publisher_head_frame,
             min_size=[0, 25],
             max_size=[100, 25],
+            style=styles.PICKER_BUTTON,
             add_layout=self.horizontalLayout_5,
-            style=DELETE_BUTTON,
         )
 
         self.add_clipboard_button = create_button(

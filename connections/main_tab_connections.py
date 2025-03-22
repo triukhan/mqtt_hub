@@ -8,6 +8,7 @@ from connections.clipboard_dialog_connections import (
 )
 from connections.connection_utils import Result
 from connections.topic_dialog_connections import TopicDialog
+from mqtt.connector import convert_to_format
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI.custom_widgets.tags_widget import TagsWidget
@@ -50,6 +51,20 @@ class MainTab(MainTabUI):
         self.convertor_button.clicked.connect(self.show_convert_menu)
         self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
 
+        for convert_format in ('JSON', 'Plaintext'):  # todo: перенести і порефакторити
+            font_metrics = QFontMetrics(self.clipboard_convertor_button.font())
+            elided_text = font_metrics.elidedText(convert_format, Qt.ElideRight, 110)
+            action = QAction(elided_text, self.clipboard_convertor_button)
+            action.triggered.connect(
+                lambda _, f=convert_format: self.set_clipboard_convertor(f)
+            )
+            self.convert_clipboard_menu.addAction(action)
+
+        self.clipboard_convertor_button.clicked.connect(
+            self.show_clipboard_convert_menu
+        )
+        self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
+
     @staticmethod
     def set_autoscroll(autoscroll):
         profile_manager.current_profile.autoscroll = bool(autoscroll)
@@ -57,6 +72,11 @@ class MainTab(MainTabUI):
     def set_convertor(self, convert_format):
         self.convertor_button.setText(convert_format)
         profile_manager.current_profile.convertor = convert_format
+
+    def set_clipboard_convertor(self, convert_format):
+        self.clipboard_convertor_button.setText(convert_format)
+        profile_manager.current_profile.clipboard_convertor = convert_format
+        self.display_message_in_command_field(self.clipboard_list.currentItem())
 
     def create_topic(self):
         if profile_manager.current_profile.is_default == 'True':
@@ -89,8 +109,11 @@ class MainTab(MainTabUI):
             self.clipboard_list.addItem(item)
 
     def display_message_in_command_field(self, item):
-        command = item.data(Qt.UserRole)
-        self.command_field.setPlainText(command[0])
+        message = convert_to_format(
+            item.data(Qt.UserRole)[0],
+            profile_manager.current_profile.clipboard_convertor,
+        )
+        self.command_field.setPlainText(message)
 
     def save_message_to_clipboard(self, message_name: str, message_text: str):
         msg_id = profile_manager.current_profile.add_clipboard(
@@ -134,7 +157,9 @@ class MainTab(MainTabUI):
         self.tags_widget.add_tag(topic)
         if self.connector.is_connected:
             self.connector.subscribe(topic)
-            self.notification_signal.emit('Created and subscribed successfully!', Result.SUCCESS)
+            self.notification_signal.emit(
+                'Created and subscribed successfully!', Result.SUCCESS
+            )
         else:
             self.notification_signal.emit('Created successfully!', Result.SUCCESS)
 

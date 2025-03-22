@@ -192,10 +192,10 @@ class MQTTMixin(QObject, MQTTConnector):
             self.notification_signal.emit(res, Result.FAILURE)
 
 
-def convert_to_format(payload):
-    f = profile_manager.current_profile.convertor
-
-    if f == 'Plaintext':
+def convert_to_format(
+    payload, form=profile_manager.current_profile.convertor
+):  # todo: replace to utils
+    if form == 'Plaintext':
         return payload
 
     try:

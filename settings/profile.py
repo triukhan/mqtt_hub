@@ -43,6 +43,7 @@ class Profile:
     is_created: bool = False
     _convertor: str | None = 'JSON'
     _autoscroll: bool | None = False
+    _clipboard_convertor: str | None = 'JSON'
 
     def __post_init__(self):
         self.profile_ini = get_path(f'{PROFILES_PATH}{self._id}.ini')
@@ -304,6 +305,14 @@ class Profile:
     @property
     def is_default(self):
         return self._is_default
+
+    @property
+    def clipboard_convertor(self):
+        return self._clipboard_convertor
+
+    @clipboard_convertor.setter
+    def clipboard_convertor(self, value: str):
+        self._set_field('clipboard_convertor', value)
 
     def add_clipboard(self, message_name: str, message_text: str):
         message_with_id = (

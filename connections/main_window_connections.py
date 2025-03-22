@@ -25,7 +25,6 @@ class MainWindow(MqttHubUi):
         self.edit_tab.delete_button.clicked.connect(
             lambda: self.open_delete_dialog(self.delete_profile)
         )
-        self.main_tab.delete_button.clicked.connect(self.handle_delete_message)
 
     def _setup_overlay(self):
         self.overlay = QWidget(self)
