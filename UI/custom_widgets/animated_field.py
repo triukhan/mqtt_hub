@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QVariantAnimation, QAbstractAnimation
+from PyQt5.QtCore import QAbstractAnimation, QVariantAnimation
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QLineEdit
 
@@ -21,6 +21,8 @@ class AnimatedLineEdit(QLineEdit):
         self._update_stylesheet(border_color)
 
     def _update_stylesheet(self, border_color):
+        if self.isReadOnly():
+            return
         updated_style = self.base_style.replace(
             'border: 1px solid rgb(50, 50, 50);',
             f'border: 1px solid {border_color.name()};',
@@ -28,11 +30,15 @@ class AnimatedLineEdit(QLineEdit):
         self.setStyleSheet(updated_style)
 
     def start_hover_animation(self, forward=True):
-        self._animation.setDirection(QAbstractAnimation.Forward if forward else QAbstractAnimation.Backward)
+        self._animation.setDirection(
+            QAbstractAnimation.Forward if forward else QAbstractAnimation.Backward
+        )
         self._animation.start()
 
         if self.button:
-            self.button._animation.setDirection(QAbstractAnimation.Forward if forward else QAbstractAnimation.Backward)
+            self.button._animation.setDirection(
+                QAbstractAnimation.Forward if forward else QAbstractAnimation.Backward
+            )
             self.button._animation.start()
 
     def focusInEvent(self, event):

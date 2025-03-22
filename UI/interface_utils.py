@@ -1,12 +1,7 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import (
-    QPoint,
-    QRegExp,
-    QSize,
-    Qt,
-)
+from PyQt5.QtCore import QPoint, QRegExp, QSize, Qt
 from PyQt5.QtGui import (
     QColor,
     QFont,
@@ -33,9 +28,9 @@ from PyQt5.QtWidgets import (
 )
 from qtwidgets import AnimatedToggle
 
-from UI.custom_widgets.animated_field import AnimatedLineEdit
 from settings.topic import Topic
 from UI import styles
+from UI.custom_widgets.animated_field import AnimatedLineEdit
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
 from UI.icons.icons import EXPAND_ICON
 from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR
@@ -259,7 +254,7 @@ def create_scroll_bar(obj, layout, style=SCROLLBAR):
 def create_folder_field(frame, add_layout, add_params: list):
     layout = create_layout(QHBoxLayout, spacing=0)
     button = create_button(
-        '', frame, style=styles.FOLDER_FIELD_RIGHT, max_size=[30, 29]
+        '', frame, style=styles.FOLDER_FIELD_RIGHT, max_size=[30, 30]
     )
     field = create_field(frame, style=styles.FOLDER_FIELD_LEFT, button=button)
 

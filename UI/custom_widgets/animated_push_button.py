@@ -39,6 +39,9 @@ class AnimatedPushButton(QPushButton):
         self._update_stylesheet(color)
 
     def _update_stylesheet(self, color):
+        if not self.isEnabled():
+            return
+
         if self.body:
             if self.selected:
                 return
