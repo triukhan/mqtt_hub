@@ -195,7 +195,7 @@ class AnimatedTagFrame(QFrame):
 
     def _update_stylesheet(self, color):
         border_left = re.findall(
-            r"QFrame\s*{\s*border-left:\s*2px\s*solid\s*#[0-9A-Fa-f]{6}\s*;?\s*}",
+            r'QFrame\s*{\s*border-left:\s*2px\s*solid\s*#[0-9A-Fa-f]{6}\s*;?\s*}',
             self.styleSheet(),
         )
         border_left = border_left[0] if len(border_left) > 0 else ''

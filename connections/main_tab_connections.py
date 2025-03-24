@@ -32,7 +32,6 @@ class MainTab(MainTabUI):
             self.display_message_from_receiver_list
         )
 
-        self.add_clipboard_button.clicked.connect(self.show_clipboard_dialog)
         self.set_clipboard_messages()
         self.clipboard_list.currentItemChanged.connect(
             self.display_message_in_command_field
@@ -64,6 +63,9 @@ class MainTab(MainTabUI):
             self.show_clipboard_convert_menu
         )
         self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
+
+    def set_clipboard_method(self, method):
+        self.clipboard_list.set_method(method)
 
     @staticmethod
     def set_autoscroll(autoscroll):
@@ -147,7 +149,8 @@ class MainTab(MainTabUI):
         self.notification_signal.emit('Saved', Result.SUCCESS)
 
     def show_clipboard_dialog(self):
-        return ClipboardDialog(self.save_message_to_clipboard, self).exec_()
+        dialog = ClipboardDialog(self.save_message_to_clipboard, self, False).exec_()
+        return dialog
 
     def show_clipboard_dialog_with_settings(self, name, message):
         ClipboardEditDialog(self.save_editing_message, [name, message], self).exec_()

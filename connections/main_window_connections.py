@@ -25,6 +25,8 @@ class MainWindow(MqttHubUi):
         self.edit_tab.delete_button.clicked.connect(
             lambda: self.open_delete_dialog(self.delete_profile)
         )
+        self.main_tab.add_clipboard_button.clicked.connect(self.open_clipboard_dialog)
+        self.main_tab.set_clipboard_method(self.open_clipboard_dialog_with_settings)
 
     def _setup_overlay(self):
         self.overlay = QWidget(self)
@@ -194,6 +196,16 @@ class MainWindow(MqttHubUi):
         ConfirmationDialogUI(
             self, 'Are you sure you want to delete this message?', method
         ).exec_()
+        self.overlay.hide()
+
+    def open_clipboard_dialog(self):
+        self.overlay.show()
+        self.main_tab.show_clipboard_dialog()
+        self.overlay.hide()
+
+    def open_clipboard_dialog_with_settings(self, name, settings):
+        self.overlay.show()
+        self.main_tab.show_clipboard_dialog_with_settings(name, settings)
         self.overlay.hide()
 
     def handle_delete_message(self):

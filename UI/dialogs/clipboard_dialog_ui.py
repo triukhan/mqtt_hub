@@ -15,11 +15,11 @@ from UI.interface_utils import (
     create_label,
     create_layout,
 )
-from UI.styles import X_BUTTON
+from UI.styles import DELETE_BUTTON, X_BUTTON
 
 
 class ClipboardDialogUI:
-    def _setup_ui(self, clipboard_dialog):
+    def _setup_ui(self, clipboard_dialog, with_delete):
         clipboard_dialog.resize(365, 190)
         clipboard_dialog.setWindowFlags(
             QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint
@@ -44,8 +44,8 @@ class ClipboardDialogUI:
             'Add to Clipboard',
             self.header_frame,
             self.header_layout,
-            min_size=(30, 30),
-            max_size=(200, 30),
+            min_size=[30, 30],
+            max_size=[200, 30],
         )
 
         spacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -58,36 +58,48 @@ class ClipboardDialogUI:
             30,
             self.header_layout,
             style=X_BUTTON,
-            anim=False,
+            body=True,
+            start_value=(35, 35, 35),
         )
 
         self.main_vertical_layout.addWidget(self.header_frame)
 
         self.body_layout = create_layout(QVBoxLayout, spacing=0)
-        self.clipboard_layout = create_layout(QVBoxLayout, [20, 10, 20, 10], 10)
+        self.clipboard_layout = create_layout(QVBoxLayout, [20, 20, 20, 10], 10)
         self.name_label = create_label(
             'Enter a name for the Clipboard Message',
             self.main_frame,
             self.clipboard_layout,
-            min_size=(0, 30),
-            max_size=(1000, 30),
+            min_size=[0, 30],
+            max_size=[1000, 30],
+            align='left',
         )
         self.name_field = create_field(self.main_frame, self.clipboard_layout)
         self.body_layout.addLayout(self.clipboard_layout)
-        self.text_layout = create_layout(QVBoxLayout, [20, 10, 20, 10], 10)
+        self.text_layout = create_layout(QVBoxLayout, [20, 0, 20, 10], 10)
         self.text_label = create_label(
             'Text',
             self.main_frame,
             self.text_layout,
             min_size=[0, 30],
             max_size=[1000, 30],
+            align='left',
         )
-        self.text_field = QTextEdit(self.main_frame)
+        self.text_field = QTextEdit(self.main_frame)  # todo
         self.text_field.setMinimumHeight(250)
+        self.text_field.setStyleSheet('QTextEdit {color: rgb(186, 189, 182)}')
         self.text_layout.addWidget(self.text_field)
+
         self.body_layout.addLayout(self.text_layout)
 
-        self.save_layout = create_layout(QHBoxLayout, [-1, 15, 20, 15], 15)
+        self.save_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], 10)
+        if with_delete:
+            self.delete_button = create_button(
+                'Delete',
+                self.main_frame,
+                add_layout=self.save_layout,
+                style=DELETE_BUTTON,
+            )
         spacerItem1 = QSpacerItem(
             40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum  # todo
         )

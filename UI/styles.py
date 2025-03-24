@@ -107,7 +107,6 @@ CLIPBOARD_LIST = """
     """
 X_BUTTON = """
     QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding: 10px; border: none;}
-    QPushButton:hover {color: rgb(210, 210, 210);}
     """
 WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}'
 HEADER_FRAME = 'QFrame {border-bottom: 1px solid rgb(50, 50, 50)}'
