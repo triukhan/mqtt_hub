@@ -1,3 +1,5 @@
+import base64
+import binascii
 import json
 from contextlib import suppress
 from datetime import datetime
@@ -138,7 +140,7 @@ class MQTTMixin(QObject, MQTTConnector):
         super().__init__()
 
     def on_message(self, _, __, msg):
-        received_payload = convert_to_format(msg.payload.decode())
+        received_payload = convert_to_format(msg.payload.decode(), profile_manager.current_profile.convertor)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)
@@ -193,16 +195,25 @@ class MQTTMixin(QObject, MQTTConnector):
 
 
 def convert_to_format(
-    payload, form=profile_manager.current_profile.convertor
+    payload, form
 ):  # todo: replace to utils
     if form == 'Plaintext':
         return payload
 
-    try:
-        json_obj = json.loads(payload)
-        return json.dumps(json_obj, indent=4)
-    except json.JSONDecodeError:
-        return payload
+    if form == 'JSON':
+        try:
+            json_obj = json.loads(payload)
+            return json.dumps(json_obj, indent=4)
+        except json.JSONDecodeError:
+            return payload
+
+    if form == 'Hex':
+        return binascii.hexlify(payload.encode()).decode()
+
+    if form == 'Base64':
+        return base64.b64encode(payload.encode()).decode()
+
+    return payload
 
 
 def validate_start(profile: Profile):

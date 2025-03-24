@@ -28,6 +28,7 @@ from PyQt5.QtWidgets import (
 )
 from qtwidgets import AnimatedToggle
 
+from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
 from UI.custom_widgets.animated_field import AnimatedLineEdit
@@ -371,6 +372,9 @@ class JsonHighlighter(QSyntaxHighlighter):
         ]
 
     def highlightBlock(self, text):
+        if profile_manager.current_profile.convertor != 'JSON':
+            return None
+
         self.setFormat(0, len(text), self.string_format)
 
         for pattern, fmt in self.rules:
