@@ -7,7 +7,7 @@ from datetime import datetime
 from paho.mqtt.client import MQTT_ERR_SUCCESS, Client, MQTTv5, SubscribeOptions, ssl
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 from connections.connection_utils import Result
 from settings.profile import Profile
@@ -97,7 +97,7 @@ class MQTTConnector:
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
 
-        self.client.connect(
+        self.client.connect_async(
             self.profile.host,
             int(self.profile.port),
             **kwargs,
@@ -140,7 +140,9 @@ class MQTTMixin(QObject, MQTTConnector):
         super().__init__()
 
     def on_message(self, _, __, msg):
-        received_payload = convert_to_format(msg.payload.decode(), profile_manager.current_profile.convertor)
+        received_payload = convert_to_format(
+            msg.payload.decode(), profile_manager.current_profile.convertor
+        )
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f"{timestamp}\n\n{received_payload}"
         self.message_received.emit(msg.topic, formatted_message)
@@ -174,6 +176,18 @@ class MQTTMixin(QObject, MQTTConnector):
             return
         super().start(profile)
 
+        self.timer = QTimer(self)
+        self.timer.setSingleShot(True)
+        self.timer.timeout.connect(self.on_timeout)
+        self.timer.start(5000)
+
+    def on_timeout(self):
+        if not self.is_connected:
+            self.notification_signal.emit(
+                'Error: Connection timeout. Please check your settings', Result.FAILURE
+            )
+            self.connected_signal.emit(self.is_connected)
+
     def publish(self, topic, message):
         if not self.is_connected:
             self.notification_signal.emit(
@@ -194,9 +208,7 @@ class MQTTMixin(QObject, MQTTConnector):
             self.notification_signal.emit(res, Result.FAILURE)
 
 
-def convert_to_format(
-    payload, form
-):  # todo: replace to utils
+def convert_to_format(payload, form):  # todo: replace to utils
     if form == 'Plaintext':
         return payload
 
