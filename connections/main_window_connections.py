@@ -37,8 +37,9 @@ class MainWindow(MqttHubUi):
         settings = self.plus_tab.get_settings()
         if (error_msg := self.validate_settings(settings)) is not None:
             self.show_notification(error_msg, Result.COMMON, 5)
-            return
+            return None
 
+        self.plus_tab.clear_settings()
         profile_manager.create_profile(**settings)
         self.disconnect()
         self.clear_tab()
@@ -75,7 +76,14 @@ class MainWindow(MqttHubUi):
         self.edit_tab.load_current_profile_settings()
 
     def save_edit_profile(self, with_notify: bool = True):
+        self._setup_notifications()
         self.clear_sidebar_selections()
+
+        settings = self.edit_tab.get_settings()
+        if (error_msg := self.validate_settings(settings)) is not None:
+            self.show_notification(error_msg, Result.COMMON, 5)
+            return
+
         self.edit_tab.save_settings()
         self.open_main_tab()
         if with_notify:
@@ -172,7 +180,8 @@ class MainWindow(MqttHubUi):
         ):
             button.deselect()
 
-    def validate_settings(self, settings: dict):
+    @staticmethod
+    def validate_settings(settings: dict):
         if settings['self_signed'] and not all(
             [settings['ca_file'], settings['crt_file'], settings['key_file']]
         ):

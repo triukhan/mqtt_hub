@@ -124,6 +124,32 @@ class PlusTabCommon(PlusTabUI):
                 field.styleSheet() + 'QLineEdit {color: rgb(120, 120, 120)}'
             )
 
+    def get_settings(self):
+        return {
+            'name': self.name_field.text(),
+            'host': self.host_field.text(),
+            'port': self.port_field.text(),
+            'client_id': self.client_id_field.text(),
+            'username': self.username_field.text(),
+            'password': self.password_field.text(),
+            'ssl_tls': self.ssl_tls_checkbox.isChecked(),
+            'ssl': self.ssl_checkbox.isChecked(),
+            'ca_file': self.ca_field.text(),
+            'crt_file': self.client_cert_field.text(),
+            'key_file': self.client_key_field.text(),
+            'mqtt_version': self.mqtt_ver_field.text(),
+            'connect_timeout': self.con_timeout_field.text(),
+            'keep_alive': self.keep_alive_field.text(),
+            'auto_reconnect': self.auto_recon_checkbox.isChecked(),
+            'reconnect_period': self.recon_period_field.text(),
+            'clean_start': self.clean_start_checkbox.isChecked(),
+            'session_expiry_interval': self.session_expiry_field.text(),
+            'receive_maximum': self.receive_max_field.text(),
+            'maximum_packet_size': self.max_packet_field.text(),
+            'ca_signed': self.ca_signed_radio.isChecked(),
+            'self_signed': self.self_signed_radio.isChecked(),
+        }
+
     def open_file_dialog(self, field):
         options = QFileDialog.Options()
         file_name, _ = QFileDialog.getOpenFileName(
@@ -151,33 +177,6 @@ class PlusTab(PlusTabCommon):
         if file_name:
             field.setText(file_name)
 
-    def get_settings(self):
-        settings = {
-            'name': self.name_field.text(),
-            'host': self.host_field.text(),
-            'port': self.port_field.text(),
-            'client_id': self.client_id_field.text(),
-            'username': self.username_field.text(),
-            'password': self.password_field.text(),
-            'ssl_tls': self.ssl_tls_checkbox.isChecked(),
-            'ssl': self.ssl_checkbox.isChecked(),
-            'ca_file': self.ca_field.text(),
-            'crt_file': self.client_cert_field.text(),
-            'key_file': self.client_key_field.text(),
-            'mqtt_version': self.mqtt_ver_field.text(),
-            'connect_timeout': self.con_timeout_field.text(),
-            'keep_alive': self.keep_alive_field.text(),
-            'auto_reconnect': self.auto_recon_checkbox.isChecked(),
-            'reconnect_period': self.recon_period_field.text(),
-            'clean_start': self.clean_start_checkbox.isChecked(),
-            'session_expiry_interval': self.session_expiry_field.text(),
-            'receive_maximum': self.receive_max_field.text(),
-            'maximum_packet_size': self.max_packet_field.text(),
-            'ca_signed': self.ca_signed_radio.isChecked(),
-            'self_signed': self.self_signed_radio.isChecked(),
-        }
-        self.clear_settings()
-        return settings
 
     def clear_settings(self):
         self.name_field.clear()
@@ -255,7 +254,7 @@ class EditTab(PlusTabCommon):
         self.max_packet_field.setText(self.current_profile.maximum_packet_size)
         self.set_read_only_certs(not self.self_signed_radio.isChecked())
 
-    def save_settings(self):  # TODO: make dict and set by dict
+    def save_settings(self):  # TODO: make dict and set by dict from get_settings
         self._update_current_profile()
         self.current_profile.name = self.name_field.text()
         self.current_profile.host = self.host_field.text()

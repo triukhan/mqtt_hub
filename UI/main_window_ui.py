@@ -316,6 +316,16 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
 
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
+        self.notification = create_button(
+            '',
+            self.header_frame,
+            [400, 30],
+            30,
+            self.header_horizontal_layout,
+            anim=False,
+        )
+        self.notification.hide()
+
         self.profile_name = create_label(
             '  ' + profile_manager.current_profile.name, self.header_frame
         )
