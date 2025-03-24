@@ -138,13 +138,14 @@ class MQTTMixin(QObject, MQTTConnector):
 
     def __init__(self):
         super().__init__()
+        self.was_connected = False
 
     def on_message(self, _, __, msg):
         received_payload = convert_to_format(
             msg.payload.decode(), profile_manager.current_profile.convertor
         )
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        formatted_message = f"{timestamp}\n\n{received_payload}"
+        formatted_message = f'{timestamp}\n\n{received_payload}'
         self.message_received.emit(msg.topic, formatted_message)
         print(formatted_message)
 
@@ -152,7 +153,10 @@ class MQTTMixin(QObject, MQTTConnector):
         if rc != 0:
             self.fail_signal.emit(f'MQTT Error. Return code: {rc}')
             return
+
         self.handle_connect(True)
+        self.was_connected = True
+
         for topic in self.topics:
             self.subscribe(topic)
 
@@ -166,6 +170,7 @@ class MQTTMixin(QObject, MQTTConnector):
 
     def handle_connect(self, conn: bool):
         self.is_connected = conn
+
         prefix = '' if self.is_connected else 'dis'
         self.notification_signal.emit(f'{prefix}connected'.capitalize(), Result.SUCCESS)
         self.connected_signal.emit(self.is_connected)
@@ -176,13 +181,14 @@ class MQTTMixin(QObject, MQTTConnector):
             return
         super().start(profile)
 
+        self.was_connected = False
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
         self.timer.timeout.connect(self.on_timeout)
         self.timer.start(5000)
 
     def on_timeout(self):
-        if not self.is_connected:
+        if not self.was_connected:
             self.notification_signal.emit(
                 'Error: Connection timeout. Please check your settings', Result.FAILURE
             )
@@ -228,7 +234,7 @@ def convert_to_format(payload, form):  # todo: replace to utils
     return payload
 
 
-def validate_start(profile: Profile):
+def validate_start(profile: Profile):  # todo: replace
     if not profile.host:
         return 'Error: Host is absent is settings'
     if not profile.port:

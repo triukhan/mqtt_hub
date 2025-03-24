@@ -1,3 +1,5 @@
+import re
+
 from PyQt5.QtCore import QAbstractAnimation, QVariantAnimation
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QPushButton
@@ -53,6 +55,18 @@ class AnimatedPushButton(QPushButton):
             updated_style = self._initial_style.replace(
                 'border: 1px solid rgb(50, 50, 50);',
                 f'border: 1px solid {color.name()};',
+            )
+        border_image_pattern = re.compile(
+            r'border-image: url\((.*?)\) \d+ \d+ \d+ \d+ stretch stretch;'
+        )
+
+        if border_image_pattern.search(self.styleSheet()):
+            current_border_image = border_image_pattern.search(self.styleSheet()).group(
+                0
+            )
+
+            updated_style = re.sub(
+                border_image_pattern, current_border_image, updated_style
             )
         self.setStyleSheet(updated_style)
 

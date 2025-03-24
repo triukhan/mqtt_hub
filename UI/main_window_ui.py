@@ -18,6 +18,7 @@ from UI.icons.icons import (
     INFO_ICON,
     LOGO_ICON,
     MAIN_ICON,
+    PAUSE_ICON,
     PLUS_ICON,
     SETTINGS_ICON,
 )
@@ -396,9 +397,7 @@ class MqttHubUi(QWidget):
             if profile.is_default != 'None':
                 continue
             font_metrics = QFontMetrics(button.font())
-            elided_text = font_metrics.elidedText(
-                profile.name, Qt.ElideRight, 110
-            )
+            elided_text = font_metrics.elidedText(profile.name, Qt.ElideRight, 110)
 
             action = QAction(elided_text, button)
             action.triggered.connect(lambda _, p=profile: self.set_profile(p))
@@ -431,6 +430,6 @@ class MqttHubUi(QWidget):
 
     def change_connect_button(self, connect):
         if connect:
-            self.connect_button.setStyleSheet(header_button(PLUS_ICON))
+            self.connect_button.setStyleSheet(header_button(PAUSE_ICON))
         else:
             self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
