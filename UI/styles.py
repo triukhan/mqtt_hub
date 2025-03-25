@@ -108,7 +108,7 @@ CLIPBOARD_LIST = """
 X_BUTTON = """
     QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding: 10px; border: none;}
     """
-WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182)}'
+WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50); border-radius: 4px}'
 HEADER_FRAME = 'QFrame {border-bottom: 1px solid rgb(50, 50, 50)}'
 MENU = (
     'QMenu {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'

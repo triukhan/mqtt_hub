@@ -31,9 +31,7 @@ class ClipboardDialogUI:
 
         self.main_frame = create_frame(clipboard_dialog)
         self.main_vertical_layout = create_layout(QVBoxLayout, 0, 0, self.main_frame)
-        self.header_frame = create_frame(self.main_frame)
-        self.header_frame.setStyleSheet('QFrame {border: none;}')
-
+        self.header_frame = create_frame(self.main_frame, 'QFrame {border: none;}')
         self.header_layout = create_layout(
             QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame
         )

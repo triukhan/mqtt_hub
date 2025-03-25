@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout
-
+from PyQt5 import QtCore
 from UI.interface_utils import create_button, create_frame, create_label, create_layout
 from UI.styles import WIDGET, X_BUTTON, DELETE_BUTTON, FRAME_COLOR
 
