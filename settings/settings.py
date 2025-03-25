@@ -71,6 +71,11 @@ class Settings:
 
         self.save_settings()
 
+    def clear_section(self, section):
+        self.load_settings()
+        self.config[section].clear()
+        self.save_settings()
+
 
 def create_ini_file(filename: str, path: str, data: dict | None = None):
     config = configparser.ConfigParser()

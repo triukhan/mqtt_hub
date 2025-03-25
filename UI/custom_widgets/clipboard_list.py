@@ -1,13 +1,15 @@
 from PyQt5.QtCore import QRect, QRectF, Qt, QTimer, QVariantAnimation
-from PyQt5.QtGui import QColor, QPainter, QPainterPath, QPixmap
+from PyQt5.QtGui import QColor, QDrag, QPainter, QPainterPath, QPixmap
 from PyQt5.QtWidgets import (
     QAbstractItemView,
+    QApplication,
     QFrame,
     QListWidget,
     QStyle,
     QStyledItemDelegate,
 )
 
+from settings.profile_manager import profile_manager
 from UI.icons.icons import EDIT_ICON
 from UI.styles import CLIPBOARD_LIST
 
@@ -110,6 +112,7 @@ class ClipboardListWidget(QListWidget):
         self._setup_preferences()
         self.delegate = RightButtonDelegate(self, None)
         self.setItemDelegate(self.delegate)
+        self.drag_start_pos = None
 
     def set_method(self, method):
         self.delegate.method = method
@@ -124,28 +127,64 @@ class ClipboardListWidget(QListWidget):
         self.setMaximumSize(16777215, 16777215)
         self.setFrameShape(QFrame.NoFrame)
 
-    def mouseMoveEvent(self, event):
+    def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
         if index.isValid():
             row = index.row()
-            self.delegate.setHoveredRow(row)
-
             if row in self.delegate.button_rects and self.delegate.button_rects[
                 row
             ].contains(event.pos()):
-                if self.delegate.hovered_button_row != row:
-                    self.delegate.hovered_button_row = row
-                    self.viewport().update()
-            else:
-                if self.delegate.hovered_button_row != -1:
-                    self.delegate.hovered_button_row = -1
-                    self.viewport().update()
+                return super().mousePressEvent(event)
+
+        self.drag_start_pos = event.pos()
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if (
+            self.drag_start_pos
+            and (event.pos() - self.drag_start_pos).manhattanLength()
+            > QApplication.startDragDistance()
+        ):
+            self.drag_start_pos = None
+            drag = QDrag(self)
+            mime_data = self.model().mimeData(self.selectedIndexes())
+            drag.setMimeData(mime_data)
+            drag.exec_(Qt.MoveAction)
         else:
-            self.delegate.setHoveredRow(-1)
-            self.delegate.hovered_button_row = -1
-            self.viewport().update()
+            index = self.indexAt(event.pos())
+            if index.isValid():
+                row = index.row()
+                self.delegate.setHoveredRow(row)
+
+                if row in self.delegate.button_rects and self.delegate.button_rects[
+                    row
+                ].contains(event.pos()):
+                    if self.delegate.hovered_button_row != row:
+                        self.delegate.hovered_button_row = row
+                        self.viewport().update()
+                else:
+                    if self.delegate.hovered_button_row != -1:
+                        self.delegate.hovered_button_row = -1
+                        self.viewport().update()
+            else:
+                self.delegate.setHoveredRow(-1)
+                self.delegate.hovered_button_row = -1
+                self.viewport().update()
 
     def leaveEvent(self, event):
         self.delegate.setHoveredRow(-1)
         self.delegate.hovered_button_row = -1
         self.viewport().update()
+
+    def dropEvent(self, event):
+        super().dropEvent(event)
+        self.update_config()
+
+    def update_config(self):
+        profile_manager.current_profile.clear_clipboard()
+
+        for item in range(self.count()):
+            item = self.item(item)
+            msg_text, msg_id = item.data(Qt.UserRole)
+            msg_name = msg_id[: msg_id.find('_id_starts_here')]
+            profile_manager.current_profile.add_clipboard(msg_name, msg_text)

@@ -312,6 +312,9 @@ class Profile:
     def clipboard_convertor(self, value: str):
         self._set_field('clipboard_convertor', value)
 
+    def clear_clipboard(self):
+        self.settings.clear_section('clipboard')
+
     def add_clipboard(self, message_name: str, message_text: str):
         message_with_id = (
             message_name + '_ID_STARTS_HERE_' + str(len(self.clipboard) + 1)
