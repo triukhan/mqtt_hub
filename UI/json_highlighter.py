@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QSyntaxHighlighter, QFont, QTextCharFormat, QColor
+from PyQt5.QtGui import QColor, QFont, QSyntaxHighlighter, QTextCharFormat
 
 from settings.profile_manager import profile_manager
 
@@ -8,7 +8,7 @@ class JsonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
 
-        self.font = QFont('Monospace', 8)
+        self.font = QFont('Courier', 11)
         self.font.setStyleHint(QFont.TypeWriter)
 
         self.int_format = QTextCharFormat()
