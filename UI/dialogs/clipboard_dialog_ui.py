@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QSizePolicy,
-    QSpacerItem,
     QVBoxLayout,
 )
 
@@ -35,8 +34,7 @@ class ClipboardDialogUI:
             QHBoxLayout, [40, 0, 0, 0], 15, self.header_frame
         )
 
-        left_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.header_layout.addItem(left_spacer)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.clipboard_label = create_label(
             'Add to Clipboard',
             self.header_frame,
@@ -45,8 +43,7 @@ class ClipboardDialogUI:
             max_size=[200, 30],
         )
 
-        spacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.header_layout.addItem(spacerItem)
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
         self.exit_button = create_button(
             '✕',
