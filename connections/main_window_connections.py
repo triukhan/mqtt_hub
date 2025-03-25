@@ -18,10 +18,13 @@ class MainWindow(MqttHubUi):
         self.disconnect = None
 
         self.connect_sidebar()
-        self._setup_topics()
         self.update_profile_button()
-        self._setup_overlay()
 
+        self._setup_topics()
+        self._setup_overlay()
+        self._setup_connections()
+
+    def _setup_connections(self):
         self.edit_tab.delete_button.clicked.connect(
             lambda: self.open_delete_dialog(self.delete_profile)
         )

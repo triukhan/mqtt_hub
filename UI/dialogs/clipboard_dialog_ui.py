@@ -2,7 +2,6 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
-    QSizePolicy,
     QVBoxLayout,
 )
 

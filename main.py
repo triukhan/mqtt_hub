@@ -4,12 +4,13 @@ from contextlib import suppress
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QListWidgetItem, QMainWindow
 
+from UI.json_highlighter import JsonHighlighter
 from connections.connection_utils import Result
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
 from UI.icons.icons import PAUSE_ICON
-from UI.interface_utils import BorderDelegate, JsonHighlighter
+from UI.interface_utils import BorderDelegate
 from UI.styles import header_button
 
 
@@ -17,13 +18,19 @@ class MqttHub(QMainWindow, MainWindow):
     def __init__(self):
         super().__init__()
         self.connector = MQTTMixin()
+        self.disconnect = self.connector.stop
+
+        self.setup_signals()
+        self.setup_main_tab_methods()
+        self.select_message = False
+
+    def setup_signals(self):
         self.connector.message_received.connect(self.update_list_widget)
         self.connector.connected_signal.connect(self.change_connect_button)
         self.connector.notification_signal.connect(self.show_notification)
         self.main_tab.notification_signal.connect(self.show_notification)
 
-        self.disconnect = self.connector.stop
-
+    def setup_main_tab_methods(self):
         self.main_tab.publish_button.clicked.connect(
             lambda: self.connector.publish(
                 profile_manager.topic_to_publish, self.main_tab.get_command_text()
@@ -34,7 +41,6 @@ class MqttHub(QMainWindow, MainWindow):
         self.main_tab.receiver_list.setItemDelegate(
             BorderDelegate(self.main_tab.receiver_list)
         )
-        self.select_message = False
         self.main_tab.select_toggle.stateChanged.connect(self.set_select_flag)
 
     def set_select_flag(self, state):

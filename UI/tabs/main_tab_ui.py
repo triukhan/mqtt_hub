@@ -34,7 +34,7 @@ from UI.styles import (
 class MainTabUI(QWidget):
     def __init__(self):
         super().__init__()
-        self.gridLayout_2 = create_layout(QGridLayout, [0, 0, 0, 0], 0, out_layout=self)
+        self.grid_layout = create_layout(QGridLayout, [0, 0, 0, 0], 0, out_layout=self)
         self.main_right_layout = create_layout(QVBoxLayout, [0, -1, 0, 0], 0)
 
         self.clear_frame = create_frame(
@@ -107,11 +107,11 @@ class MainTabUI(QWidget):
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         create_scroll_bar(self, self.receiver_text_edit)
 
-        self.gridLayout_2.addLayout(self.main_right_layout, 0, 1, 1, 1)
+        self.grid_layout.addLayout(self.main_right_layout, 0, 1, 1, 1)
 
         self.main_left_layout = QFrame(self)
 
-        self.verticalLayout_3 = create_layout(
+        self.vertical_layout = create_layout(
             QVBoxLayout, margins=0, out_layout=self.main_left_layout
         )
 
@@ -119,7 +119,7 @@ class MainTabUI(QWidget):
             self.main_left_layout, style=FRAME_COLOR
         )
 
-        self.horizontalLayout_5 = create_layout(
+        self.horizontal_layout = create_layout(
             QHBoxLayout, 15, 20, out_layout=self.publisher_head_frame
         )
 
@@ -133,7 +133,7 @@ class MainTabUI(QWidget):
             min_size=[0, 25],
             max_size=[100, 25],
             style=styles.PICKER_BUTTON,
-            add_layout=self.horizontalLayout_5,
+            add_layout=self.horizontal_layout,
         )
 
         self.add_clipboard_button = create_button(
@@ -141,7 +141,7 @@ class MainTabUI(QWidget):
             self.publisher_head_frame,
             [0, 25],
             [150, 25],
-            self.horizontalLayout_5,
+            self.horizontal_layout,
             style=styles.APP_BUTTON,
         )
 
@@ -150,10 +150,10 @@ class MainTabUI(QWidget):
             self.publisher_head_frame,
             min_size=[0, 25],
             max_size=[150, 25],
-            add_layout=self.horizontalLayout_5,
+            add_layout=self.horizontal_layout,
         )
 
-        self.verticalLayout_3.addWidget(self.publisher_head_frame)
+        self.vertical_layout.addWidget(self.publisher_head_frame)
         self.clipboard_layout = create_layout(QHBoxLayout, [-1, -1, 1, -1])
 
         self.clipboard_list = ClipboardListWidget(self.main_left_layout)
@@ -163,7 +163,7 @@ class MainTabUI(QWidget):
         self.command_field.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.setStretch(0, 1)
         self.clipboard_layout.setStretch(1, 2)
-        self.verticalLayout_3.addLayout(self.clipboard_layout)
+        self.vertical_layout.addLayout(self.clipboard_layout)
         self.bottom_frame = QWidget(self.main_left_layout)
         self.bottom_frame.setFixedHeight(0)
-        self.gridLayout_2.addWidget(self.main_left_layout, 0, 0, 1, 1)
+        self.grid_layout.addWidget(self.main_left_layout, 0, 0, 1, 1)

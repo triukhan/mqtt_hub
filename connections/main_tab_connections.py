@@ -22,11 +22,15 @@ class MainTab(MainTabUI):
     def __init__(self):
         super().__init__()
         self.unsubscribe_topic = None
+        self.connector = None
+
+        self._setup_connections()
+        self._setup_tags_widget()
+        self._setup_convertors()
+
+    def _setup_connections(self):
         self.clipboard_list.set_method(self.show_clipboard_dialog_with_settings)
         self.autoscroll_toggle.setChecked(profile_manager.current_profile.autoscroll)
-        self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
-        self.add_button = self.tags_widget.add_button
-        self.verticalLayout_3.addWidget(self.tags_widget)
 
         self.receiver_list.itemClicked.connect(self.display_message_from_receiver_list)
         self.receiver_list.currentItemChanged.connect(
@@ -37,10 +41,17 @@ class MainTab(MainTabUI):
         self.clipboard_list.currentItemChanged.connect(
             self.display_message_in_command_field
         )
-        self.add_button.clicked.connect(self.create_topic)
-        self.clear_button.clicked.connect(self.clear_list_and_message)
-        self.connector = None
 
+        self.clear_button.clicked.connect(self.clear_list_and_message)
+        self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
+
+    def _setup_tags_widget(self):
+        self.tags_widget = TagsWidget(self.bottom_frame, self.show_edit_topic_dialog)
+        self.add_button = self.tags_widget.add_button
+        self.vertical_layout.addWidget(self.tags_widget)
+        self.add_button.clicked.connect(self.create_topic)
+
+    def _setup_convertors(self):
         create_convert_menu(
             self.convertor_button,
             self.convert_menu,
@@ -56,8 +67,6 @@ class MainTab(MainTabUI):
             self.set_clipboard_convertor
         )
         self.clipboard_convertor_button.clicked.connect(self.show_clipboard_convert_menu)
-
-        self.autoscroll_toggle.stateChanged.connect(self.set_autoscroll)
 
     def set_clipboard_method(self, method):
         self.clipboard_list.set_method(method)
