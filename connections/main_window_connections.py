@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QGraphicsOpacityEffect, QWidget
 
 from connections.connection_utils import Result
 from settings.profile_manager import profile_manager
-from UI.dialogs.confirmation_dialog import ConfirmationDialogUI
+from UI.dialogs.confirmation_dialog import ConfirmationDialog
 from UI.main_window_ui import MqttHubUi
 from UI.styles import COMMON_NOTIFY, FAIL_NOTIFY, SUCCESS_NOTIFY
 
@@ -194,8 +194,8 @@ class MainWindow(MqttHubUi):
 
     def open_delete_dialog(self, method):
         self.overlay.show()
-        ConfirmationDialogUI(
-            self, 'Are you sure you want to delete this message?', method
+        ConfirmationDialog(
+            self, 'Are you sure you want to delete this profile?', method
         ).exec_()
         self.overlay.hide()
 

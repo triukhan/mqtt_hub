@@ -40,7 +40,7 @@ class TopicDialogUI:
         )
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.exit_button = create_button(
-            'x',
+            '✕',
             self.header_frame,
             min_size=30,
             max_size=30,

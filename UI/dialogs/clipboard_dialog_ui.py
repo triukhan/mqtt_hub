@@ -52,7 +52,7 @@ class ClipboardDialogUI:
         self.header_layout.addItem(spacerItem)
 
         self.exit_button = create_button(
-            'x',
+            '✕',
             self.header_frame,
             30,
             30,
