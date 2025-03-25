@@ -73,11 +73,11 @@ class TopicDialog(QDialog, TopicDialogUI):
 
         self.topic_field.setText(self._topic.address)
         self.alias_field.setText(self._topic.alias)
-        self.qos_field.setText(str(self._topic.qos) or '0')
+        self.qos_field.setValue(int(self._topic.qos))
         self.color_field.setText(self._topic.color)
         self.no_local_checkbox.setChecked(self._topic.no_local)
         self.retain_published_checkbox.setChecked(self._topic.retain_as_published)
-        self.retain_handling_field.setText(str(self._topic.retain_handling) or '0')
+        self.retain_handling_field.setValue(int(self._topic.retain_handling))
         self._set_color_button(self._topic.color or Qt.gray)
 
     def save_and_close(self):
@@ -93,5 +93,5 @@ class TopicDialog(QDialog, TopicDialogUI):
         self.close()
 
     def set_default_settings(self):
-        self.qos_field.setText('0')
-        self.retain_handling_field.setText('0')
+        self.qos_field.setValue(0)
+        self.retain_handling_field.setValue(0)

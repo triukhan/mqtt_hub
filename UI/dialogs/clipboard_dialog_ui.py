@@ -1,18 +1,17 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (
-    QGridLayout,
-    QHBoxLayout,
-    QVBoxLayout,
-)
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout
 
 from UI.interface_utils import (
+    Spacer,
     create_button,
     create_field,
     create_frame,
     create_label,
-    create_layout, create_text_edit, create_spacer, Spacer,
+    create_layout,
+    create_spacer,
+    create_text_edit,
 )
-from UI.styles import DELETE_BUTTON, X_BUTTON
+from UI.styles import DELETE_BUTTON, WIDGET, X_BUTTON
 
 
 class ClipboardDialogUI:
@@ -22,7 +21,8 @@ class ClipboardDialogUI:
             QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint
         )
         clipboard_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        clipboard_dialog.setStyleSheet('background-color: rgba(35, 35, 35, 230);')
+        clipboard_dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        clipboard_dialog.setStyleSheet(WIDGET)
 
         self.main_layout = create_layout(QGridLayout, 0, 0, clipboard_dialog)
 
@@ -78,7 +78,9 @@ class ClipboardDialogUI:
             max_size=[1000, 30],
             align='left',
         )
-        self.text_field = create_text_edit(self.main_frame, 250, add_layout=self.text_layout)
+        self.text_field = create_text_edit(
+            self.main_frame, 250, add_layout=self.text_layout
+        )
 
         self.body_layout.addLayout(self.text_layout)
 

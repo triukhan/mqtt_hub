@@ -12,24 +12,26 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import DELETE_BUTTON, HEADER_FRAME, WIDGET
+from UI.styles import DELETE_BUTTON, LABEL, SPIN, WIDGET, X_BUTTON
 
 
 class TopicDialogUI:
     def _setup_ui(self, dialog):
         self.dialog = dialog
-        self.dialog.resize(530, 530)
+        self.dialog.resize(1, 1)
         self.dialog.setStyleSheet(WIDGET)
+        self.dialog.setWindowFlags(QtCore.Qt.Dialog | QtCore.Qt.FramelessWindowHint)
+        self.dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.dialog.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         self.main_layout = create_layout(QGridLayout, 0, 0, self.dialog)
         self.main_frame = create_frame(self.dialog, False)
         self.main_vertical_layout = create_layout(QVBoxLayout, 0, 0, self.main_frame)
 
-        self.header_frame = create_frame(self.main_frame, HEADER_FRAME)
-        self.header_frame.setFixedHeight(40)
+        self.header_frame = create_frame(self.main_frame, 'QFrame {border: none;}')
 
         self.header_layout = create_layout(
-            QHBoxLayout, [15, 0, 0, 0], 15, self.header_frame
+            QHBoxLayout, [15, 0, 0, 10], 15, self.header_frame
         )
         self.header_label = create_label(
             'Edit Topic',
@@ -37,23 +39,27 @@ class TopicDialogUI:
             self.header_layout,
             min_size=[30, 30],
             max_size=[200, 30],
+            style=LABEL + 'QLabel {margin-top: 10px;}',
         )
+
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.exit_button = create_button(
             '✕',
             self.header_frame,
-            min_size=30,
-            max_size=30,
-            add_layout=self.header_layout,
-            anim=False,
+            30,
+            30,
+            self.header_layout,
+            style=X_BUTTON,
+            body=True,
+            start_value=(35, 35, 35),
         )
         self.main_vertical_layout.addWidget(self.header_frame)
 
         self.body_layout = create_layout(QVBoxLayout, spacing=0)
 
-        self.topic_layout = create_layout(QVBoxLayout, [20, 10, 20, 10], 10)
+        self.topic_layout = create_layout(QVBoxLayout, [20, 10, 20, 5], 5)
         self.topic_label = create_label(
-            'Topic',
+            ' Topic',
             self.main_frame,
             self.topic_layout,
             align='left',
@@ -63,9 +69,9 @@ class TopicDialogUI:
         self.topic_field = create_field(self.main_frame, self.topic_layout)
         self.body_layout.addLayout(self.topic_layout)
 
-        self.alias_layout = create_layout(QVBoxLayout, [20, 0, 20, 5], 10)
+        self.alias_layout = create_layout(QVBoxLayout, [20, 0, 20, 5], 5)
         self.alias_label = create_label(
-            'Alias',
+            ' Alias',
             self.main_frame,
             self.alias_layout,
             align='left',
@@ -75,16 +81,22 @@ class TopicDialogUI:
         self.alias_field = create_field(self.main_frame, self.alias_layout)
         self.body_layout.addLayout(self.alias_layout)
 
-        self.qos_color_layout = create_layout(QGridLayout, [20, 15, 20, 15])
+        self.qos_color_layout = create_layout(QGridLayout, [20, 5, 20, 15])
         self.qos_color_layout.setHorizontalSpacing(20)
-        self.qos_color_layout.setVerticalSpacing(15)
+        self.qos_color_layout.setVerticalSpacing(5)
         self.qos_field = create_field(
-            self.main_frame, self.qos_color_layout, [1, 0, 1, 1]
+            self.main_frame,
+            self.qos_color_layout,
+            [1, 0, 1, 1],
+            spinbox=True,
+            style=SPIN,
         )
+        self.qos_field.setMaximum(3)
+
         self.qos_field.setMinimumSize(QtCore.QSize(230, 30))
         self.qos_field.setMaximumSize(QtCore.QSize(200, 30))
         self.qos_label = create_label(
-            'Qos',
+            ' Qos',
             self.main_frame,
             self.qos_color_layout,
             [0, 0, 1, 1],
@@ -100,6 +112,7 @@ class TopicDialogUI:
             min_size=30,
             max_size=30,
             add_layout=self.color_layout,
+            style=LABEL + 'QPushButton {margin-bottom: 2px;}',
         )
         self.qos_color_layout.addLayout(self.color_layout, 0, 3, 1, 1)
         self.color_field = create_field(
@@ -110,7 +123,7 @@ class TopicDialogUI:
         self.body_layout.addLayout(self.qos_color_layout)
 
         self.no_local_layout = create_layout(
-            QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft
+            QHBoxLayout, [25, 0, 20, 5], align=Qt.AlignLeft
         )
         self.no_local_label = create_label(
             'No Local Flag',
@@ -124,7 +137,7 @@ class TopicDialogUI:
         self.body_layout.addLayout(self.no_local_layout)
 
         self.retain_published_layout = create_layout(
-            QHBoxLayout, [20, 15, 20, 15], align=Qt.AlignLeft
+            QHBoxLayout, [25, 0, 20, 5], align=Qt.AlignLeft
         )
         self.retain_published_label = create_label(
             'Retain as Published Flag',
@@ -137,7 +150,7 @@ class TopicDialogUI:
         self.retain_published_checkbox = create_toggle(self.retain_published_layout)
         self.body_layout.addLayout(self.retain_published_layout)
 
-        self.retain_handling_layout = create_layout(QHBoxLayout, [20, 15, 20, 15], 15)
+        self.retain_handling_layout = create_layout(QHBoxLayout, [25, 5, 20, 15], 10)
         self.retain_handling_label = create_label(
             'Retain Handling',
             self.main_frame,
@@ -145,11 +158,14 @@ class TopicDialogUI:
             align='left',
         )
         self.retain_handling_field = create_field(
-            self.main_frame, self.retain_handling_layout
+            self.main_frame, self.retain_handling_layout, spinbox=True, style=SPIN
         )
+        self.retain_handling_field.setMinimumSize(QtCore.QSize(360, 30))
+        self.retain_handling_field.setMaximum(2)
+
         self.body_layout.addLayout(self.retain_handling_layout)
 
-        self.save_layout = create_layout(QHBoxLayout, [15, 15, 20, 15], 15)
+        self.save_layout = create_layout(QHBoxLayout, [25, 15, 20, 15], 15)
         self.delete_button = create_button(
             'Delete', self.main_frame, add_layout=self.save_layout, style=DELETE_BUTTON
         )

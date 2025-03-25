@@ -1,8 +1,9 @@
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout
-from PyQt5 import QtCore
+
 from UI.interface_utils import create_button, create_frame, create_label, create_layout
-from UI.styles import WIDGET, X_BUTTON, DELETE_BUTTON, FRAME_COLOR
+from UI.styles import DELETE_BUTTON, FRAME_COLOR, WIDGET, X_BUTTON
 
 
 class ConfirmationDialog(QDialog):
@@ -10,6 +11,7 @@ class ConfirmationDialog(QDialog):
         super().__init__(parent)
         self._method = method
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.text = text
         self._setup_ui()
 
@@ -24,7 +26,9 @@ class ConfirmationDialog(QDialog):
         self.inner_layout = create_layout(QVBoxLayout, 0, 0, self.main_frame)
 
         self.header_frame = create_frame(self.main_frame, FRAME_COLOR)
-        self.header_layout = create_layout(QHBoxLayout, [30, 0, 0, 0], 0, self.header_frame)
+        self.header_layout = create_layout(
+            QHBoxLayout, [30, 0, 0, 0], 0, self.header_frame
+        )
 
         self.exit_button = create_button(
             '✕',
@@ -61,7 +65,11 @@ class ConfirmationDialog(QDialog):
         self.cancel_button.clicked.connect(self.close)
 
         self.delete_button = create_button(
-            'Delete', self.main_frame, min_size=[50, 30], max_size=[100, 30], style=DELETE_BUTTON
+            'Delete',
+            self.main_frame,
+            min_size=[50, 30],
+            max_size=[100, 30],
+            style=DELETE_BUTTON,
         )
         self.delete_button.clicked.connect(self._method_and_close)
 

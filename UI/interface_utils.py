@@ -2,15 +2,9 @@ from enum import Enum
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import (
-    QColor,
-    QFont,
-    QFontMetrics,
-    QIcon,
-    QPen,
-    QPixmap,
-)
+from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap
 from PyQt5.QtWidgets import (
+    QAction,
     QCheckBox,
     QFrame,
     QHBoxLayout,
@@ -22,7 +16,8 @@ from PyQt5.QtWidgets import (
     QScrollBar,
     QSizePolicy,
     QSpacerItem,
-    QStyledItemDelegate, QTextEdit, QAction,
+    QStyledItemDelegate,
+    QTextEdit,
 )
 from qtwidgets import AnimatedToggle
 
@@ -30,6 +25,7 @@ from settings.topic import Topic
 from UI import styles
 from UI.custom_widgets.animated_field import AnimatedLineEdit
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
+from UI.custom_widgets.animated_spin import AnimatedSpinBox
 from UI.icons.icons import EXPAND_ICON
 from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, TEXT_EDIT
 
@@ -90,9 +86,14 @@ def create_field(
     add_params: list | None = None,
     style: str = styles.FIELD,
     button=None,
+    spinbox=False,
 ):
-    field = AnimatedLineEdit(main_layout, style, button)
-    field.setStyleSheet(style)
+    if spinbox:
+        field = AnimatedSpinBox(main_layout, style)
+        field.setStyleSheet(style)
+    else:
+        field = AnimatedLineEdit(main_layout, style, button)
+        field.setStyleSheet(style)
 
     if add_layout is not None:
         if add_params is not None:
@@ -322,6 +323,7 @@ def create_expand_button(
 
     return button, menu, show_menu
 
+
 def create_text_edit(frame, min_height=None, style=TEXT_EDIT, add_layout=None):
     text_edit = QTextEdit(frame)
     text_edit.setStyleSheet(style)
@@ -331,6 +333,7 @@ def create_text_edit(frame, min_height=None, style=TEXT_EDIT, add_layout=None):
     if add_layout is not None:
         add_layout.addWidget(text_edit)
     return text_edit
+
 
 def create_convert_menu(button, menu, formats, callback):
     font_metrics = QFontMetrics(button.font())
@@ -349,4 +352,3 @@ class BorderDelegate(QStyledItemDelegate):
             color = '#2d2d2d'
         painter.setPen(QPen(QColor(color), 4))
         painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
-

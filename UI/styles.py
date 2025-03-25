@@ -1,4 +1,4 @@
-from UI.icons.icons import INFO_ICON, PLUS_ICON
+from UI.icons.icons import DOWN_ICON, INFO_ICON, PLUS_ICON, UP_ICON
 
 MAIN_BUTTON = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
@@ -108,7 +108,7 @@ CLIPBOARD_LIST = """
 X_BUTTON = """
     QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); padding: 10px; border: none;}
     """
-WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50); border-radius: 4px}'
+WIDGET = 'QWidget {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50); border-radius: 6px}'
 HEADER_FRAME = 'QFrame {border-bottom: 1px solid rgb(50, 50, 50)}'
 MENU = (
     'QMenu {background-color: rgb(35, 35, 35); color: rgb(186, 189, 182); border: 1px solid rgb(50, 50, 50);}'
@@ -146,6 +146,38 @@ FAIL_NOTIFY = (
 COMMON_NOTIFY = 'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}'
 TAG_LABEL = 'QLabel {color: rgb(186, 189, 182); border: none}'
 TEXT_EDIT = 'QTextEdit {color: rgb(186, 189, 182)}'
+SPIN = f"""
+QSpinBox {{
+    color: rgb(186, 189, 182);
+    border: 1px solid rgb(50, 50, 50);
+    border-radius: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}}
+
+QSpinBox::up-button {{
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border: 1px solid rgb(50, 50, 50);
+    border-width: 1px 1px 0 1px;
+    border-top-right-radius: 5px;
+    background: transparent;
+    width: 15px;
+}}
+
+QSpinBox::down-button {{
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border: 1px solid rgb(50, 50, 50);
+    border-width: 0 1px 1px 1px;
+    border-bottom-right-radius: 5px;
+    background: transparent;
+    width: 15px;}}
+
+QSpinBox::up-arrow {{image: url({UP_ICON});width: 7px;height: 7px;}}
+QSpinBox::down-arrow {{image: url({DOWN_ICON}); width: 7px; height: 7px;}}
+
+"""
 
 
 def sidebar_button(icon_path):

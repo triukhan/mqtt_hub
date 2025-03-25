@@ -36,6 +36,7 @@ class MainWindow(MqttHubUi):
         self.overlay.setGeometry(0, 0, self.width(), self.height())
         self.overlay.setStyleSheet('background-color: rgba(0, 0, 0, 100);')
         self.overlay.hide()
+        self.main_tab.overlay = self.overlay
 
     def save_new_profile(self, with_notify: bool = True):
         self._setup_notifications()

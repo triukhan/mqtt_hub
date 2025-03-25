@@ -1,8 +1,6 @@
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import QAction, QListWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem
 
-from UI.interface_utils import create_convert_menu
 from connections.clipboard_dialog_connections import (
     ClipboardDialog,
     ClipboardEditDialog,
@@ -13,6 +11,7 @@ from mqtt.connector import convert_to_format
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI.custom_widgets.tags_widget import TagsWidget
+from UI.interface_utils import create_convert_menu
 from UI.tabs.main_tab_ui import MainTabUI
 
 
@@ -23,6 +22,7 @@ class MainTab(MainTabUI):
         super().__init__()
         self.unsubscribe_topic = None
         self.connector = None
+        self.overlay = None
 
         self._setup_connections()
         self._setup_tags_widget()
@@ -56,7 +56,7 @@ class MainTab(MainTabUI):
             self.convertor_button,
             self.convert_menu,
             ('JSON', 'Plaintext', 'Hex', 'Base64'),
-            self.set_convertor
+            self.set_convertor,
         )
         self.convertor_button.clicked.connect(self.show_convert_menu)
 
@@ -64,9 +64,11 @@ class MainTab(MainTabUI):
             self.clipboard_convertor_button,
             self.convert_clipboard_menu,
             ('JSON', 'Plaintext'),
-            self.set_clipboard_convertor
+            self.set_clipboard_convertor,
         )
-        self.clipboard_convertor_button.clicked.connect(self.show_clipboard_convert_menu)
+        self.clipboard_convertor_button.clicked.connect(
+            self.show_clipboard_convert_menu
+        )
 
     def set_clipboard_method(self, method):
         self.clipboard_list.set_method(method)
@@ -191,10 +193,14 @@ class MainTab(MainTabUI):
         self.unsubscribe_topic(topic)
 
     def show_create_topic_dialog(self):
+        self.overlay.show()
         TopicDialog(self.save_and_subscribe_topic, self).exec_()
+        self.overlay.hide()
 
     def show_edit_topic_dialog(self, topic, tag_dict):
+        self.overlay.show()
         TopicDialog(self.save_topic, self, topic, tag_dict, self.delete_topic).exec_()
+        self.overlay.hide()
 
     def clear_list_and_message(self):
         self.receiver_text_edit.clear()
