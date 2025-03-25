@@ -106,6 +106,9 @@ class MainTab(MainTabUI):
             self.clipboard_list.addItem(item)
 
     def display_message_in_command_field(self, item):
+        if item is None:
+            return
+
         message = convert_to_format(
             item.data(Qt.UserRole)[0],
             profile_manager.current_profile.clipboard_convertor,
