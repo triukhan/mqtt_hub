@@ -41,7 +41,6 @@ class ConfirmationDialog(QDialog):
 
         self.header_layout.addStretch()
         self.header_layout.addWidget(self.exit_button)
-
         self.inner_layout.addWidget(self.header_frame)
 
         self.message_label = create_label(

@@ -15,8 +15,8 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI.icons.icons import EDIT_ICON
-from UI.interface_utils import create_button, create_layout, set_topic_color
-from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG
+from UI.interface_utils import create_button, create_layout, set_topic_color, create_label
+from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG, TAG_LABEL
 
 
 class FlowLayout(QLayout):
@@ -114,9 +114,8 @@ class TagsWidget(QFrame):
         tag.setFixedSize(115, 30)
         tag_layout = create_layout(QHBoxLayout, 0, 0, tag)
 
-        tag_label = QLabel(topic.get_name(), tag)  # todo: create_label
+        tag_label = create_label(topic.get_name(), tag, align='left', style=TAG_LABEL)
         tag_label.setFixedWidth(90)
-        tag_label.setStyleSheet('QLabel {color: rgb(186, 189, 182); border: none}')
         tag_label.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
         )

@@ -144,6 +144,8 @@ FAIL_NOTIFY = (
     'rgb(10, 40, 10); border-radius: 5; padding: 5px;}'
 )
 COMMON_NOTIFY = 'QPushButton {color: rgb(186, 189, 182); background-color: rgb(45, 45, 45); border-radius: 5; padding: 5px;}'
+TAG_LABEL = 'QLabel {color: rgb(186, 189, 182); border: none}'
+TEXT_EDIT = 'QTextEdit {color: rgb(186, 189, 182)}'
 
 
 def sidebar_button(icon_path):

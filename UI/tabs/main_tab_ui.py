@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QHBoxLayout,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -21,7 +20,7 @@ from UI.interface_utils import (
     create_list,
     create_scroll_bar,
     create_spacer,
-    create_toggle,
+    create_toggle, create_text_edit,
 )
 from UI.styles import (
     CLEAR_BUTTON,
@@ -103,13 +102,10 @@ class MainTabUI(QWidget):
 
         self.select_toggle = create_toggle(self.message_formating)
 
-        self.receiver_text_edit = QTextEdit(self)  # todo
-        self.receiver_text_edit.setStyleSheet(RECEIVER_TEXT)
+        self.receiver_text_edit = create_text_edit(self, style=RECEIVER_TEXT, add_layout=self.main_right_layout)
         self.receiver_text_edit.setReadOnly(True)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         create_scroll_bar(self, self.receiver_text_edit)
-
-        self.main_right_layout.addWidget(self.receiver_text_edit)
 
         self.gridLayout_2.addLayout(self.main_right_layout, 0, 1, 1, 1)
 
@@ -163,10 +159,8 @@ class MainTabUI(QWidget):
         self.clipboard_list = ClipboardListWidget(self.main_left_layout)
         self.clipboard_layout.addWidget(self.clipboard_list)
 
-        self.command_field = QTextEdit(self.main_left_layout)
-        self.command_field.setStyleSheet(COMMAND_FIELD)
+        self.command_field = create_text_edit(self.main_left_layout, style=COMMAND_FIELD, add_layout=self.clipboard_layout)
         self.command_field.setFrameShape(QFrame.NoFrame)
-        self.clipboard_layout.addWidget(self.command_field)
         self.clipboard_layout.setStretch(0, 1)
         self.clipboard_layout.setStretch(1, 2)
         self.verticalLayout_3.addLayout(self.clipboard_layout)

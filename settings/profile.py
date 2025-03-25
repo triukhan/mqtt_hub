@@ -75,7 +75,6 @@ class Profile:
         """Creating profile."""
         self.is_created = True
 
-        # TODO: add exception if error -> remove added fields
         for attr_name in dir(self):
             if attr_name in ('id', 'topics'):
                 continue
@@ -98,7 +97,6 @@ class Profile:
 
     @name.setter
     def name(self, name):
-        # TODO: add logic deletion section with old name, adding section with new name
         self._set_field('name', name)
 
     @property

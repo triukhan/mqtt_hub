@@ -1,6 +1,3 @@
-import base64
-import binascii
-import json
 from contextlib import suppress
 from datetime import datetime
 
@@ -10,6 +7,7 @@ from paho.mqtt.properties import Properties
 from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 from connections.connection_utils import Result
+from mqtt.connector_utils import validate_start, convert_to_format
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -212,39 +210,3 @@ class MQTTMixin(QObject, MQTTConnector):
 
         if res is not None:
             self.notification_signal.emit(res, Result.FAILURE)
-
-
-def convert_to_format(payload, form):  # todo: replace to utils
-    if form == 'Plaintext':
-        return payload
-
-    if form == 'JSON':
-        try:
-            json_obj = json.loads(payload)
-            return json.dumps(json_obj, indent=4)
-        except json.JSONDecodeError:
-            return payload
-
-    if form == 'Hex':
-        return binascii.hexlify(payload.encode()).decode()
-
-    if form == 'Base64':
-        return base64.b64encode(payload.encode()).decode()
-
-    return payload
-
-
-def validate_start(profile: Profile):  # todo: replace
-    if not profile.host:
-        return 'Error: Host is absent is settings'
-    if not profile.port:
-        return 'Error: Port is absent is settings'
-    if not profile.client_id and profile.mqtt_version != MQTTv5:
-        return 'Error: Client ID is absent is settings'
-    if profile.self_signed and '' in (
-        profile.ca_file,
-        profile.crt_file,
-        profile.key_file,
-    ):
-        return 'Error: Some certificates are absent is settings'
-    return None

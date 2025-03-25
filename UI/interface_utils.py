@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (
     QScrollBar,
     QSizePolicy,
     QSpacerItem,
-    QStyledItemDelegate,
+    QStyledItemDelegate, QTextEdit, QAction,
 )
 from qtwidgets import AnimatedToggle
 
@@ -34,7 +34,7 @@ from UI import styles
 from UI.custom_widgets.animated_field import AnimatedLineEdit
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
 from UI.icons.icons import EXPAND_ICON
-from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR
+from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, TEXT_EDIT
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -324,6 +324,25 @@ def create_expand_button(
         menu.popup(button.mapToGlobal(QPoint(0, button.height())))
 
     return button, menu, show_menu
+
+def create_text_edit(frame, min_height=None, style=TEXT_EDIT, add_layout=None):
+    text_edit = QTextEdit(frame)
+    text_edit.setStyleSheet(style)
+
+    if min_height is not None:
+        text_edit.setMinimumHeight(min_height)
+    if add_layout is not None:
+        add_layout.addWidget(text_edit)
+    return text_edit
+
+def create_convert_menu(button, menu, formats, callback):
+    font_metrics = QFontMetrics(button.font())
+
+    for convert_format in formats:
+        elided_text = font_metrics.elidedText(convert_format, Qt.ElideRight, 110)
+        action = QAction(elided_text, button)
+        action.triggered.connect(lambda _, f=convert_format: callback(f))
+        menu.addAction(action)
 
 
 class BorderDelegate(QStyledItemDelegate):

@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSizePolicy,
     QSpacerItem,
-    QTextEdit,
     QVBoxLayout,
 )
 
@@ -13,7 +12,7 @@ from UI.interface_utils import (
     create_field,
     create_frame,
     create_label,
-    create_layout,
+    create_layout, create_text_edit, create_spacer, Spacer,
 )
 from UI.styles import DELETE_BUTTON, X_BUTTON
 
@@ -83,10 +82,7 @@ class ClipboardDialogUI:
             max_size=[1000, 30],
             align='left',
         )
-        self.text_field = QTextEdit(self.main_frame)  # todo
-        self.text_field.setMinimumHeight(250)
-        self.text_field.setStyleSheet('QTextEdit {color: rgb(186, 189, 182)}')
-        self.text_layout.addWidget(self.text_field)
+        self.text_field = create_text_edit(self.main_frame, 250, add_layout=self.text_layout)
 
         self.body_layout.addLayout(self.text_layout)
 
@@ -98,10 +94,8 @@ class ClipboardDialogUI:
                 add_layout=self.save_layout,
                 style=DELETE_BUTTON,
             )
-        spacerItem1 = QSpacerItem(
-            40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum  # todo
-        )
-        self.save_layout.addItem(spacerItem1)
+
+        self.save_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         self.cancel_button = create_button(
             'Cancel', self.main_frame, add_layout=self.save_layout
         )
