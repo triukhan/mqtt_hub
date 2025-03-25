@@ -65,13 +65,14 @@ class MainWindow(MqttHubUi):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(1)
         self._setup_plus_header()
+        self.create_button.clicked.connect(lambda: self.save_new_profile(True))
         self.plus_button.select()
 
     def open_edit_tab(self):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(2)
         self._setup_edit_header()
-        self.save_edit_button.clicked.connect(self.save_edit_profile)
+        self.save_edit_button.clicked.connect(lambda: self.save_edit_profile(True))
         self.connect_edit_button.clicked.connect(
             self.save_settings_edit_tab_and_connect
         )

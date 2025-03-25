@@ -307,7 +307,6 @@ class MqttHubUi(QWidget):
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
-        self.create_button.clicked.connect(self.save_new_profile)
         self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
 
     def _setup_edit_header(self):
