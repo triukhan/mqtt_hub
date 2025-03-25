@@ -203,19 +203,10 @@ class MainWindow(MqttHubUi):
         self.main_tab.show_clipboard_dialog()
         self.overlay.hide()
 
-    def open_clipboard_dialog_with_settings(self, name, settings):
+    def open_clipboard_dialog_with_settings(self, item):
         self.overlay.show()
-        self.main_tab.show_clipboard_dialog_with_settings(name, settings)
+        self.main_tab.show_clipboard_dialog_with_settings(item)
         self.overlay.hide()
-
-    def handle_delete_message(self):
-        if (item := self.main_tab.get_selected_item()) is not None:
-            self.open_delete_dialog(
-                lambda: self.main_tab.delete_clipboard_message(item)
-            )
-            self.show_notification('Message is deleted', Result.COMMON)
-        else:
-            self.show_notification('You are not selected any message', Result.COMMON)
 
     def set_profile(self, profile):
         super().set_profile(profile)

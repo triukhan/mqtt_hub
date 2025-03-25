@@ -99,7 +99,7 @@ class RightButtonDelegate(QStyledItemDelegate):
             if row in self.button_rects and self.button_rects[row].contains(
                 event.pos()
             ):
-                self.method(index.data(Qt.DisplayRole), index.data(Qt.UserRole))
+                self.method(index)
                 return True
         return False
 
@@ -149,7 +149,3 @@ class ClipboardListWidget(QListWidget):
         self.delegate.setHoveredRow(-1)
         self.delegate.hovered_button_row = -1
         self.viewport().update()
-
-    @staticmethod
-    def print_temporary():
-        print('test')

@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
 from UI.dialogs.clipboard_dialog_ui import ClipboardDialogUI
@@ -23,18 +24,31 @@ class ClipboardDialog(QDialog, ClipboardDialogUI):
 
 
 class ClipboardEditDialog(QDialog, ClipboardDialogUI):
-    def __init__(self, save_method, data, parent=None):
+    def __init__(self, save_method, item, parent=None, delete_method=None):
         super().__init__(parent)
         self.save_method = save_method
+        self.delete_method = delete_method
+
+        self.item = item
+        self.item_data = item.data(Qt.UserRole)
+        self.message_id, self.message_text, self.message_name = (
+            self.item_data[1],
+            self.item_data[0],
+            item.data(Qt.DisplayRole),
+        )
         self._setup_ui(self, True)
         self._setup_connections()
-        self._set_fields(data[0], data[1][0])
-        self.message_id = data[1][1]
+        self._set_fields(self.message_name, self.message_text)
         self.start_data = self._get_start_data()
+
+    def delete_met(self):
+        self.delete_method(self.message_id, self.item)
+        self.close()
 
     def _setup_connections(self):
         self.save_button.clicked.connect(self.add_clipboard)
         self.cancel_button.clicked.connect(self.close)
+        self.delete_button.clicked.connect(self.delete_met)
 
     def _get_start_data(self):
         return [self.name_field.text(), self.text_field.toPlainText()]

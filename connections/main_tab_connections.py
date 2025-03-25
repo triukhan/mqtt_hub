@@ -152,8 +152,10 @@ class MainTab(MainTabUI):
         dialog = ClipboardDialog(self.save_message_to_clipboard, self, False).exec_()
         return dialog
 
-    def show_clipboard_dialog_with_settings(self, name, message):
-        ClipboardEditDialog(self.save_editing_message, [name, message], self).exec_()
+    def show_clipboard_dialog_with_settings(self, item):
+        ClipboardEditDialog(
+            self.save_editing_message, item, self, self.delete_clipboard_message
+        ).exec_()
 
     def save_and_subscribe_topic(self, _, topic_settings: dict, __):
         topic = profile_manager.current_profile.add_topic(topic_settings)
@@ -194,7 +196,10 @@ class MainTab(MainTabUI):
     def get_selected_item(self):
         return self.clipboard_list.currentItem()
 
-    def delete_clipboard_message(self, item):
-        row = self.clipboard_list.row(item)
-        self.clipboard_list.takeItem(row)
-        profile_manager.current_profile.delete_clipboard(item.text())
+    def delete_clipboard_message(self, item_id, item):
+        profile_manager.current_profile.delete_clipboard(item_id)
+
+        item = self.clipboard_list.itemFromIndex(item)
+        if item:
+            self.clipboard_list.takeItem(self.clipboard_list.row(item))
+        self.notification_signal.emit('Clipboard message deleted', Result.COMMON)
