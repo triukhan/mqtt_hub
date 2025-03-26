@@ -1,7 +1,7 @@
 from settings.settings import get_path
 
 INFO_ICON = get_path('UI/icons/info-icon.svg')
-LOGO_ICON = get_path('UI/icons/logo-icon.png')
+LOGO_ICON = get_path('UI/icons/logo-icon.svg')
 MAIN_ICON = get_path('UI/icons/main-icon.svg')
 PLUS_ICON = get_path('UI/icons/plus-icon.svg')
 SETTINGS_ICON = get_path('UI/icons/settings-icon.svg')
