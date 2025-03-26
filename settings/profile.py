@@ -48,6 +48,7 @@ class Profile:
     def __post_init__(self):
         self.profile_ini = get_path(f'{PROFILES_PATH}{self._id}.ini')
         self.settings = Settings(self.profile_ini)
+        self.clipboard = {}
 
         if not isinstance(self._topics, list):
             raise TypeError("_topics must be a list")
@@ -316,6 +317,7 @@ class Profile:
         self.settings.clear_section('clipboard')
 
     def add_clipboard(self, message_name: str, message_text: str):
+        print(bool(self.clipboard))
         message_with_id = (
             message_name + '_ID_STARTS_HERE_' + str(len(self.clipboard) + 1)
         )
