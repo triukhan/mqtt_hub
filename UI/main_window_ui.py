@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QEvent, QSize, Qt
+from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
     QAction,
@@ -15,7 +15,10 @@ from connections.plus_tab_connections import EditTab, PlusTab
 from settings.profile_manager import profile_manager
 from UI.icons.icons import (
     CONNECT_ICON,
+    DASH_ICON,
     EDIT_ICON,
+    EXIT_ICON,
+    EXPAND_HEAD_ICON,
     INFO_ICON,
     LOGO_ICON,
     MAIN_ICON,
@@ -35,11 +38,11 @@ from UI.interface_utils import (
 )
 from UI.styles import (
     EXIT_BUTTON,
-    EXIT_BUTTON_HOVER,
     FRAME_COLOR,
     HEADER_FRAME,
     MAIN_BUTTON_WITHOUT_HOVER,
     MAIN_WINDOW,
+    exit_button,
     header_button,
     sidebar_button,
 )
@@ -194,9 +197,13 @@ class MqttHubUi(FramelessWindow):
         return super().eventFilter(obj, event)
 
     def set_hover(self, hover):
-        style = EXIT_BUTTON_HOVER if hover else EXIT_BUTTON
-        for button in self.buttons:
-            button.setStyleSheet(style)
+        if not hover:
+            for button in self.buttons:
+                button.setStyleSheet(EXIT_BUTTON)
+        else:
+            self.exit_button.setStyleSheet(exit_button(EXIT_ICON))
+            self.collapse_button.setStyleSheet(exit_button(DASH_ICON))
+            self.expand_button.setStyleSheet(exit_button(EXPAND_HEAD_ICON))
 
     def _setup_main_header(self):
         self.header_frame = create_frame(

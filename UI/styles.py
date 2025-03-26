@@ -1,11 +1,4 @@
-from UI.icons.icons import (
-    DOWN_ICON,
-    EDIT_ICON,
-    EXPAND_HEAD_ICON,
-    INFO_ICON,
-    PLUS_ICON,
-    UP_ICON,
-)
+from UI.icons.icons import DOWN_ICON, EDIT_ICON, PLUS_ICON, UP_ICON
 
 MAIN_BUTTON = (
     'QPushButton {color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-radius: 5px; '
@@ -75,11 +68,6 @@ FILTER_BUTTON_2 = (
 EXIT_BUTTON = (
     'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
     'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;}'
-)
-EXIT_BUTTON_HOVER = (
-    'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
-    'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;'
-    f'border-image: url({EXPAND_HEAD_ICON}) 0 0 0 0 stretch stretch;}}'
 )
 SCROLLBAR = """
     QScrollBar:vertical {background-color: rgb(34, 34, 34); border-right: 1px solid rgb(50, 50, 50);
@@ -199,5 +187,13 @@ def header_button(icon_path=None):
     return (
         f'QPushButton {{color: rgb(186, 189, 182); background-color: rgb(35, 35, 35); border-top-left-radius: 5;'
         f'border-bottom-left-radius: 5; border-top-right-radius: 5; border-bottom-right-radius: 5; padding: 10px;'
+        f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}}'
+    )
+
+
+def exit_button(icon_path=None):
+    return (
+        'QPushButton {color: rgb(20, 20, 20); background-color: rgb(130, 130, 130); border-top-left-radius: 6;'
+        'border-bottom-left-radius: 6; border-top-right-radius: 6; border-bottom-right-radius: 6;'
         f'border-image: url({icon_path}) 0 0 0 0 stretch stretch;}}'
     )
