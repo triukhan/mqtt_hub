@@ -91,7 +91,7 @@ class TopicDialogUI:
             spinbox=True,
             style=SPIN,
         )
-        self.qos_field.setMaximum(3)
+        self.qos_field.setMaximum(2)
 
         self.qos_field.setMinimumSize(QtCore.QSize(230, 30))
         self.qos_field.setMaximumSize(QtCore.QSize(200, 30))

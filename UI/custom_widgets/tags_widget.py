@@ -15,7 +15,12 @@ from PyQt5.QtWidgets import (
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI.icons.icons import EDIT_ICON
-from UI.interface_utils import create_button, create_layout, set_topic_color, create_label
+from UI.interface_utils import (
+    create_button,
+    create_label,
+    create_layout,
+    set_topic_color,
+)
 from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG, TAG_LABEL
 
 
@@ -121,9 +126,7 @@ class TagsWidget(QFrame):
         )
 
         icon_button = QToolButton(tag)
-        icon_button.setIcon(QIcon(EDIT_ICON))
-        icon_button.setIconSize(QSize(32, 32))
-        icon_button.setFixedSize(18, 18)
+        icon_button.setFixedSize(22, 22)
         icon_button.setStyleSheet(EDIT_TAG)
         icon_button.clicked.connect(
             lambda: self.edit_method(topic, {'frame': tag, 'label': tag_label})

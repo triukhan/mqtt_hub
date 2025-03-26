@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtCore import QEvent, QSize, Qt
 from PyQt5.QtGui import QFontMetrics
 from PyQt5.QtWidgets import (
     QAction,
@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from qframelesswindow import FramelessWindow
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
@@ -46,10 +47,9 @@ from UI.tabs.info_tab_ui import InfoTab
 from UI.tabs.settings_tab_ui import SettingsTabUi
 
 
-class MqttHubUi(QWidget):
+class MqttHubUi(FramelessWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setGeometry(100, 50, 1066, 904)
         self.drag_pos = None
         self.main_tab = MainTab()

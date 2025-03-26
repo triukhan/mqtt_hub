@@ -16,6 +16,7 @@ class MainWindow(MqttHubUi):
         self._setup_ui()
         self.open_main_tab()
         self.disconnect = None
+        self.maximum_size = False
 
         self.connect_sidebar()
         self.update_profile_button()
@@ -30,6 +31,8 @@ class MainWindow(MqttHubUi):
         )
         self.main_tab.add_clipboard_button.clicked.connect(self.open_clipboard_dialog)
         self.main_tab.set_clipboard_method(self.open_clipboard_dialog_with_settings)
+        self.collapse_button.clicked.connect(self.showMinimized)
+        self.expand_button.clicked.connect(self.handle_expand_click)
 
     def _setup_overlay(self):
         self.overlay = QWidget(self)
@@ -216,3 +219,11 @@ class MainWindow(MqttHubUi):
     def set_profile(self, profile):
         super().set_profile(profile)
         self.disconnect()
+
+    def handle_expand_click(self):
+        if not self.maximum_size:
+            self.showMaximized()
+            self.maximum_size = True
+        else:
+            self.showNormal()
+            self.maximum_size = False

@@ -1,5 +1,5 @@
 paho-mqtt~=1.6.1
 pre-commit
-qtwidgets~=1.1
 PyQt5~=5.15.11
-qtpy
+qframelesswindow
+qtwidgets~=1.1
