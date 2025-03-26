@@ -19,8 +19,7 @@ from UI.styles import BLANK_SCROLLBAR, PICKER_BUTTON
 class PlusTabUI(QWidget):
     def __init__(self):
         super().__init__()
-        self.plus_layout = create_layout(QGridLayout, out_layout=self)
-        self.plus_layout.setContentsMargins(0, 0, 0, 0)
+        self.plus_layout = create_layout(QGridLayout, [0, 0, 0, 0], out_layout=self)
         self.plus_scroll = QScrollArea(self)
         create_scroll_bar(self, self.plus_scroll, BLANK_SCROLLBAR)
         self.plus_scroll.setStyleSheet('QScrollArea {border: 0px}')
