@@ -1,3 +1,4 @@
+import logging
 from contextlib import suppress
 from datetime import datetime
 
@@ -145,7 +146,7 @@ class MQTTMixin(QObject, MQTTConnector):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f'{timestamp}\n\n{received_payload}'
         self.message_received.emit(msg.topic, formatted_message)
-        print(formatted_message)
+        logging.info(f'Message received on topic {msg.topic}: {received_payload}')
 
     def on_connect(self, _, __, ___, rc, ____=None):
         if rc != 0:

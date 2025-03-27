@@ -148,6 +148,7 @@ QSpinBox {{
     border-radius: 5px;
     padding-left: 5px;
     padding-right: 5px;
+    background-color: rgb(35, 35, 35);
 }}
 
 QSpinBox::up-button {{

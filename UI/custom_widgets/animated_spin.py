@@ -16,6 +16,7 @@ class AnimatedSpinBox(QSpinBox):
             duration=400,
         )
         self._update_stylesheet(QColor('#323232'))
+        self.setMinimumHeight(30)
 
     def _on_value_changed(self, border_color):
         self._update_stylesheet(border_color)
