@@ -14,3 +14,7 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 (the picture is clickable and leads to YouTube video presentation)
 
 [<img src="https://i.imgur.com/dnPrI0p.png" width="100%">]((https://www.youtube.com/watch?v=zY3_QqWkick) "mqtt-hub")
+
+<strong>Future updates:</strong>
+
+- GUI support for Linux systems.
