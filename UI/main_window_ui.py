@@ -54,6 +54,7 @@ class MqttHubUi(FramelessWindow):
     def __init__(self):
         super().__init__()
         self.setGeometry(100, 50, 1066, 904)
+        self.buttons = []
         self.drag_pos = None
         self.main_tab = MainTab()
         self.plus_tab = PlusTab()
