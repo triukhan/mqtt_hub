@@ -9,6 +9,7 @@ from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 from connections.connection_utils import Result
 from mqtt.connector_utils import validate_start, convert_to_format
+from mqtt.logger import Logger
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -155,6 +156,9 @@ class MQTTMixin(QObject, MQTTConnector):
 
         self.handle_connect(True)
         self.was_connected = True
+
+        self.logger = Logger(max_files=quantity, root=root, rc=rc)
+        self.logger.start_logger()
 
         for topic in self.topics:
             self.subscribe(topic)
