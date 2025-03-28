@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QFontMetrics
+from PyQt5.QtGui import QFontMetrics, QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
     QGridLayout,
@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from PyQt5.uic.properties import QtGui
 from qframelesswindow import FramelessWindow
 
 from connections.main_tab_connections import MainTab
@@ -24,7 +25,7 @@ from UI.icons.icons import (
     MAIN_ICON,
     PAUSE_ICON,
     PLUS_ICON,
-    SETTINGS_ICON,
+    SETTINGS_ICON, WINDOW_ICON,
 )
 from UI.interface_utils import (
     Spacer,
@@ -55,6 +56,7 @@ class MqttHubUi(FramelessWindow):
         super().__init__()
         self.setGeometry(100, 50, 1066, 904)
         self.buttons = []
+        self.setWindowIcon(QIcon(WINDOW_ICON))
         self.drag_pos = None
         self.main_tab = MainTab()
         self.plus_tab = PlusTab()
