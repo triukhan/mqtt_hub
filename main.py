@@ -8,10 +8,8 @@ from connections.connection_utils import Result
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
-from UI.icons.icons import PAUSE_ICON
 from UI.interface_utils import BorderDelegate
 from UI.json_highlighter import JsonHighlighter
-from UI.styles import header_button
 
 
 class MqttHub(QMainWindow, MainWindow):
@@ -60,7 +58,6 @@ class MqttHub(QMainWindow, MainWindow):
         if self.connector.is_connected:
             self.connector.stop()
         else:
-            self.connect_button.setStyleSheet(header_button(PAUSE_ICON))
             self.start_connection()
 
     def start_connection(self):
