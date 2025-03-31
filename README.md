@@ -13,7 +13,9 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 
 (the picture is clickable and leads to YouTube video presentation)
 
-[<img src="https://i.imgur.com/dnPrI0p.png" width="100%">]((https://www.youtube.com/watch?v=zY3_QqWkick) "mqtt-hub")
+<a href="https://www.youtube.com/watch?v=zY3_QqWkick" target="_blank">
+    <img src="https://i.imgur.com/dnPrI0p.png" alt="mqtt-hub">
+</a>
 
 <strong>Future updates:</strong>
 
