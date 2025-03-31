@@ -1,15 +1,15 @@
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QSpinBox, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget
 
 from UI import styles
 from UI.interface_utils import (
     Spacer,
-    create_button,
-    create_checkbox,
     create_field,
+    create_folder_field,
     create_frame,
     create_label,
     create_layout,
-    create_spacer, create_folder_field, create_toggle,
+    create_spacer,
+    create_toggle,
 )
 from UI.styles import SPIN
 
@@ -44,7 +44,13 @@ class SettingsTabUi(QWidget):
             styles.LABEL,
         )
 
-        self.logger_spin = create_field(self.logger_frame, self.logger_layout, [1, 1, 1, 1], spinbox=True, style=SPIN)
+        self.logger_spin = create_field(
+            self.logger_frame,
+            self.logger_layout,
+            [1, 1, 1, 1],
+            spinbox=True,
+            style=SPIN,
+        )
 
         self.logger_quantity_label = create_label(
             'Quantity',
@@ -54,11 +60,9 @@ class SettingsTabUi(QWidget):
             styles.LABEL,
         )
 
-        self.logger_checkbox = create_toggle(
-            self.logger_layout, [0, 1, 1, 1]
-        )
+        self.logger_checkbox = create_toggle(self.logger_layout, [0, 1, 1, 1])
 
-        self.logger_path_field = create_folder_field(
+        self.logger_path_field, self.logger_path_button = create_folder_field(
             self.logger_frame, self.logger_layout, [2, 1, 1, 1]
         )
 

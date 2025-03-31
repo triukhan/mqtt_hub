@@ -13,6 +13,7 @@ mqtt_versions = {
     5: '5.0',
 }
 
+
 class PlusTabCommon(PlusTabUI):
     def __init__(self):
         super().__init__()
@@ -144,15 +145,6 @@ class PlusTab(PlusTabCommon):
         self.auto_recon_checkbox.setChecked(True)
         self.recon_period_field.setText('120')
         self.clean_start_checkbox.setChecked(True)
-
-    def open_file_dialog(self, field):
-        options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, 'Choose File', '', 'All Files (*)', options=options
-        )
-        if file_name:
-            field.setText(file_name)
-
 
     def clear_settings(self):
         self.name_field.clear()

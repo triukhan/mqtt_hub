@@ -8,8 +8,9 @@ from paho.mqtt.properties import Properties
 from PyQt5.QtCore import QObject, QTimer, pyqtSignal
 
 from connections.connection_utils import Result
-from mqtt.connector_utils import validate_start, convert_to_format
+from mqtt.connector_utils import convert_to_format, validate_start
 from mqtt.logger import Logger
+from settings.app_settings import app_settings
 from settings.profile import Profile
 from settings.profile_manager import profile_manager
 
@@ -114,9 +115,7 @@ class MQTTConnector:
 
     def publish(self, topic, message):
         result = self.client.publish(topic.address, message)
-        if result.rc == MQTT_ERR_SUCCESS:
-            print(f'Message sent to {topic.address}: {message}')
-        else:
+        if result.rc != MQTT_ERR_SUCCESS:
             return f'Failed to send message. Result Code: {result.rc}'
 
     def subscribe(self, topic):
@@ -139,6 +138,7 @@ class MQTTMixin(QObject, MQTTConnector):
     def __init__(self):
         super().__init__()
         self.was_connected = False
+        self.logger = None
 
     def on_message(self, _, __, msg):
         received_payload = convert_to_format(
@@ -147,18 +147,25 @@ class MQTTMixin(QObject, MQTTConnector):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         formatted_message = f'{timestamp}\n\n{received_payload}'
         self.message_received.emit(msg.topic, formatted_message)
-        logging.info(f'Message received on topic {msg.topic}: {received_payload}')
+
+        if self.logger is not None:
+            logging.info(f'Message received on topic {msg.topic}: {received_payload}')
 
     def on_connect(self, _, __, ___, rc, ____=None):
         if rc != 0:
-            self.fail_signal.emit(f'MQTT Error. Return code: {rc}')
+            self.notification_signal.emit(f'MQTT Error. Return code: {rc}')
             return
 
         self.handle_connect(True)
         self.was_connected = True
 
-        self.logger = Logger(max_files=quantity, root=root, rc=rc)
-        self.logger.start_logger()
+        if app_settings.logger:
+            self.logger = Logger(
+                max_files=app_settings.logger_quantity,
+                path=app_settings.logger_path,
+                rc=rc,
+            )
+            self.logger.start_logger()
 
         for topic in self.topics:
             self.subscribe(topic)
@@ -170,6 +177,9 @@ class MQTTMixin(QObject, MQTTConnector):
             )
             return
         self.handle_connect(False)
+        if self.logger:
+            self.logger.stop()
+            self.logger = None
 
     def handle_connect(self, conn: bool):
         self.is_connected = conn

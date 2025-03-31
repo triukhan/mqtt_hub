@@ -4,13 +4,13 @@ from contextlib import suppress
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QListWidgetItem, QMainWindow
 
-from UI.json_highlighter import JsonHighlighter
 from connections.connection_utils import Result
 from connections.main_window_connections import MainWindow
 from mqtt.connector import MQTTMixin
 from settings.profile_manager import profile_manager
 from UI.icons.icons import PAUSE_ICON
 from UI.interface_utils import BorderDelegate
+from UI.json_highlighter import JsonHighlighter
 from UI.styles import header_button
 
 
@@ -89,6 +89,10 @@ class MqttHub(QMainWindow, MainWindow):
             self.main_tab.receiver_text_edit.setPlainText(payload)
 
         self.highlighter = JsonHighlighter(self.main_tab.receiver_text_edit.document())
+
+    def save_settings(self):
+        self.settings_tab.save_settings()
+        self.show_notification('Settings were successfully saved', Result.SUCCESS)
 
     def save_profile_and_connect(self):
         self.save_new_profile(with_notify=False)

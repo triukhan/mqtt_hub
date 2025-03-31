@@ -103,6 +103,7 @@ class MainWindow(MqttHubUi):
         self.clear_sidebar_selections()
         self.all_tabs.setCurrentIndex(3)
         self.settings_button.select()
+        self._setup_settings_header()
 
     def open_info_tab(self):
         self.clear_sidebar_selections()

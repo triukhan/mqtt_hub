@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QFontMetrics, QIcon, QPixmap
+from PyQt5.QtGui import QFontMetrics, QIcon
 from PyQt5.QtWidgets import (
     QAction,
     QGridLayout,
@@ -8,11 +8,11 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PyQt5.uic.properties import QtGui
 from qframelesswindow import FramelessWindow
 
 from connections.main_tab_connections import MainTab
 from connections.plus_tab_connections import EditTab, PlusTab
+from connections.settings_tab_connections import SettingsTab
 from settings.profile_manager import profile_manager
 from UI.icons.icons import (
     CONNECT_ICON,
@@ -25,7 +25,8 @@ from UI.icons.icons import (
     MAIN_ICON,
     PAUSE_ICON,
     PLUS_ICON,
-    SETTINGS_ICON, WINDOW_ICON,
+    SETTINGS_ICON,
+    WINDOW_ICON,
 )
 from UI.interface_utils import (
     Spacer,
@@ -48,7 +49,6 @@ from UI.styles import (
     sidebar_button,
 )
 from UI.tabs.info_tab_ui import InfoTab
-from UI.tabs.settings_tab_ui import SettingsTabUi
 
 
 class MqttHubUi(FramelessWindow):
@@ -61,6 +61,7 @@ class MqttHubUi(FramelessWindow):
         self.main_tab = MainTab()
         self.plus_tab = PlusTab()
         self.edit_tab = EditTab()
+        self.settings_tab = SettingsTab()
 
     def _setup_ui(self):
         self.main_window = QWidget(self)
@@ -77,13 +78,13 @@ class MqttHubUi(FramelessWindow):
         self.all_tabs = QTabWidget(self.main_window)
         self.all_tabs.setStyleSheet('QTabWidget::pane {border: 0;}')
         self.all_tabs.tabBar().hide()
-        for tab in [
+        for tab in (
             self.main_tab,
             self.plus_tab,
             self.edit_tab,
-            SettingsTabUi(),
+            self.settings_tab,
             InfoTab(),
-        ]:
+        ):
             self.all_tabs.addTab(tab, '')
         self.tab_layout.addWidget(self.all_tabs, 0, 0, 1, 1)
         self.main_w.addLayout(self.tab_layout, 1, 0, 1, 1)
@@ -261,6 +262,45 @@ class MqttHubUi(FramelessWindow):
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
+
+    def _setup_settings_header(self):
+        self.header_layout = QGridLayout()
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
+        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
+
+        self.header_horizontal_layout = create_layout(
+            QHBoxLayout, [0, 0, 10, 0], 15, self.header_frame
+        )
+
+        self.notification = create_button(
+            '',
+            self.header_frame,
+            [400, 30],
+            30,
+            self.header_layout,
+            [0, 1, 1, 1],
+            anim=False,
+        )
+        self.notification.hide()
+
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
+
+        self.settings_save_button = create_button(
+            'Save',
+            self.header_frame,
+            min_size=[0, 30],
+            add_layout=self.header_layout,
+            add_params=[0, 4, 1, 1],
+            style=MAIN_BUTTON_WITHOUT_HOVER,
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
+        )
+
+        self.header_horizontal_layout.addLayout(self.header_layout)
+        self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
+        self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
+        self.settings_save_button.clicked.connect(self.save_settings)
 
     def _setup_plus_header(self):
         self.header_layout = QGridLayout()
