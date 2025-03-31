@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (
     QAction,
     QGridLayout,
     QHBoxLayout,
+    QSizePolicy,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -459,6 +460,11 @@ class MqttHubUi(FramelessWindow):
     def update_profile_button(self):
         text = profile_manager.current_profile.name
         set_button_text(self.profile_button, text, 100)
+        self.profile_button.setFixedSize(self.profile_button.sizeHint())
+        self.profile_button.setFixedHeight(30)
+        self.profile_button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.profile_button.adjustSize()
+        self.profile_button.setFixedWidth(self.profile_button.width())
 
     def set_profile(self, profile):
         if profile == profile_manager.current_profile:

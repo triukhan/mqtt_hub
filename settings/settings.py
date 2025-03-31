@@ -16,6 +16,7 @@ class Settings:
         self.load_settings()
 
     def load_settings(self):
+        print(self.settings_path)
         if os.path.exists(self.settings_path):
             self.config.read(self.settings_path, encoding='utf-8')
         else:
