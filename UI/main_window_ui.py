@@ -37,7 +37,7 @@ from UI.interface_utils import (
     create_label,
     create_layout,
     create_spacer,
-    set_button_text,
+    set_button_text, create_profile_button,
 )
 from UI.styles import (
     EXIT_BUTTON,
@@ -211,92 +211,55 @@ class MqttHubUi(FramelessWindow):
             self.expand_button.setStyleSheet(exit_button(EXPAND_HEAD_ICON))
 
     def _setup_main_header(self):
+        self.header_layout = create_layout(QGridLayout, spacing=6)
+
         self.header_frame = create_frame(
             self.main_window, 'QFrame {background-color: rgb(35, 35, 35);}'
         )
         self.header_horizontal_layout = create_layout(
             QHBoxLayout, [20, 5, 10, 5], 0, out_layout=self.header_frame
         )
-        self.edit_button = create_button(
-            '',
-            self.header_frame,
-            30,
-            30,
-            self.header_horizontal_layout,
-            style=header_button(EDIT_ICON),
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
+        self.edit_button = self._create_header_button(
+            '', self.header_horizontal_layout, style=header_button(EDIT_ICON)
         )
+        self.edit_button.setFixedSize(30, 30)
 
-        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
-        self.notification = create_button(
-            '',
-            self.header_frame,
-            [400, 30],
-            [400, 30],
-            self.header_horizontal_layout,
-            anim=False,
-        )
+        self.notification = self._create_notification()
         self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
 
-        self.header_layout = create_layout(QGridLayout, spacing=6)
-        self.profile_button = self.create_profile_button(
-            'No Profile',
-            self.header_frame,
-            self.header_layout,
-            [0, 1, 1, 1],
+        self.profile_button = create_profile_button(
+            'No Profile', self.header_frame, self.header_layout,[0, 1, 1, 1], self.set_profile
         )
-        self.connect_button = create_button(
-            '',
-            self.header_frame,
-            30,
-            30,
-            self.header_layout,
-            [0, 3, 1, 1],
-            style=header_button(CONNECT_ICON),
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
+        self.connect_button = self._create_header_button(
+            '', self.header_layout, [0, 3, 1, 1], header_button(CONNECT_ICON)
         )
+        self.connect_button.setFixedSize(30, 30)
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 
-    def _setup_settings_header(self):
-        self.header_layout = QGridLayout()
-        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
-        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
 
+    def _setup_common(self, notify_param: bool, name, add_layout=False, add_params=None):
+        self.header_layout = create_layout(QGridLayout, spacing=6)
+        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
         self.header_horizontal_layout = create_layout(
             QHBoxLayout, [0, 0, 10, 0], 15, self.header_frame
         )
-
-        self.notification = create_button(
-            '',
+        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
+        self.notification = self._create_notification() if not notify_param else self._create_notification(self.header_layout, [0, 1, 1, 1])
+        self.profile_name = create_label(
+            name,
             self.header_frame,
-            [400, 30],
-            30,
-            self.header_layout,
-            [0, 1, 1, 1],
-            anim=False,
+            add_layout=self.header_layout if add_layout else None,
+            add_params=add_params,
         )
-        self.notification.hide()
-
         self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
 
-        self.settings_save_button = create_button(
-            'Save',
-            self.header_frame,
-            min_size=[0, 30],
-            add_layout=self.header_layout,
-            add_params=[0, 4, 1, 1],
-            style=MAIN_BUTTON_WITHOUT_HOVER,
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
+    def _setup_settings_header(self):
+        self._setup_common(True, 'Settings', True, [0, 1, 1, 1])
+
+        self.settings_save_button = self._create_header_button('Save', self.header_layout, [0, 4, 1, 1])
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
@@ -304,56 +267,10 @@ class MqttHubUi(FramelessWindow):
         self.settings_save_button.clicked.connect(self.save_settings)
 
     def _setup_plus_header(self):
-        self.header_layout = QGridLayout()
+        self._setup_common(True, 'New Profile', True, [0, 1, 1, 1])
 
-        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 0, 1, 1)
-        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
-
-        self.header_horizontal_layout = QHBoxLayout(self.header_frame)
-        self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
-        self.header_horizontal_layout.setSpacing(15)
-
-        self.profile_name = create_label(
-            '    New Profile',
-            self.header_frame,
-            add_layout=self.header_layout,
-            add_params=[0, 1, 1, 1],
-        )
-        self.notification = create_button(
-            '',
-            self.header_frame,
-            [400, 30],
-            30,
-            self.header_layout,
-            [0, 1, 1, 1],
-            anim=False,
-        )
-        self.notification.hide()
-
-        self.header_layout.addItem(create_spacer(Spacer.HORIZONTAL), 0, 2, 1, 1)
-
-        self.create_button = create_button(
-            'Create',
-            self.header_frame,
-            min_size=[0, 30],
-            add_layout=self.header_layout,
-            add_params=[0, 3, 1, 1],
-            style=MAIN_BUTTON_WITHOUT_HOVER,
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
-        self.connect_plus_button = create_button(
-            'Connect',
-            self.header_frame,
-            min_size=[0, 30],
-            add_layout=self.header_layout,
-            add_params=[0, 4, 1, 1],
-            style=MAIN_BUTTON_WITHOUT_HOVER,
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
+        self.create_button = self._create_header_button('Create', self.header_layout, [0, 3, 1, 1])
+        self.connect_plus_button = self._create_header_button('Connect', self.header_layout, [0, 4, 1, 1])
 
         self.header_horizontal_layout.addLayout(self.header_layout)
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
@@ -361,59 +278,51 @@ class MqttHubUi(FramelessWindow):
         self.connect_plus_button.clicked.connect(self.save_profile_and_connect)
 
     def _setup_edit_header(self):
-        self.header_frame = create_frame(self.main_window, FRAME_COLOR + HEADER_FRAME)
+        name = '  ' + profile_manager.current_profile.name
+        self._setup_common(True, name)
 
-        self.header_horizontal_layout = QHBoxLayout(self.header_frame)
-        self.header_horizontal_layout.setContentsMargins(0, 0, 10, 0)
-
-        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
-        self.notification = create_button(
-            '',
-            self.header_frame,
-            [400, 30],
-            30,
-            self.header_horizontal_layout,
-            anim=False,
-        )
-        self.notification.hide()
-
-        self.profile_name = create_label(
-            '  ' + profile_manager.current_profile.name, self.header_frame
-        )
         self.profile_name.setAlignment(Qt.AlignCenter)
         self.header_horizontal_layout.addWidget(self.profile_name, 1)
 
-        self.header_horizontal_layout.addItem(create_spacer(Spacer.HORIZONTAL))
-
-        self.buttons_layout = QHBoxLayout()
-        self.buttons_layout.setSpacing(10)
-
-        self.save_edit_button = create_button(
-            'Save',
-            self.header_frame,
-            style=MAIN_BUTTON_WITHOUT_HOVER + 'QPushButton {margin-right: 5px}',
-            min_size=[0, 30],
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
-        self.connect_edit_button = create_button(
-            'Connect',
-            self.header_frame,
-            style=MAIN_BUTTON_WITHOUT_HOVER,
-            min_size=[0, 30],
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
-
-        self.buttons_layout.addWidget(self.save_edit_button)
-        self.buttons_layout.addWidget(self.connect_edit_button)
-
-        self.header_horizontal_layout.addLayout(self.buttons_layout)
+        self.save_edit_button = self._create_header_button('Save', self.header_horizontal_layout)
+        self.connect_edit_button = self._create_header_button('Connect', self.header_horizontal_layout)
 
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
+
+    def _create_header_button(self, text='', layout=None, params=None, style=None):
+        button = create_button(
+            text,
+            self.header_frame,
+            add_layout=layout,
+            add_params=params,
+            style=style or MAIN_BUTTON_WITHOUT_HOVER,
+            min_size=[0, 30],
+            body=True,
+            start_value=(35, 35, 35),
+            end_value=(45, 45, 45),
+        )
+
+        return button
+
+    def _create_notification(self, layout=None, grid=None):
+        layout = layout or self.header_horizontal_layout
+
+        notification = create_button(
+            '',
+            self.header_frame,
+            [400, 30],
+            [400, 30],
+            anim=False,
+        )
+
+        if grid is not None:
+            layout.addWidget(notification, *grid)
+        else:
+            layout.addWidget(notification)
+
+        notification.hide()
+        return notification
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -427,35 +336,6 @@ class MqttHubUi(FramelessWindow):
 
     def mouseReleaseEvent(self, event):
         self.drag_pos = None
-
-    def create_profile_button(self, text, layout, add_layout, add_params: list):
-        button, menu, show_menu = create_expand_button(
-            text,
-            layout,
-            min_size=[0, 30],
-            max_size=[200, 30],
-            add_layout=add_layout,
-            add_params=add_params,
-            style=MAIN_BUTTON_WITHOUT_HOVER,
-            body=True,
-            start_value=(35, 35, 35),
-            end_value=(45, 45, 45),
-        )
-
-        profiles = profile_manager.profiles
-        for _, profile in profiles.items():
-            if profile.is_default != 'None':
-                continue
-            font_metrics = QFontMetrics(button.font())
-            elided_text = font_metrics.elidedText(profile.name, Qt.ElideRight, 110)
-
-            action = QAction(elided_text, button)
-            action.triggered.connect(lambda _, p=profile: self.set_profile(p))
-            menu.addAction(action)
-
-        button.clicked.connect(show_menu)
-
-        return button
 
     def update_profile_button(self):
         text = profile_manager.current_profile.name
