@@ -1,3 +1,5 @@
+import platform
+
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QColor, QFont, QSyntaxHighlighter, QTextCharFormat
 
@@ -8,7 +10,10 @@ class JsonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
 
-        self.font = QFont('Courier', 11)
+        font_name = 'Liberation Mono' if platform.system() == 'Linux' else 'Courier'
+        font_size = 8 if platform.system() == 'Linux' else 11
+
+        self.font = QFont(font_name, font_size)
         self.font.setStyleHint(QFont.TypeWriter)
 
         self.int_format = QTextCharFormat()
