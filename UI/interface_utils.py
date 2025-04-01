@@ -21,13 +21,14 @@ from PyQt5.QtWidgets import (
 )
 from qtwidgets import AnimatedToggle
 
+from settings.profile_manager import profile_manager
 from settings.topic import Topic
 from UI import styles
 from UI.custom_widgets.animated_field import AnimatedLineEdit
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
 from UI.custom_widgets.animated_spin import AnimatedSpinBox
 from UI.icons.icons import EXPAND_ICON
-from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, TEXT_EDIT
+from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, TEXT_EDIT, MAIN_BUTTON_WITHOUT_HOVER
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -352,3 +353,32 @@ class BorderDelegate(QStyledItemDelegate):
             color = '#2d2d2d'
         painter.setPen(QPen(QColor(color), 4))
         painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
+
+def create_profile_button(text, layout, add_layout, add_params: list, set_profile):
+    button, menu, show_menu = create_expand_button(
+        text,
+        layout,
+        min_size=[0, 30],
+        max_size=[200, 30],
+        add_layout=add_layout,
+        add_params=add_params,
+        style=MAIN_BUTTON_WITHOUT_HOVER,
+        body=True,
+        start_value=(35, 35, 35),
+        end_value=(45, 45, 45),
+    )
+
+    profiles = profile_manager.profiles
+    for _, profile in profiles.items():
+        if profile.is_default != 'None':
+            continue
+        font_metrics = QFontMetrics(button.font())
+        elided_text = font_metrics.elidedText(profile.name, Qt.ElideRight, 110)
+
+        action = QAction(elided_text, button)
+        action.triggered.connect(lambda _, p=profile: set_profile(p))
+        menu.addAction(action)
+
+    button.clicked.connect(show_menu)
+
+    return button
