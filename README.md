@@ -19,13 +19,13 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 
 <strong>How to setup?</strong>
 
-**Linux:**
-
-- just open file ```mqtt_hub_linux/mqtt_hub```, or write in terminal:
+- for Linux, you can open the file ```Linux_matt_hub/mqtt_hub```, or write in terminal:
 ```sh
 ./Linux_mqtt_hub/mqtt_hub
 ```
+- for macOS, you can open the file ```MacOS_mqtt_hub/MQTT HUB.app```.
 
 <strong>Future updates:</strong>
 
 - GUI support for Linux systems.
+- CSV logs format.
