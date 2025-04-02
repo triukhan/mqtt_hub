@@ -21,9 +21,9 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 
 **Linux:**
 
-- just open file ```mqtt_hub_linux/mqtt_hub```, or write in terminal:  
+- just open file ```mqtt_hub_linux/mqtt_hub```, or write in terminal:
 ```sh
-./mqtt_hub_linux/mqtt_hub
+./Linux_mqtt_hub/mqtt_hub
 ```
 
 <strong>Future updates:</strong>

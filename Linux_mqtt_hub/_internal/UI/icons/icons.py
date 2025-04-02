@@ -1,0 +1,18 @@
+from settings.settings import get_path
+
+INFO_ICON = get_path('UI/icons/info-icon.svg')
+LOGO_ICON = get_path('UI/icons/logo-icon.svg')
+MAIN_ICON = get_path('UI/icons/Linux_mqtt_hub-icon.svg')
+PLUS_ICON = get_path('UI/icons/plus-icon.svg')
+SETTINGS_ICON = get_path('UI/icons/settings-icon.svg')
+EDIT_ICON = get_path('UI/icons/edit-icon.svg')
+CONNECT_ICON = get_path('UI/icons/connect-icon.svg')
+EXPAND_ICON = get_path('UI/icons/expand-profile-icon.png')
+PAUSE_ICON = get_path('UI/icons/pause-icon.svg')
+UP_ICON = get_path('UI/icons/up-icon.svg')
+DOWN_ICON = get_path('UI/icons/down-icon.svg')
+EXPAND_HEAD_ICON = get_path('UI/icons/expand-icon.png')
+FOLDER_ICON = get_path('UI/icons/folder-icon.svg')
+EXIT_ICON = get_path('UI/icons/exit-icon.svg')
+DASH_ICON = get_path('UI/icons/dash-icon.svg')
+WINDOW_ICON = get_path('UI/icons/window-icon.ico')

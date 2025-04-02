@@ -1,7 +1,7 @@
 settings/profiles/*
 !settings/profiles/profiles.ini
 !settings/profiles/profile_00.ini
-dist/main/_internal/settings
-!dist/main/_internal/settings/profile_00.ini
-!dist/main/_internal/settings/profiles.ini
+MacOS_mqtt_hub/main/_internal/settings
+!MacOS_mqtt_hub/main/_internal/settings/profile_00.ini
+!MacOS_mqtt_hub/main/_internal/settings/profiles.ini
 __pycache__/
