@@ -12,7 +12,7 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import DELETE_BUTTON, LABEL, SPIN, WIDGET, X_BUTTON
+from UI.styles import DELETE_BUTTON, LABEL, WIDGET, X_BUTTON
 
 
 class TopicDialogUI:
@@ -89,7 +89,6 @@ class TopicDialogUI:
             self.qos_color_layout,
             [1, 0, 1, 1],
             spinbox=True,
-            style=SPIN,
         )
         self.qos_field.setMaximum(2)
 
@@ -158,7 +157,7 @@ class TopicDialogUI:
             align='left',
         )
         self.retain_handling_field = create_field(
-            self.main_frame, self.retain_handling_layout, spinbox=True, style=SPIN
+            self.main_frame, self.retain_handling_layout, spinbox=True
         )
         self.retain_handling_field.setMinimumSize(QtCore.QSize(360, 30))
         self.retain_handling_field.setMaximum(2)

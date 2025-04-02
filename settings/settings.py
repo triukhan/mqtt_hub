@@ -64,10 +64,6 @@ class Settings:
         if self.config.has_section(section):
             if self.config.has_option(section, option):
                 self.config.remove_option(section, option)
-            else:
-                print(f"Option '{section}' not found in section '{section}'.")
-        else:
-            print(f"Section '{section}' not found.")
 
         self.save_settings()
 

@@ -109,9 +109,6 @@ class MQTTConnector:
         if self.is_connected:
             self.client.loop_stop()
             self.client.disconnect()
-            print('Client stopped')
-        else:
-            print('Client not connected')
 
     def publish(self, topic, message):
         result = self.client.publish(topic.address, message)
@@ -122,12 +119,10 @@ class MQTTConnector:
         settings = topic.get_options_dict()
         options = SubscribeOptions(**settings)
         self.client.subscribe(topic.address, options=options)
-        print('Subscribe successful: ', topic.address, '. Settings: ', settings)
 
     def unsubscribe(self, topic):
         with suppress(AttributeError):
             self.client.unsubscribe(topic.address)
-        print('Unsubscribe successful')
 
 
 class MQTTMixin(QObject, MQTTConnector):

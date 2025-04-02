@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget
 
-from UI import styles
 from UI.interface_utils import (
     Spacer,
     create_field,
@@ -11,37 +10,36 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import SPIN
 
 
 class SettingsTabUi(QWidget):
     def __init__(self):
         super().__init__()
-        self.gridLayout_10 = QGridLayout(self)
-        self.settings_layout = QVBoxLayout()
+        self.gridLayout_10 = create_layout(
+            QGridLayout, [12, 10, 12, 5], out_layout=self
+        )
+        self.settings_layout = create_layout(QVBoxLayout, spacing=10)
         self.logger_label = create_label(
             '  Logger',
             self,
             self.settings_layout,
-            style=styles.LABEL,
             min_size=[100, 20],
             max_size=[100, 20],
             align='left',
         )
-        self.logger_frame = create_frame(self, styles.FRAME_PART)
+        self.logger_frame = create_frame(self)
         self.logger_layout = create_layout(
             QGridLayout, [30, 20, 100, 20], 15, out_layout=self.logger_frame
         )
 
         self.logger_cb_label = create_label(
-            'Logger', self.logger_frame, self.logger_layout, [0, 0, 1, 1], styles.LABEL
+            'Logger', self.logger_frame, self.logger_layout, [0, 0, 1, 1]
         )
         self.logger_path_label = create_label(
             'Logger Path',
             self.logger_frame,
             self.logger_layout,
             [2, 0, 1, 1],
-            styles.LABEL,
         )
 
         self.logger_spin = create_field(
@@ -49,7 +47,6 @@ class SettingsTabUi(QWidget):
             self.logger_layout,
             [1, 1, 1, 1],
             spinbox=True,
-            style=SPIN,
         )
 
         self.logger_quantity_label = create_label(
@@ -57,7 +54,6 @@ class SettingsTabUi(QWidget):
             self.logger_frame,
             self.logger_layout,
             [1, 0, 1, 1],
-            styles.LABEL,
         )
 
         self.logger_checkbox = create_toggle(self.logger_layout, [0, 1, 1, 1])

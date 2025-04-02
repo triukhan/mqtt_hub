@@ -3,26 +3,8 @@ import re
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import (
-    QEasingCurve,
-    QPoint,
-    QPropertyAnimation,
-    QRect,
-    QSize,
-    Qt,
-    pyqtProperty,
-)
-from PyQt5.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QFontMetrics,
-    QIcon,
-    QPainter,
-    QPainterPath,
-    QPen,
-    QPixmap,
-)
+from PyQt5.QtCore import QPoint, QSize, Qt
+from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
     QCheckBox,
@@ -50,9 +32,11 @@ from UI.custom_widgets.toggle import QToggle
 from UI.icons.icons import EXPAND_ICON
 from UI.styles import (
     EXPAND_BUTTON,
+    FIELD,
     MAIN_BUTTON_WITHOUT_HOVER,
     MENU,
     SCROLLBAR,
+    SPIN,
     TEXT_EDIT,
 )
 
@@ -111,11 +95,12 @@ def create_field(
     main_layout,
     add_layout=None,
     add_params: list | None = None,
-    style: str = styles.FIELD,
+    style: str = FIELD,
     button=None,
     spinbox=False,
 ):
     if spinbox:
+        style = SPIN
         field = AnimatedSpinBox(main_layout, style)
         field.setStyleSheet(style)
     else:
@@ -217,7 +202,9 @@ def create_button(
     icon: str | None = None,
 ):
     if icon is not None and platform.system() == 'Linux':
-        pattern = r'border-image:\s*url\([^)]+\)\s*\d+\s+\d+\s+\d+\s+\d+\s+stretch\s+stretch;'
+        pattern = (
+            r'border-image:\s*url\([^)]+\)\s*\d+\s+\d+\s+\d+\s+\d+\s+stretch\s+stretch;'
+        )
         style = re.sub(pattern, '', style)
 
     button = (

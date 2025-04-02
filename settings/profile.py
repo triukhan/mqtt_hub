@@ -317,7 +317,6 @@ class Profile:
         self.settings.clear_section('clipboard')
 
     def add_clipboard(self, message_name: str, message_text: str):
-        print(bool(self.clipboard))
         message_with_id = (
             message_name + '_ID_STARTS_HERE_' + str(len(self.clipboard) + 1)
         )

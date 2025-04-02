@@ -87,7 +87,6 @@ class TopicDialog(QDialog, TopicDialogUI):
             in (t.address for t in profile_manager.current_profile.topics)
             and not tag
         ):
-            print('Topic with the same address is already exists')
             return
         self._save_method(self._topic, topic_settings, tag)
         self.close()
