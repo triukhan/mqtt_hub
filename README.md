@@ -17,6 +17,15 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
     <img src="https://i.imgur.com/dnPrI0p.png" alt="mqtt-hub">
 </a>
 
+<strong>How to setup?</strong>
+
+**Linux:**
+
+- just open file ```mqtt_hub_linux/mqtt_hub```, or write in terminal:  
+```sh
+./mqtt_hub_linux/mqtt_hub
+```
+
 <strong>Future updates:</strong>
 
 - GUI support for Linux systems.
