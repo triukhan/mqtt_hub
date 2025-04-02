@@ -1,8 +1,26 @@
 from enum import Enum
 
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, QSize, Qt
-from PyQt5.QtGui import QColor, QFont, QFontMetrics, QIcon, QPen, QPixmap
+from PyQt5.QtCore import (
+    QEasingCurve,
+    QPoint,
+    QPropertyAnimation,
+    QRect,
+    QSize,
+    Qt,
+    pyqtProperty,
+)
+from PyQt5.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QFontMetrics,
+    QIcon,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPixmap,
+)
 from PyQt5.QtWidgets import (
     QAction,
     QCheckBox,
@@ -19,7 +37,6 @@ from PyQt5.QtWidgets import (
     QStyledItemDelegate,
     QTextEdit,
 )
-from qtwidgets import AnimatedToggle
 
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
@@ -27,8 +44,15 @@ from UI import styles
 from UI.custom_widgets.animated_field import AnimatedLineEdit
 from UI.custom_widgets.animated_push_button import AnimatedPushButton
 from UI.custom_widgets.animated_spin import AnimatedSpinBox
+from UI.custom_widgets.toggle import QToggle
 from UI.icons.icons import EXPAND_ICON
-from UI.styles import EXPAND_BUTTON, MENU, SCROLLBAR, TEXT_EDIT, MAIN_BUTTON_WITHOUT_HOVER
+from UI.styles import (
+    EXPAND_BUTTON,
+    MAIN_BUTTON_WITHOUT_HOVER,
+    MENU,
+    SCROLLBAR,
+    TEXT_EDIT,
+)
 
 LABEL_RIGHT_ALIGNMENT = (
     QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
@@ -119,14 +143,9 @@ def create_checkbox(
 
 
 def create_toggle(add_layout=None, add_params: list | None = None):
-    toggle = AnimatedToggle(
-        handle_color=Qt.gray,
-        bar_color=Qt.darkGray,
-        checked_color=Qt.darkGray,
-        pulse_checked_color='#44999999',
-    )
-    toggle.setFixedWidth(55)
-    toggle.setFixedHeight(40)
+    toggle = QToggle()
+    toggle.bg_color = QColor('#787878')
+    toggle.active_color = QColor('#50ab4f')
 
     if add_params:
         add_layout.addWidget(toggle, *add_params)
@@ -353,6 +372,7 @@ class BorderDelegate(QStyledItemDelegate):
             color = '#2d2d2d'
         painter.setPen(QPen(QColor(color), 4))
         painter.drawLine(option.rect.topLeft(), option.rect.bottomLeft())
+
 
 def create_profile_button(text, layout, add_layout, add_params: list, set_profile):
     button, menu, show_menu = create_expand_button(

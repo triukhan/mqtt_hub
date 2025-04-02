@@ -1,11 +1,5 @@
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (
-    QFrame,
-    QGridLayout,
-    QHBoxLayout,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt5.QtWidgets import QFrame, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
 
 from settings.profile_manager import profile_manager
 from UI import styles
@@ -20,13 +14,15 @@ from UI.interface_utils import (
     create_list,
     create_scroll_bar,
     create_spacer,
-    create_toggle, create_text_edit,
+    create_text_edit,
+    create_toggle,
 )
 from UI.styles import (
     CLEAR_BUTTON,
     COMMAND_FIELD,
     FILTER_FRAME,
     FRAME_COLOR,
+    LABEL,
     RECEIVER_TEXT,
 )
 
@@ -51,7 +47,8 @@ class MainTabUI(QWidget):
             'Autoscroll',
             self.clear_frame,
             self.clear_layout,
-            style=styles.LABEL + 'QLabel {margin-bottom: 2px}',
+            style=LABEL
+            + 'QLabel {margin-top: 8px; margin-left: 5px; margin-bottom: 9px;}',
         )
         self.clear_layout.addItem(create_spacer(Spacer.HORIZONTAL))
         font = QFont()
@@ -72,7 +69,7 @@ class MainTabUI(QWidget):
 
         self.filter_frame = create_frame(
             self,
-            FILTER_FRAME,
+            FILTER_FRAME + 'QFrame {padding-right: 10px}',
             add_layout=self.main_right_layout,
         )
         self.message_formating = create_layout(
@@ -93,7 +90,7 @@ class MainTabUI(QWidget):
         self.message_formating.addItem(create_spacer(Spacer.HORIZONTAL))
 
         self.select_label = create_label(
-            'Select Message  ',
+            'Select Message',
             self.filter_frame,
             min_size=[110, 23],
             max_size=[110, 23],
@@ -102,7 +99,9 @@ class MainTabUI(QWidget):
 
         self.select_toggle = create_toggle(self.message_formating)
 
-        self.receiver_text_edit = create_text_edit(self, style=RECEIVER_TEXT, add_layout=self.main_right_layout)
+        self.receiver_text_edit = create_text_edit(
+            self, style=RECEIVER_TEXT, add_layout=self.main_right_layout
+        )
         self.receiver_text_edit.setReadOnly(True)
         self.receiver_text_edit.setFrameShape(QFrame.NoFrame)
         create_scroll_bar(self, self.receiver_text_edit)
@@ -159,7 +158,9 @@ class MainTabUI(QWidget):
         self.clipboard_list = ClipboardListWidget(self.main_left_layout)
         self.clipboard_layout.addWidget(self.clipboard_list)
 
-        self.command_field = create_text_edit(self.main_left_layout, style=COMMAND_FIELD, add_layout=self.clipboard_layout)
+        self.command_field = create_text_edit(
+            self.main_left_layout, style=COMMAND_FIELD, add_layout=self.clipboard_layout
+        )
         self.command_field.setFrameShape(QFrame.NoFrame)
         self.clipboard_layout.setStretch(0, 1)
         self.clipboard_layout.setStretch(1, 2)

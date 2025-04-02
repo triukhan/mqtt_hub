@@ -13,7 +13,7 @@ from UI.interface_utils import (
     create_spacer,
     create_toggle,
 )
-from UI.styles import BLANK_SCROLLBAR, PICKER_BUTTON
+from UI.styles import BLANK_SCROLLBAR, LABEL, PICKER_BUTTON
 
 
 class PlusTabUI(QWidget):

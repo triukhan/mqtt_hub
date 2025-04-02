@@ -13,6 +13,7 @@ class AppSettings:
         self._set_settings_from_ini()
 
     def _set_settings_from_ini(self):
+        print(self._settings_ini.sections())
         for setting in self._settings_ini.items('settings'):
             setattr(self, setting[0], setting[1])
 
