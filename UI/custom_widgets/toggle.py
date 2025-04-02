@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QPoint, QRect, Qt, pyqtProperty
+from PyQt5.QtCore import QPoint, QRect, Qt, pyqtProperty, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QBrush, QColor, QFontMetrics, QPainter, QPainterPath, QPen
 from PyQt5.QtWidgets import QCheckBox
 
