@@ -13,9 +13,7 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 
 (the picture is clickable and leads to YouTube video presentation)
 
-<a href="https://www.youtube.com/watch?v=zY3_QqWkick" target="_blank">
-    <img src="https://i.imgur.com/dnPrI0p.png" alt="mqtt-hub">
-</a>
+https://github.com/user-attachments/assets/85abbec3-e984-4d1a-9df0-c8f1229bc5a8
 
 <strong>How to setup?</strong>
 
@@ -24,6 +22,15 @@ Whether you're a developer or an IoT enthusiast, MQTT HUB can help streamline yo
 ./Linux_mqtt_hub/mqtt_hub
 ```
 - for macOS, you can open the file ```MacOS_mqtt_hub/MQTT HUB.app```.
+
+<strong>And of course you can set it up directly from your IDE (the best way for now)</strong>:
+```sh
+python3 -m venv venv
+source venv/bin/activate
+.\venv\Scripts\activate
+pip install -r requirements.txt
+python3 ./main.py
+```
 
 <strong>Future updates:</strong>
 
