@@ -1,5 +1,8 @@
-from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QFontMetrics, QIcon
+import platform
+
+from PyQt5.QtCore import QEvent, Qt, QSize
+from PyQt5.QtGui import QFontMetrics, QIcon, QPixmap, QPainter
+from PyQt5.QtSvg import QSvgRenderer
 from PyQt5.QtWidgets import (
     QAction,
     QGridLayout,
@@ -144,8 +147,10 @@ class MqttHubUi(FramelessWindow):
             50,
             self.sidebar_layout,
             anim=False,
+            style=sidebar_button(LOGO_ICON),
+            icon=LOGO_ICON
         )
-        self.logo_button.setStyleSheet(sidebar_button(LOGO_ICON))
+        self.logo_button.setIconSize(QSize(50, 50))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.main_button = create_button(
             '',
@@ -155,7 +160,9 @@ class MqttHubUi(FramelessWindow):
             self.sidebar_layout,
             body=True,
             style=sidebar_button(MAIN_ICON),
+            icon=MAIN_ICON
         )
+        self.main_button.setIconSize(QSize(50, 50))
         self.plus_button = create_button(
             '',
             self.sidebar_frame,
@@ -164,7 +171,9 @@ class MqttHubUi(FramelessWindow):
             self.sidebar_layout,
             style=sidebar_button(PLUS_ICON),
             body=True,
+            icon=PLUS_ICON,
         )
+        self.plus_button.setIconSize(QSize(50, 50))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.sidebar_layout.addItem(create_spacer(Spacer.VERTICAL))
         self.settings_button = create_button(
@@ -175,7 +184,9 @@ class MqttHubUi(FramelessWindow):
             self.sidebar_layout,
             body=True,
             style=sidebar_button(SETTINGS_ICON),
+            icon=SETTINGS_ICON,
         )
+        self.settings_button.setIconSize(QSize(50, 50))
         self.info_button = create_button(
             '',
             self.sidebar_frame,
@@ -184,7 +195,9 @@ class MqttHubUi(FramelessWindow):
             self.sidebar_layout,
             body=True,
             style=sidebar_button(INFO_ICON),
+            icon=INFO_ICON
         )
+        self.info_button.setIconSize(QSize(50, 50))
         self.sidebar_vertical_layout.addLayout(self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_frame, 0, 0, 1, 1)
         self.buttons = [self.exit_button, self.collapse_button, self.expand_button]
@@ -204,11 +217,21 @@ class MqttHubUi(FramelessWindow):
     def set_hover(self, hover):
         if not hover:
             for button in self.buttons:
-                button.setStyleSheet(EXIT_BUTTON)
+                if platform.system() == 'Linux':
+                    button.setIcon(QIcon())
+                else:
+                    button.setStyleSheet(EXIT_BUTTON)
         else:
-            self.exit_button.setStyleSheet(exit_button(EXIT_ICON))
-            self.collapse_button.setStyleSheet(exit_button(DASH_ICON))
-            self.expand_button.setStyleSheet(exit_button(EXPAND_HEAD_ICON))
+            if platform.system() == 'Linux':
+                self.exit_button.setIcon(QIcon(EXIT_ICON))
+                self.collapse_button.setIcon(QIcon(DASH_ICON))
+                self.expand_button.setIcon(QIcon(EXPAND_HEAD_ICON))
+                for btn in self.buttons:
+                    btn.setIconSize(QSize(12, 12))
+            else:
+                self.exit_button.setStyleSheet(exit_button(EXIT_ICON))
+                self.collapse_button.setStyleSheet(exit_button(DASH_ICON))
+                self.expand_button.setStyleSheet(exit_button(EXPAND_HEAD_ICON))
 
     def _setup_main_header(self):
         self.header_layout = create_layout(QGridLayout, spacing=6)
@@ -220,7 +243,7 @@ class MqttHubUi(FramelessWindow):
             QHBoxLayout, [20, 5, 10, 5], 0, out_layout=self.header_frame
         )
         self.edit_button = self._create_header_button(
-            '', self.header_horizontal_layout, style=header_button(EDIT_ICON)
+            '', self.header_horizontal_layout, style=header_button(EDIT_ICON), icon=EDIT_ICON
         )
         self.edit_button.setFixedSize(30, 30)
 
@@ -231,7 +254,7 @@ class MqttHubUi(FramelessWindow):
             'No Profile', self.header_frame, self.header_layout,[0, 1, 1, 1], self.set_profile
         )
         self.connect_button = self._create_header_button(
-            '', self.header_layout, [0, 3, 1, 1], header_button(CONNECT_ICON)
+            '', self.header_layout, [0, 3, 1, 1], header_button(CONNECT_ICON), icon=CONNECT_ICON
         )
         self.connect_button.setFixedSize(30, 30)
 
@@ -290,7 +313,7 @@ class MqttHubUi(FramelessWindow):
         self.main_w.addWidget(self.header_frame, 0, 0, 1, 1)
         self.main_layout.addLayout(self.main_w, 0, 1, 1, 1)
 
-    def _create_header_button(self, text='', layout=None, params=None, style=None):
+    def _create_header_button(self, text='', layout=None, params=None, style=None, icon=None):
         button = create_button(
             text,
             self.header_frame,
@@ -301,6 +324,7 @@ class MqttHubUi(FramelessWindow):
             body=True,
             start_value=(35, 35, 35),
             end_value=(45, 45, 45),
+            icon=icon,
         )
 
         return button
@@ -365,6 +389,12 @@ class MqttHubUi(FramelessWindow):
 
     def change_connect_button(self, connect):
         if connect:
-            self.connect_button.setStyleSheet(header_button(PAUSE_ICON))
+            if platform.system() == 'Linux':
+                self.connect_button.setIcon(QIcon(PAUSE_ICON))
+            else:
+                self.connect_button.setStyleSheet(header_button(PAUSE_ICON))
         else:
-            self.connect_button.setStyleSheet(header_button(CONNECT_ICON))
+            if platform.system() == 'Linux':
+                self.connect_button.setIcon(QIcon(CONNECT_ICON))
+            else:
+                self.connect_button.setStyleSheet(header_button(CONNECT_ICON))

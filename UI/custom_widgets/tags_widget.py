@@ -1,3 +1,4 @@
+import platform
 import re
 
 from PyQt5.QtCore import QAbstractAnimation, QPoint, QRect, QSize, QVariantAnimation
@@ -14,14 +15,14 @@ from PyQt5.QtWidgets import (
 
 from settings.profile_manager import profile_manager
 from settings.topic import Topic
-from UI.icons.icons import EDIT_ICON
+from UI.icons.icons import EDIT_ICON, PLUS_ICON
 from UI.interface_utils import (
     create_button,
     create_label,
     create_layout,
     set_topic_color,
 )
-from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG, TAG_LABEL
+from UI.styles import ADD_TAG, EDIT_TAG, FRAME_COLOR, TAG, TAG_LABEL, EDIT_TAG_LINUX
 
 
 class FlowLayout(QLayout):
@@ -109,6 +110,7 @@ class TagsWidget(QFrame):
             body=True,
             start_value=(35, 35, 35),
             end_value=(45, 45, 45),
+            icon=PLUS_ICON
         )
         self.add_button.setProperty('add_button', True)
         self.tags_layout.addWidget(self.add_button)
@@ -127,7 +129,13 @@ class TagsWidget(QFrame):
 
         icon_button = QToolButton(tag)
         icon_button.setFixedSize(22, 22)
-        icon_button.setStyleSheet(EDIT_TAG)
+        if platform.system() == 'Linux':
+            icon_button.setStyleSheet(EDIT_TAG_LINUX)
+            icon_button.setIcon(QIcon(EDIT_ICON))
+            icon_button.setIconSize(QSize(22, 22))
+        else:
+            icon_button.setStyleSheet(EDIT_TAG)
+
         icon_button.clicked.connect(
             lambda: self.edit_method(topic, {'frame': tag, 'label': tag_label})
         )

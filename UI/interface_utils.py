@@ -1,3 +1,5 @@
+import platform
+import re
 from enum import Enum
 
 from PyQt5 import QtCore
@@ -212,7 +214,12 @@ def create_button(
     body: bool = False,
     start_value: tuple | None = None,
     end_value: tuple | None = None,
+    icon: str | None = None,
 ):
+    if icon is not None and platform.system() == 'Linux':
+        pattern = r'border-image:\s*url\([^)]+\)\s*\d+\s+\d+\s+\d+\s+\d+\s+stretch\s+stretch;'
+        style = re.sub(pattern, '', style)
+
     button = (
         AnimatedPushButton(layout, style, body, start_value, end_value)
         if anim
@@ -220,6 +227,10 @@ def create_button(
     )
     button.setText(text)
     button.setStyleSheet(style)
+
+    if icon is not None and platform.system() == 'Linux':
+        button.setIcon(QIcon(icon))
+        button.setIconSize(QSize(30, 30))
 
     if font is not None:
         button.setFont(font)
