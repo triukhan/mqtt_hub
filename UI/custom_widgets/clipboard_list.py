@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRect, QRectF, Qt, QTimer, QVariantAnimation
+from PyQt5.QtCore import QRect, QRectF, Qt, QTimer, QVariantAnimation, QEvent
 from PyQt5.QtGui import QColor, QDrag, QPainter, QPainterPath, QPixmap
 from PyQt5.QtWidgets import (
     QAbstractItemView,
@@ -113,6 +113,9 @@ class ClipboardListWidget(QListWidget):
         self.delegate = RightButtonDelegate(self, None)
         self.setItemDelegate(self.delegate)
         self.drag_start_pos = None
+        self.click_timer = QTimer(self)
+        self.click_timer.setSingleShot(True)
+        self.click_timer.timeout.connect(self.handle_click)
 
     def set_method(self, method):
         self.delegate.method = method
@@ -129,47 +132,50 @@ class ClipboardListWidget(QListWidget):
 
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
+
+        if index.isValid():
+            super().mousePressEvent(event)
+
+            if event.button() == Qt.LeftButton:
+                self.drag_start_pos = event.pos()
+                self.click_timer.start(50)
+
+        else:
+            super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event):
+        if self.drag_start_pos:
+            if (event.pos() - self.drag_start_pos).manhattanLength() > QApplication.startDragDistance():
+                self.drag_start_pos = None
+                drag = QDrag(self)
+                mime_data = self.model().mimeData(self.selectedIndexes())
+                drag.setMimeData(mime_data)
+                drag.exec_(Qt.MoveAction)
+        index = self.indexAt(event.pos())
         if index.isValid():
             row = index.row()
+            self.delegate.setHoveredRow(row)
+
             if row in self.delegate.button_rects and self.delegate.button_rects[
                 row
             ].contains(event.pos()):
-                return super().mousePressEvent(event)
-
-        self.drag_start_pos = event.pos()
-        super().mousePressEvent(event)
-
-    def mouseMoveEvent(self, event):
-        if (
-            self.drag_start_pos
-            and (event.pos() - self.drag_start_pos).manhattanLength()
-            > QApplication.startDragDistance()
-        ):
-            self.drag_start_pos = None
-            drag = QDrag(self)
-            mime_data = self.model().mimeData(self.selectedIndexes())
-            drag.setMimeData(mime_data)
-            drag.exec_(Qt.MoveAction)
-        else:
-            index = self.indexAt(event.pos())
-            if index.isValid():
-                row = index.row()
-                self.delegate.setHoveredRow(row)
-
-                if row in self.delegate.button_rects and self.delegate.button_rects[
-                    row
-                ].contains(event.pos()):
-                    if self.delegate.hovered_button_row != row:
-                        self.delegate.hovered_button_row = row
-                        self.viewport().update()
-                else:
-                    if self.delegate.hovered_button_row != -1:
-                        self.delegate.hovered_button_row = -1
-                        self.viewport().update()
+                if self.delegate.hovered_button_row != row:
+                    self.delegate.hovered_button_row = row
+                    self.viewport().update()
             else:
-                self.delegate.setHoveredRow(-1)
-                self.delegate.hovered_button_row = -1
-                self.viewport().update()
+                if self.delegate.hovered_button_row != -1:
+                    self.delegate.hovered_button_row = -1
+                    self.viewport().update()
+        else:
+            self.delegate.setHoveredRow(-1)
+            self.delegate.hovered_button_row = -1
+            self.viewport().update()
+
+        super().mouseMoveEvent(event)
+
+    def handle_click(self):
+        self.drag_start_pos = None
+
 
     def leaveEvent(self, event):
         self.delegate.setHoveredRow(-1)
