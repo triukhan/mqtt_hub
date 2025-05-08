@@ -19,7 +19,11 @@ https://github.com/user-attachments/assets/85abbec3-e984-4d1a-9df0-c8f1229bc5a8
 ```sh
 ./Linux_mqtt_hub/mqtt_hub
 ```
-- for macOS, you can open the file ```MacOS_mqtt_hub/MQTT HUB.app```.
+- for macOS, you first need to grant your system permission to open the app:
+```sh
+sudo xattr -cr "path/to/repo/MacOS_mqtt_hub/MQTT Hub.app"
+```
+and then, you can simply open the app by double-clicking on: ```MacOS_mqtt_hub/MQTT HUB.app```.
 
 <strong>And of course you can set it up directly from your IDE (the best way for now)</strong>:
 ```sh
@@ -32,5 +36,4 @@ python3 ./main.py
 
 <strong>Future updates:</strong>
 
-- GUI support for Linux systems.
 - CSV logs format.
