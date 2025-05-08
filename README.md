@@ -15,7 +15,7 @@ https://github.com/user-attachments/assets/85abbec3-e984-4d1a-9df0-c8f1229bc5a8
 
 <strong>How to setup?</strong>
 
-- for Linux, you can open the file ```Linux_matt_hub/mqtt_hub```, or write in terminal:
+- for Linux, you can open the file ```Linux_mqtt_hub/mqtt_hub```, or write in terminal:
 ```sh
 ./Linux_mqtt_hub/mqtt_hub
 ```
